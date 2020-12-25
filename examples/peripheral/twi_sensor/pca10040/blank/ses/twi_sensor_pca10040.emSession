@@ -14,6 +14,7 @@
   <ProjectSessionItem path="twi_sensor_pca10040"/>
   <ProjectSessionItem path="twi_sensor_pca10040;twi_sensor_pca10040"/>
   <ProjectSessionItem path="twi_sensor_pca10040;twi_sensor_pca10040;Application"/>
+  <ProjectSessionItem path="twi_sensor_pca10040;twi_sensor_pca10040;nRF_Drivers"/>
  </Project>
  <Register1/>
  <Register2/>
@@ -35,7 +36,9 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="135" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="25" y="149" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="0" top="129" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="283" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/nrf_drv_twi.h" debugPath="../../../../../../integration/nrfx/legacy/nrf_drv_twi.h" selected="0" top="261" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="178" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/nrf_drv_twi.c" debugPath="../../../../../../integration/nrfx/legacy/nrf_drv_twi.c" selected="1" top="147" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="twi_sensor_pca10040" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="" fileDialogInitialDirectory="C:/Nordic52SDK/components/drivers_nrf/rtc" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

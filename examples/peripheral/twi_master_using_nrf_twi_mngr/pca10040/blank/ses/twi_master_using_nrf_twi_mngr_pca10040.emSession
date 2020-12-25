@@ -35,8 +35,9 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="18" y="230" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="228" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="18" y="57" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="0" top="135" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="75" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../lm75b.h" debugPath="../../../lm75b.h" selected="0" top="53" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../mma7660.c" debugPath="../../../mma7660.c" selected="1" top="30" codecName="Default"/>
  </Files>
  <ARMCrossStudioWindow activeProject="twi_master_using_nrf_twi_mngr_pca10040" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="" fileDialogInitialDirectory="C:/Nordic52SDK/components/drivers_nrf/rtc" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
