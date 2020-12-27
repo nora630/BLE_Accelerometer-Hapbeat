@@ -78,6 +78,16 @@
 #include "nrf_ble_qwr.h"
 #include "nrf_pwr_mgmt.h"
 
+#include "ble_acs.h"
+
+#include "boards.h"
+#include "app_util_platform.h"
+#include "nrf_drv_ppi.h"
+//#include "nrf_drv_clock.h"
+#include "nrf_drv_timer.h"
+#include "nrf_drv_twi.h"
+#include "nrf_delay.h"
+
 #include "nrf_log.h"
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
@@ -91,10 +101,12 @@
 #define APP_BLE_OBSERVER_PRIO           3                                       /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
 
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(100, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (0.1 seconds). */
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(200, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (0.2 second). */
+#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (20 milliseconds). */
+#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (20 millisecond). */
 #define SLAVE_LATENCY                   0                                       /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)         /**< Connection supervisory timeout (4 seconds). */
+//#define APP_ADV_TIMEOUT_IN_SECONDS      180                                     /**< The advertising timeout in units of seconds. */
+#define ACS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN
 
 #define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(5000)                   /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
 #define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(30000)                  /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
@@ -111,22 +123,329 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                              /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
+#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(25)                   // ble accel send interval
 
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
 BLE_ADVERTISING_DEF(m_advertising);                                             /**< Advertising module instance. */
 
+BLE_ACS_DEF(m_acs);                                                             // Accelerometer Service instance
+APP_TIMER_DEF(m_accel_timer_id);                                                // Accelerometer timer
+
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
-/* YOUR_JOB: Declare all services structure your application is using
- *  BLE_XYZ_DEF(m_xyz);
- */
+static uint8_t aData[20];
+static uint16_t alen = 20;
 
-// YOUR_JOB: Use UUIDs for service(s) used in your application.
+
+//*****************************************************//
+// twi communication
+//*****************************************************//
+
+
+/* TWI instance ID. */
+#define TWI_INSTANCE_ID     0
+
+/* Common address for LIS2DH */
+#define LIS2DH_ADDR      0x18U
+
+#define LIS2DH_CTRL_REG   0xA0U
+#define LIS2DH_DATA_REG   0xA8U
+#define WHO_AM_I          0x0FU
+#define LIS2DH_CTRL_REG1  0x20U
+#define LIS2DH_CTRL_REG4  0x23U
+
+/* range */
+#define LIS2DH_RANGE_2GA    0x00U
+#define LIS2DH_RANGE_4GA    0x10U
+
+/* mode */
+#define LOW_POWER_MODE    0x2FU // Low Power and ODR = 10Hz
+#define LOW_POWER_MODE1   0x7FU // Low Power and ODR = 400Hz
+#define LOW_POWER_MODE2   0x8FU // Low Power and ODR = 1620Hz
+
+/* PPI */
+#define PPI_TIMER1_INTERVAL   (1.25) // Timer interval in milliseconds, this is twi sampling rate. 
+
+/* buffer size */
+#define TWIM_RX_BUF_WIDTH    6
+#define TWIM_RX_BUF_LENGTH  20 
+
+/* Indicates if operation on TWI has ended. */
+static volatile bool m_xfer_done = false;
+
+/* TWI instance. */
+static const nrf_drv_twi_t m_twi = NRF_DRV_TWI_INSTANCE(TWI_INSTANCE_ID);
+
+/* Buffer for samples read from accelerometer */
+typedef struct ArrayList
+{
+    uint8_t buffer[TWIM_RX_BUF_WIDTH];
+} array_list_t;
+
+static array_list_t p_rx_buffer[TWIM_RX_BUF_LENGTH];
+static int16_t x;
+static int16_t y;
+static int16_t z;
+static int32_t sum;
+
+static uint8_t m_sensorData[6];
+static uint8_t m_dataReg[1] = {LIS2DH_DATA_REG};
+
+/* ppi setting */
+static const nrf_drv_timer_t m_timer1 = NRF_DRV_TIMER_INSTANCE(1);
+static const nrf_drv_timer_t m_timer2 = NRF_DRV_TIMER_INSTANCE(2);
+
+static nrf_ppi_channel_t     m_ppi_channel1;
+static nrf_ppi_channel_t     m_ppi_channel2;
+
+/* etc.. */
+static uint32_t              m_evt_counter;
+
+// sqrt function
+int32_t isqrt(int32_t num) {
+    //assert(("sqrt input should be non-negative", num > 0));
+    int32_t res = 0;
+    int32_t bit = 1 << 30; // The second-to-top bit is set.
+                           // Same as ((unsigned) INT32_MAX + 1) / 2.
+
+    // "bit" starts at the highest power of four <= the argument.
+    while (bit > num)
+        bit >>= 2;
+
+    while (bit != 0) {
+        if (num >= res + bit) {
+            num -= res + bit;
+            res = (res >> 1) + bit;
+        } else
+            res >>= 1;
+        bit >>= 2;
+    }
+    return res;
+}
+
+
+/* Function for setting LIS2DH accelerometer */
+void LIS2DH_set_mode(void)
+{
+    ret_code_t err_code;
+    
+    /* Writing to LIS2DH_CTR_REG set range and Low Power mode(ODR=10Hz) */
+    //uint8_t reg[7] = {LIS2DH_CTRL_REG, LOW_POWER_MODE1, 0x00, 0x00, LIS2DH_RANGE_2GA, 0x00, 0x00};
+    uint8_t reg[2] = {LIS2DH_CTRL_REG1, LOW_POWER_MODE1};
+    //uint8_t reg[1] = {LIS2DH_CTRL_REG1};
+    m_xfer_done = false;
+    err_code = nrf_drv_twi_tx(&m_twi, LIS2DH_ADDR, reg, sizeof(reg), false);
+    APP_ERROR_CHECK(err_code);
+    while (m_xfer_done == false);
+    m_xfer_done = false;
+
+}
+
+/**
+ * @brief TWI events handler.
+ */
+void twi_handler(nrf_drv_twi_evt_t const * p_event, void * p_context)
+{
+    switch (p_event->type)
+    {
+        case NRF_DRV_TWI_EVT_DONE:
+            m_xfer_done = true;
+            break;
+        default:
+            break;
+    }
+}
+
+/**
+ * @brief UART initialization.
+ */
+void twi_init (void)
+{
+    ret_code_t err_code;
+
+    const nrf_drv_twi_config_t twi_lis2dh_config = {
+       .scl                = ARDUINO_SCL_PIN,
+       .sda                = ARDUINO_SDA_PIN,
+       .frequency          = NRF_TWI_FREQ_100K,
+       .interrupt_priority = APP_IRQ_PRIORITY_LOW,
+       .clear_bus_init     = true
+    };
+
+    err_code = nrf_drv_twi_init(&m_twi, &twi_lis2dh_config, twi_handler, NULL);
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_twi_enable(&m_twi);
+}
+
+/*
+
+*/
+void twi_check_connection(void)
+{
+    ret_code_t err_code;
+    uint8_t samp;
+
+    err_code = nrf_drv_twi_rx(&m_twi, LIS2DH_ADDR, &samp, sizeof(samp));
+    APP_ERROR_CHECK(err_code);
+    if (err_code == NRF_SUCCESS)
+    {
+        NRF_LOG_INFO("TWI device detected at address 0x%x.", LIS2DH_ADDR);
+    }
+    while (m_xfer_done == false);
+    //NRF_LOG_FLUSH();
+}
+
+/* empty function */
+static void timer1_handler(nrf_timer_event_t event_type, void * p_context)
+{
+
+}
+
+
+/* TWIM counter handler */
+static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
+{
+    m_xfer_done = true;
+
+    for(int16_t i=0; i<alen; i++)
+    {
+        x = (int8_t)p_rx_buffer[0].buffer[1]; 
+        y = (int8_t)p_rx_buffer[0].buffer[3];
+        z = (int8_t)p_rx_buffer[0].buffer[5];
+        sum = x * x + y * y + z * z;
+        sum = isqrt(sum);
+        aData[i] = (uint8_t)sum;
+        //aData[i] = sum & 0x0f;
+        //printf("%d\n", aData[i]);
+        //aData[2*i+1] = (sum >> 8) & 0x0f;
+    }
+
+    accel_data_send();
+
+
+    nrf_drv_twi_xfer_desc_t xfer = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
+                                      sizeof(m_dataReg), (uint8_t*)p_rx_buffer, sizeof(p_rx_buffer) / TWIM_RX_BUF_LENGTH);
+
+    uint32_t flags = NRF_DRV_TWI_FLAG_HOLD_XFER             |
+                     NRF_DRV_TWI_FLAG_RX_POSTINC            |
+                     NRF_DRV_TWI_FLAG_NO_XFER_EVT_HANDLER   |
+                     NRF_DRV_TWI_FLAG_REPEATED_XFER;
+
+    ret_code_t err_code = nrf_drv_twi_xfer(&m_twi, &xfer, flags);
+    APP_ERROR_CHECK(err_code);
+
+}
+
+
+// Function for Timer 1 initialization
+static void timer1_init(void)
+{
+    nrf_drv_timer_config_t timer1_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
+    timer1_config.frequency = NRF_TIMER_FREQ_31250Hz;
+    ret_code_t err_code = nrf_drv_timer_init(&m_timer1, &timer1_config, timer1_handler);
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_timer_extended_compare(&m_timer1,
+                                   NRF_TIMER_CC_CHANNEL0,
+                                   nrf_drv_timer_ms_to_ticks(&m_timer1,
+                                                             PPI_TIMER1_INTERVAL),
+                                   NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
+                                   false);
+
+}
+
+// Function for Timer 2 initialization
+static void timer2_init(void)
+{
+    nrf_drv_timer_config_t timer2_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
+    timer2_config.mode = NRF_TIMER_MODE_LOW_POWER_COUNTER;
+    ret_code_t err_code = nrf_drv_timer_init(&m_timer2, &timer2_config, timer2_handler);
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_timer_extended_compare(&m_timer2,
+                                    NRF_TIMER_CC_CHANNEL0,
+                                    TWIM_RX_BUF_LENGTH,
+                                    NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
+                                    true);
+}
+
+/* initialize ppi channel */
+static void twi_accel_ppi_init(void)
+{
+    ret_code_t err_code;
+    
+    err_code = nrf_drv_ppi_init();
+    APP_ERROR_CHECK(err_code);
+    
+    // setup timer1
+    timer1_init();
+
+    //setup timer2
+    timer2_init();
+
+    nrf_drv_twi_xfer_desc_t xfer = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
+                                      sizeof(m_dataReg), (uint8_t*)p_rx_buffer, sizeof(p_rx_buffer)  / TWIM_RX_BUF_LENGTH);
+
+    uint32_t flags = NRF_DRV_TWI_FLAG_HOLD_XFER             |
+                     NRF_DRV_TWI_FLAG_RX_POSTINC            |
+                     NRF_DRV_TWI_FLAG_NO_XFER_EVT_HANDLER   |
+                     NRF_DRV_TWI_FLAG_REPEATED_XFER;
+
+    err_code = nrf_drv_twi_xfer(&m_twi, &xfer, flags);
+    
+    // TWIM is now configured and ready to be started.
+    if (err_code == NRF_SUCCESS)
+    {   
+        // set up PPI to trigger the transfer
+        uint32_t twi_start_task_addr = nrf_drv_twi_start_task_get(&m_twi, xfer.type);
+        err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel1);
+        APP_ERROR_CHECK(err_code);
+        err_code = nrf_drv_ppi_channel_assign(m_ppi_channel1,
+                                              nrf_drv_timer_event_address_get(&m_timer1,
+                                                                              NRF_TIMER_EVENT_COMPARE0),
+                                              twi_start_task_addr);
+        APP_ERROR_CHECK(err_code);
+        
+        // set up PPI to count the number of transfers 
+        uint32_t twi_stopped_event_addr = nrf_drv_twi_stopped_event_get(&m_twi);
+        err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel2);
+        APP_ERROR_CHECK(err_code);
+        err_code = nrf_drv_ppi_channel_assign(m_ppi_channel2,
+                                              twi_stopped_event_addr,
+                                              nrf_drv_timer_task_address_get(&m_timer2,
+                                                                             NRF_TIMER_TASK_COUNT));
+    }
+}
+
+
+static void twi_accel_ppi_enable(void)
+{
+    ret_code_t err_code;
+    err_code = nrf_drv_ppi_channel_enable(m_ppi_channel1);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_ppi_channel_enable(m_ppi_channel2);
+    APP_ERROR_CHECK(err_code);
+}
+
+void twi_start(void)
+{
+    // enable the counter counting
+    nrf_drv_timer_enable(&m_timer2);
+    
+    //m_xfer_done = false;
+    // enable timer triggering TWI transfer
+    nrf_drv_timer_enable(&m_timer1);
+}
+
+/*******************************************************************************************************/
+
 static ble_uuid_t m_adv_uuids[] =                                               /**< Universally unique service identifiers. */
 {
-    {BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}
+    //{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}
+    {ACS_UUID_SERVICE, ACS_SERVICE_UUID_TYPE}
 };
+
 
 
 static void advertising_start(bool erase_bonds);
@@ -169,6 +488,32 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
     }
 }
 
+/* Function for performing accel measurement and updating the tx accel characteristic in Accelerometer Service */
+void accel_data_send(void)
+{
+    ret_code_t err_code;
+    //uint8_t aData[2] = {0x4d, 0x3a};
+    //uint16_t alen = 2;
+    //for (int i=0; i<4; i++) aData[i] |= 0x11 ;
+
+    err_code = ble_acs_accel_data_send(&m_acs, &aData, &alen);
+    if((err_code != NRF_SUCCESS) &&
+       (err_code != NRF_ERROR_INVALID_STATE) &&
+       (err_code != NRF_ERROR_RESOURCES) &&
+       (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+      )
+    {
+        APP_ERROR_HANDLER(err_code);
+    }
+}
+
+/* Function for handling the Accelerometer measurement timer timeout  */
+static void accel_meas_timeout_handler(void * p_context)
+{
+    UNUSED_PARAMETER(p_context);
+    accel_data_send();
+
+}
 
 /**@brief Function for the Timer initialization.
  *
@@ -181,14 +526,10 @@ static void timers_init(void)
     APP_ERROR_CHECK(err_code);
 
     // Create timers.
-
-    /* YOUR_JOB: Create any timers to be used by the application.
-                 Below is an example of how to create a timer.
-                 For every new timer needed, increase the value of the macro APP_TIMER_MAX_TIMERS by
-                 one.
-       ret_code_t err_code;
-       err_code = app_timer_create(&m_app_timer_id, APP_TIMER_MODE_REPEATED, timer_timeout_handler);
-       APP_ERROR_CHECK(err_code); */
+     err_code = app_timer_create(&m_accel_timer_id,
+                                 APP_TIMER_MODE_REPEATED,
+                                 accel_meas_timeout_handler);
+     APP_ERROR_CHECK(err_code);
 }
 
 
@@ -210,9 +551,8 @@ static void gap_params_init(void)
                                           strlen(DEVICE_NAME));
     APP_ERROR_CHECK(err_code);
 
-    /* YOUR_JOB: Use an appearance value matching the application's use case.
-       err_code = sd_ble_gap_appearance_set(BLE_APPEARANCE_);
-       APP_ERROR_CHECK(err_code); */
+    err_code = sd_ble_gap_appearance_set(0);
+    APP_ERROR_CHECK(err_code);
 
     memset(&gap_conn_params, 0, sizeof(gap_conn_params));
 
@@ -287,28 +627,17 @@ static void services_init(void)
     err_code = nrf_ble_qwr_init(&m_qwr, &qwr_init);
     APP_ERROR_CHECK(err_code);
 
-    /* YOUR_JOB: Add code to initialize the services used by the application.
-       ble_xxs_init_t                     xxs_init;
-       ble_yys_init_t                     yys_init;
+    ble_acs_init_t acs_init;
+    
+    // Initialize Accelerometer Service
+    memset(&acs_init, 0, sizeof(acs_init));
 
-       // Initialize XXX Service.
-       memset(&xxs_init, 0, sizeof(xxs_init));
+    acs_init.accel_write_handler  = NULL;
+    acs_init.notification_enabled = true;
 
-       xxs_init.evt_handler                = NULL;
-       xxs_init.is_xxx_notify_supported    = true;
-       xxs_init.ble_xx_initial_value.level = 100;
+    err_code = ble_acs_init(&m_acs, &acs_init);
+    APP_ERROR_CHECK(err_code);
 
-       err_code = ble_bas_init(&m_xxs, &xxs_init);
-       APP_ERROR_CHECK(err_code);
-
-       // Initialize YYY Service.
-       memset(&yys_init, 0, sizeof(yys_init));
-       yys_init.evt_handler                  = on_yys_evt;
-       yys_init.ble_yy_initial_value.counter = 0;
-
-       err_code = ble_yy_service_init(&yys_init, &yy_init);
-       APP_ERROR_CHECK(err_code);
-     */
 }
 
 
@@ -371,11 +700,9 @@ static void conn_params_init(void)
  */
 static void application_timers_start(void)
 {
-    /* YOUR_JOB: Start your timers. below is an example of how to start a timer.
-       ret_code_t err_code;
-       err_code = app_timer_start(m_app_timer_id, TIMER_INTERVAL, NULL);
-       APP_ERROR_CHECK(err_code); */
-
+    ret_code_t err_code;
+    err_code = app_timer_start(m_accel_timer_id, ACCEL_SEND_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
 }
 
 
@@ -395,8 +722,8 @@ static void sleep_mode_enter(void)
     APP_ERROR_CHECK(err_code);
 
     // Go to system-off mode (this function will not return; wakeup will cause a reset).
-    err_code = sd_power_system_off();
-    APP_ERROR_CHECK(err_code);
+    //err_code = sd_power_system_off();
+    //APP_ERROR_CHECK(err_code);
 }
 
 
@@ -611,10 +938,12 @@ static void advertising_init(void)
     memset(&init, 0, sizeof(init));
 
     init.advdata.name_type               = BLE_ADVDATA_FULL_NAME;
-    init.advdata.include_appearance      = true;
-    init.advdata.flags                   = BLE_GAP_ADV_FLAGS_LE_ONLY_GENERAL_DISC_MODE;
-    init.advdata.uuids_complete.uuid_cnt = sizeof(m_adv_uuids) / sizeof(m_adv_uuids[0]);
-    init.advdata.uuids_complete.p_uuids  = m_adv_uuids;
+    init.advdata.include_appearance = false;
+    init.advdata.flags              = BLE_GAP_ADV_FLAGS_LE_ONLY_LIMITED_DISC_MODE;
+
+    init.srdata.uuids_complete.uuid_cnt = sizeof(m_adv_uuids) / sizeof(m_adv_uuids[0]);
+    init.srdata.uuids_complete.p_uuids  = m_adv_uuids;
+
 
     init.config.ble_adv_fast_enabled  = true;
     init.config.ble_adv_fast_interval = APP_ADV_INTERVAL;
@@ -714,16 +1043,26 @@ int main(void)
     ble_stack_init();
     gap_params_init();
     gatt_init();
-    advertising_init();
+    //advertising_init();
     services_init();
+    advertising_init();
     conn_params_init();
     peer_manager_init();
 
     // Start execution.
     NRF_LOG_INFO("Template example started.");
-    application_timers_start();
+    //NRF_LOG_FLUSH();
+    //application_timers_start();
 
     advertising_start(erase_bonds);
+    NRF_LOG_FLUSH();
+
+    twi_init();
+   
+    LIS2DH_set_mode();
+    twi_accel_ppi_init();
+    twi_accel_ppi_enable();
+    twi_start();
 
     // Enter main loop.
     for (;;)
