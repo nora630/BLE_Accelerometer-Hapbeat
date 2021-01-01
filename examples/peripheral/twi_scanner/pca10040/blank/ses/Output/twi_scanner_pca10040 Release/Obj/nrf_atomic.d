@@ -1,6 +1,6 @@
 Output/twi_scanner_pca10040\ Release/Obj/nrf_atomic.o: \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\atomic\nrf_atomic.c \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\atomic\nrf_atomic.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\atomic\nrf_atomic.c \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\atomic\nrf_atomic.h \
  ../../../../../../components/libraries/util/sdk_common.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdint.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdbool.h \
@@ -28,4 +28,4 @@ Output/twi_scanner_pca10040\ Release/Obj/nrf_atomic.o: \
  ../../../../../../modules/nrfx/mdk/compiler_abstraction.h \
  ../../../../../../components/libraries/util/sdk_macros.h \
  ../../../../../../components/libraries/util/nrf_assert.h \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\atomic\nrf_atomic_internal.h
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\atomic\nrf_atomic_internal.h

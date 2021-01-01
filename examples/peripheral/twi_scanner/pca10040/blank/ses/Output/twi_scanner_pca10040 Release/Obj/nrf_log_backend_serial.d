@@ -1,5 +1,5 @@
 Output/twi_scanner_pca10040\ Release/Obj/nrf_log_backend_serial.o: \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\log\src\nrf_log_backend_serial.c \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\log\src\nrf_log_backend_serial.c \
  ../../../../../../components/libraries/util/sdk_common.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdint.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdbool.h \
@@ -27,7 +27,7 @@ Output/twi_scanner_pca10040\ Release/Obj/nrf_log_backend_serial.o: \
  ../../../../../../modules/nrfx/mdk/compiler_abstraction.h \
  ../../../../../../components/libraries/util/sdk_macros.h \
  ../../../../../../components/libraries/util/nrf_assert.h \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\log\src\nrf_log_backend_serial.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\log\src\nrf_log_backend_serial.h \
  ../../../../../../components/libraries/log/nrf_log_backend_interface.h \
  ../../../../../../components/libraries/memobj/nrf_memobj.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdlib.h \
@@ -47,5 +47,5 @@ Output/twi_scanner_pca10040\ Release/Obj/nrf_log_backend_serial.o: \
  ../../../../../../components/libraries/log/nrf_log_ctrl.h \
  ../../../../../../components/libraries/log/src/nrf_log_ctrl_internal.h \
  ../../../../../../components/libraries/log/nrf_log_backend_interface.h \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\log\src\nrf_log_internal.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\log\src\nrf_log_internal.h \
  ../../../../../../components/libraries/log/nrf_log_types.h

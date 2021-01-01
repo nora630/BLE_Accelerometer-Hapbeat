@@ -1,5 +1,5 @@
 Output/ble_app_template_pca10040_s132\ Debug/Obj/main.o: \
- C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\ble_peripheral\ble_app_template_accelerometer\main.c \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\ble_peripheral\ble_app_template_hapbeat\main.c \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdbool.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdint.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/string.h \
@@ -107,10 +107,13 @@ Output/ble_app_template_pca10040_s132\ Debug/Obj/main.o: \
  ../../../../../../components/libraries/atomic/nrf_atomic.h \
  ../../../../../../components/ble/nrf_ble_gatt/nrf_ble_gatt.h \
  ../../../../../../components/ble/nrf_ble_qwr/nrf_ble_qwr.h \
- ../../../../../../components/libraries/pwr_mgmt/nrf_pwr_mgmt.h ble_acs.h \
- ../../../../../../integration/nrfx/legacy/nrf_drv_ppi.h \
+ ../../../../../../components/libraries/pwr_mgmt/nrf_pwr_mgmt.h \
+ ble_hpbs.h ../../../../../../integration/nrfx/legacy/nrf_drv_ppi.h \
  ../../../../../../modules/nrfx/drivers/include/nrfx_ppi.h \
  ../../../../../../modules/nrfx/hal/nrf_ppi.h \
+ ../../../../../../integration/nrfx/legacy/nrf_drv_pwm.h \
+ ../../../../../../modules/nrfx/drivers/include/nrfx_pwm.h \
+ ../../../../../../modules/nrfx/hal/nrf_pwm.h \
  ../../../../../../integration/nrfx/legacy/nrf_drv_timer.h \
  ../../../../../../modules/nrfx/drivers/include/nrfx_timer.h \
  ../../../../../../modules/nrfx/hal/nrf_timer.h \

@@ -667,8 +667,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x1c Output/twi_scanner_pca10040 Release/Obj/boards.o
  .debug_macro   0x0000000000000000      0x25a Output/twi_scanner_pca10040 Release/Obj/boards.o
  .debug_macro   0x0000000000000000      0x16d Output/twi_scanner_pca10040 Release/Obj/boards.o
- .debug_line    0x0000000000000000      0x67b Output/twi_scanner_pca10040 Release/Obj/boards.o
- .debug_str     0x0000000000000000    0x6d383 Output/twi_scanner_pca10040 Release/Obj/boards.o
+ .debug_line    0x0000000000000000      0x674 Output/twi_scanner_pca10040 Release/Obj/boards.o
+ .debug_str     0x0000000000000000    0x6d375 Output/twi_scanner_pca10040 Release/Obj/boards.o
  .comment       0x0000000000000000       0x4d Output/twi_scanner_pca10040 Release/Obj/boards.o
  .ARM.attributes
                 0x0000000000000000       0x39 Output/twi_scanner_pca10040 Release/Obj/boards.o
@@ -793,8 +793,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x55 Output/twi_scanner_pca10040 Release/Obj/app_error_handler_gcc.o
  .debug_macro   0x0000000000000000       0x6b Output/twi_scanner_pca10040 Release/Obj/app_error_handler_gcc.o
  .debug_macro   0x0000000000000000       0x49 Output/twi_scanner_pca10040 Release/Obj/app_error_handler_gcc.o
- .debug_line    0x0000000000000000      0x351 Output/twi_scanner_pca10040 Release/Obj/app_error_handler_gcc.o
- .debug_str     0x0000000000000000    0x68e33 Output/twi_scanner_pca10040 Release/Obj/app_error_handler_gcc.o
+ .debug_line    0x0000000000000000      0x34a Output/twi_scanner_pca10040 Release/Obj/app_error_handler_gcc.o
+ .debug_str     0x0000000000000000    0x68e25 Output/twi_scanner_pca10040 Release/Obj/app_error_handler_gcc.o
  .comment       0x0000000000000000       0x4d Output/twi_scanner_pca10040 Release/Obj/app_error_handler_gcc.o
  .ARM.attributes
                 0x0000000000000000       0x39 Output/twi_scanner_pca10040 Release/Obj/app_error_handler_gcc.o
@@ -993,8 +993,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0xad Output/twi_scanner_pca10040 Release/Obj/nrf_assert.o
  .debug_macro   0x0000000000000000      0x16d Output/twi_scanner_pca10040 Release/Obj/nrf_assert.o
  .debug_macro   0x0000000000000000       0x49 Output/twi_scanner_pca10040 Release/Obj/nrf_assert.o
- .debug_line    0x0000000000000000      0x2dc Output/twi_scanner_pca10040 Release/Obj/nrf_assert.o
- .debug_str     0x0000000000000000    0x5e8bb Output/twi_scanner_pca10040 Release/Obj/nrf_assert.o
+ .debug_line    0x0000000000000000      0x2d5 Output/twi_scanner_pca10040 Release/Obj/nrf_assert.o
+ .debug_str     0x0000000000000000    0x5e8ad Output/twi_scanner_pca10040 Release/Obj/nrf_assert.o
  .comment       0x0000000000000000       0x4d Output/twi_scanner_pca10040 Release/Obj/nrf_assert.o
  .ARM.attributes
                 0x0000000000000000       0x39 Output/twi_scanner_pca10040 Release/Obj/nrf_assert.o
@@ -1483,8 +1483,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x7ca Output/twi_scanner_pca10040 Release/Obj/nrf_strerror.o
  .debug_macro   0x0000000000000000       0x16 Output/twi_scanner_pca10040 Release/Obj/nrf_strerror.o
  .debug_macro   0x0000000000000000       0x55 Output/twi_scanner_pca10040 Release/Obj/nrf_strerror.o
- .debug_line    0x0000000000000000      0x37f Output/twi_scanner_pca10040 Release/Obj/nrf_strerror.o
- .debug_str     0x0000000000000000    0x68a25 Output/twi_scanner_pca10040 Release/Obj/nrf_strerror.o
+ .debug_line    0x0000000000000000      0x378 Output/twi_scanner_pca10040 Release/Obj/nrf_strerror.o
+ .debug_str     0x0000000000000000    0x68a17 Output/twi_scanner_pca10040 Release/Obj/nrf_strerror.o
  .comment       0x0000000000000000       0x4d Output/twi_scanner_pca10040 Release/Obj/nrf_strerror.o
  .ARM.attributes
                 0x0000000000000000       0x39 Output/twi_scanner_pca10040 Release/Obj/nrf_strerror.o
@@ -1683,8 +1683,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x10 Output/twi_scanner_pca10040 Release/Obj/nrf_drv_uart.o
  .debug_macro   0x0000000000000000       0x10 Output/twi_scanner_pca10040 Release/Obj/nrf_drv_uart.o
  .debug_macro   0x0000000000000000       0x3f Output/twi_scanner_pca10040 Release/Obj/nrf_drv_uart.o
- .debug_line    0x0000000000000000      0x5e1 Output/twi_scanner_pca10040 Release/Obj/nrf_drv_uart.o
- .debug_str     0x0000000000000000    0x6d250 Output/twi_scanner_pca10040 Release/Obj/nrf_drv_uart.o
+ .debug_line    0x0000000000000000      0x5da Output/twi_scanner_pca10040 Release/Obj/nrf_drv_uart.o
+ .debug_str     0x0000000000000000    0x6d242 Output/twi_scanner_pca10040 Release/Obj/nrf_drv_uart.o
  .comment       0x0000000000000000       0x4d Output/twi_scanner_pca10040 Release/Obj/nrf_drv_uart.o
  .ARM.attributes
                 0x0000000000000000       0x39 Output/twi_scanner_pca10040 Release/Obj/nrf_drv_uart.o
@@ -1817,8 +1817,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x64 Output/twi_scanner_pca10040 Release/Obj/nrfx_atomic.o
  .debug_macro   0x0000000000000000       0x20 Output/twi_scanner_pca10040 Release/Obj/nrfx_atomic.o
  .debug_macro   0x0000000000000000       0x42 Output/twi_scanner_pca10040 Release/Obj/nrfx_atomic.o
- .debug_line    0x0000000000000000      0x68c Output/twi_scanner_pca10040 Release/Obj/nrfx_atomic.o
- .debug_str     0x0000000000000000    0x6c516 Output/twi_scanner_pca10040 Release/Obj/nrfx_atomic.o
+ .debug_line    0x0000000000000000      0x685 Output/twi_scanner_pca10040 Release/Obj/nrfx_atomic.o
+ .debug_str     0x0000000000000000    0x6c508 Output/twi_scanner_pca10040 Release/Obj/nrfx_atomic.o
  .comment       0x0000000000000000       0x4d Output/twi_scanner_pca10040 Release/Obj/nrfx_atomic.o
  .ARM.attributes
                 0x0000000000000000       0x39 Output/twi_scanner_pca10040 Release/Obj/nrfx_atomic.o
@@ -2687,8 +2687,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x83 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_Syscalls_SES.o
  .debug_macro   0x0000000000000000       0xa6 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_Syscalls_SES.o
  .debug_macro   0x0000000000000000       0xbe Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_Syscalls_SES.o
- .debug_line    0x0000000000000000      0x3fa Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_Syscalls_SES.o
- .debug_str     0x0000000000000000    0x626bb Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_Syscalls_SES.o
+ .debug_line    0x0000000000000000      0x3f3 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_Syscalls_SES.o
+ .debug_str     0x0000000000000000    0x626ad Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_Syscalls_SES.o
  .comment       0x0000000000000000       0x4d Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_Syscalls_SES.o
  .ARM.attributes
                 0x0000000000000000       0x39 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_Syscalls_SES.o
@@ -2773,8 +2773,8 @@ Discarded input sections
  .debug_macro   0x0000000000000000      0x115 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_printf.o
  .debug_macro   0x0000000000000000       0x28 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_printf.o
  .debug_macro   0x0000000000000000       0x22 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_printf.o
- .debug_line    0x0000000000000000      0x4ba Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_printf.o
- .debug_str     0x0000000000000000    0x61cdb Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_printf.o
+ .debug_line    0x0000000000000000      0x4b3 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_printf.o
+ .debug_str     0x0000000000000000    0x61ccd Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_printf.o
  .comment       0x0000000000000000       0x4d Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_printf.o
  .ARM.attributes
                 0x0000000000000000       0x39 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT_printf.o
@@ -5706,32 +5706,32 @@ OUTPUT(Output/Release/Exe/twi_scanner_pca10040.elf elf32-littlearm)
  .comment       0x000000000000004c       0x4d Output/twi_scanner_pca10040 Release/Obj/system_nrf52.o
  .comment       0x000000000000004c       0x4d C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libc_v7em_fpv4_sp_d16_hard_t_le_eabi.a(libc2.o)
 
-.debug_line     0x0000000000000000     0x98c1
+.debug_line     0x0000000000000000     0x9819
  .debug_line    0x0000000000000000      0x2b4 Output/twi_scanner_pca10040 Release/Obj/thumb_crt0.o
- .debug_line    0x00000000000002b4      0x858 Output/twi_scanner_pca10040 Release/Obj/nrf_log_backend_rtt.o
- .debug_line    0x0000000000000b0c      0x610 Output/twi_scanner_pca10040 Release/Obj/nrf_log_backend_serial.o
- .debug_line    0x000000000000111c      0x597 Output/twi_scanner_pca10040 Release/Obj/nrf_log_default_backends.o
- .debug_line    0x00000000000016b3      0x9fb Output/twi_scanner_pca10040 Release/Obj/nrf_log_frontend.o
- .debug_line    0x00000000000020ae      0x666 Output/twi_scanner_pca10040 Release/Obj/nrf_log_str_formatter.o
- .debug_line    0x0000000000002714      0x30f Output/twi_scanner_pca10040 Release/Obj/app_error.o
- .debug_line    0x0000000000002a23      0x636 Output/twi_scanner_pca10040 Release/Obj/app_error_weak.o
- .debug_line    0x0000000000003059      0x39a Output/twi_scanner_pca10040 Release/Obj/app_util_platform.o
- .debug_line    0x00000000000033f3      0x4e3 Output/twi_scanner_pca10040 Release/Obj/nrf_atomic.o
- .debug_line    0x00000000000038d6      0x538 Output/twi_scanner_pca10040 Release/Obj/nrf_balloc.o
- .debug_line    0x0000000000003e0e      0x399 Output/twi_scanner_pca10040 Release/Obj/nrf_fprintf.o
- .debug_line    0x00000000000041a7      0x4ea Output/twi_scanner_pca10040 Release/Obj/nrf_fprintf_format.o
- .debug_line    0x0000000000004691      0x5e2 Output/twi_scanner_pca10040 Release/Obj/nrf_memobj.o
- .debug_line    0x0000000000004c73      0x4d5 Output/twi_scanner_pca10040 Release/Obj/nrf_ringbuf.o
- .debug_line    0x0000000000005148      0x695 Output/twi_scanner_pca10040 Release/Obj/nrf_drv_twi.o
- .debug_line    0x00000000000057dd      0x6c4 Output/twi_scanner_pca10040 Release/Obj/nrfx_prs.o
- .debug_line    0x0000000000005ea1      0xc88 Output/twi_scanner_pca10040 Release/Obj/nrfx_twim.o
- .debug_line    0x0000000000006b29      0xc4c Output/twi_scanner_pca10040 Release/Obj/nrfx_uart.o
- .debug_line    0x0000000000007775      0xbd3 Output/twi_scanner_pca10040 Release/Obj/nrfx_uarte.o
- .debug_line    0x0000000000008348      0x8c3 Output/twi_scanner_pca10040 Release/Obj/main.o
- .debug_line    0x0000000000008c0b      0x809 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT.o
- .debug_line    0x0000000000009414       0xa5 Output/twi_scanner_pca10040 Release/Obj/ses_startup_nrf52.o
- .debug_line    0x00000000000094b9       0xc7 Output/twi_scanner_pca10040 Release/Obj/ses_startup_nrf_common.o
- .debug_line    0x0000000000009580      0x341 Output/twi_scanner_pca10040 Release/Obj/system_nrf52.o
+ .debug_line    0x00000000000002b4      0x851 Output/twi_scanner_pca10040 Release/Obj/nrf_log_backend_rtt.o
+ .debug_line    0x0000000000000b05      0x609 Output/twi_scanner_pca10040 Release/Obj/nrf_log_backend_serial.o
+ .debug_line    0x000000000000110e      0x590 Output/twi_scanner_pca10040 Release/Obj/nrf_log_default_backends.o
+ .debug_line    0x000000000000169e      0x9f4 Output/twi_scanner_pca10040 Release/Obj/nrf_log_frontend.o
+ .debug_line    0x0000000000002092      0x65f Output/twi_scanner_pca10040 Release/Obj/nrf_log_str_formatter.o
+ .debug_line    0x00000000000026f1      0x308 Output/twi_scanner_pca10040 Release/Obj/app_error.o
+ .debug_line    0x00000000000029f9      0x62f Output/twi_scanner_pca10040 Release/Obj/app_error_weak.o
+ .debug_line    0x0000000000003028      0x393 Output/twi_scanner_pca10040 Release/Obj/app_util_platform.o
+ .debug_line    0x00000000000033bb      0x4dc Output/twi_scanner_pca10040 Release/Obj/nrf_atomic.o
+ .debug_line    0x0000000000003897      0x531 Output/twi_scanner_pca10040 Release/Obj/nrf_balloc.o
+ .debug_line    0x0000000000003dc8      0x392 Output/twi_scanner_pca10040 Release/Obj/nrf_fprintf.o
+ .debug_line    0x000000000000415a      0x4e3 Output/twi_scanner_pca10040 Release/Obj/nrf_fprintf_format.o
+ .debug_line    0x000000000000463d      0x5db Output/twi_scanner_pca10040 Release/Obj/nrf_memobj.o
+ .debug_line    0x0000000000004c18      0x4ce Output/twi_scanner_pca10040 Release/Obj/nrf_ringbuf.o
+ .debug_line    0x00000000000050e6      0x68e Output/twi_scanner_pca10040 Release/Obj/nrf_drv_twi.o
+ .debug_line    0x0000000000005774      0x6bd Output/twi_scanner_pca10040 Release/Obj/nrfx_prs.o
+ .debug_line    0x0000000000005e31      0xc7a Output/twi_scanner_pca10040 Release/Obj/nrfx_twim.o
+ .debug_line    0x0000000000006aab      0xc3e Output/twi_scanner_pca10040 Release/Obj/nrfx_uart.o
+ .debug_line    0x00000000000076e9      0xbc5 Output/twi_scanner_pca10040 Release/Obj/nrfx_uarte.o
+ .debug_line    0x00000000000082ae      0x8c3 Output/twi_scanner_pca10040 Release/Obj/main.o
+ .debug_line    0x0000000000008b71      0x802 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT.o
+ .debug_line    0x0000000000009373       0xa5 Output/twi_scanner_pca10040 Release/Obj/ses_startup_nrf52.o
+ .debug_line    0x0000000000009418       0xc7 Output/twi_scanner_pca10040 Release/Obj/ses_startup_nrf_common.o
+ .debug_line    0x00000000000094df      0x33a Output/twi_scanner_pca10040 Release/Obj/system_nrf52.o
 
 .debug_info     0x0000000000000000    0x1b992
  .debug_info    0x0000000000000000       0xea Output/twi_scanner_pca10040 Release/Obj/thumb_crt0.o
@@ -6103,48 +6103,48 @@ OUTPUT(Output/Release/Exe/twi_scanner_pca10040.elf elf32-littlearm)
  .debug_macro   0x000000000001596d       0x47 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT.o
  .debug_macro   0x00000000000159b4       0xe9 Output/twi_scanner_pca10040 Release/Obj/system_nrf52.o
 
-.debug_str      0x0000000000000000    0x79814
- .debug_str     0x0000000000000000    0x6f61e Output/twi_scanner_pca10040 Release/Obj/nrf_log_backend_rtt.o
-                                      0x704a5 (size before relaxing)
- .debug_str     0x000000000006f61e      0x260 Output/twi_scanner_pca10040 Release/Obj/nrf_log_backend_serial.o
-                                      0x6cb41 (size before relaxing)
- .debug_str     0x000000000006f87e      0x14c Output/twi_scanner_pca10040 Release/Obj/nrf_log_default_backends.o
-                                      0x6c8f6 (size before relaxing)
- .debug_str     0x000000000006f9ca     0x13b9 Output/twi_scanner_pca10040 Release/Obj/nrf_log_frontend.o
-                                      0x6ddb1 (size before relaxing)
- .debug_str     0x0000000000070d83      0x30a Output/twi_scanner_pca10040 Release/Obj/nrf_log_str_formatter.o
-                                      0x6cc93 (size before relaxing)
- .debug_str     0x000000000007108d      0x169 Output/twi_scanner_pca10040 Release/Obj/app_error.o
-                                      0x5e8a7 (size before relaxing)
- .debug_str     0x00000000000711f6       0xf3 Output/twi_scanner_pca10040 Release/Obj/app_error_weak.o
-                                      0x6cfce (size before relaxing)
- .debug_str     0x00000000000712e9      0x410 Output/twi_scanner_pca10040 Release/Obj/app_util_platform.o
-                                      0x5f0b4 (size before relaxing)
- .debug_str     0x00000000000716f9      0x6f0 Output/twi_scanner_pca10040 Release/Obj/nrf_atomic.o
-                                      0x69065 (size before relaxing)
- .debug_str     0x0000000000071de9      0x195 Output/twi_scanner_pca10040 Release/Obj/nrf_balloc.o
-                                      0x6c985 (size before relaxing)
- .debug_str     0x0000000000071f7e      0x133 Output/twi_scanner_pca10040 Release/Obj/nrf_fprintf.o
-                                      0x68bff (size before relaxing)
- .debug_str     0x00000000000720b1      0x542 Output/twi_scanner_pca10040 Release/Obj/nrf_fprintf_format.o
-                                      0x690e8 (size before relaxing)
- .debug_str     0x00000000000725f3      0x1dd Output/twi_scanner_pca10040 Release/Obj/nrf_memobj.o
-                                      0x6ad15 (size before relaxing)
- .debug_str     0x00000000000727d0      0x10d Output/twi_scanner_pca10040 Release/Obj/nrf_ringbuf.o
-                                      0x6943b (size before relaxing)
- .debug_str     0x00000000000728dd     0x1dde Output/twi_scanner_pca10040 Release/Obj/nrf_drv_twi.o
-                                      0x6dc95 (size before relaxing)
- .debug_str     0x00000000000746bb      0x73d Output/twi_scanner_pca10040 Release/Obj/nrfx_prs.o
-                                      0x6f4b7 (size before relaxing)
- .debug_str     0x0000000000074df8     0x121a Output/twi_scanner_pca10040 Release/Obj/nrfx_twim.o
-                                      0x71149 (size before relaxing)
- .debug_str     0x0000000000076012      0xd49 Output/twi_scanner_pca10040 Release/Obj/nrfx_uart.o
-                                      0x70669 (size before relaxing)
- .debug_str     0x0000000000076d5b      0xf8e Output/twi_scanner_pca10040 Release/Obj/nrfx_uarte.o
-                                      0x70af1 (size before relaxing)
- .debug_str     0x0000000000077ce9     0x10cb Output/twi_scanner_pca10040 Release/Obj/main.o
+.debug_str      0x0000000000000000    0x797f0
+ .debug_str     0x0000000000000000    0x6f610 Output/twi_scanner_pca10040 Release/Obj/nrf_log_backend_rtt.o
+                                      0x70497 (size before relaxing)
+ .debug_str     0x000000000006f610      0x259 Output/twi_scanner_pca10040 Release/Obj/nrf_log_backend_serial.o
+                                      0x6cb33 (size before relaxing)
+ .debug_str     0x000000000006f869      0x145 Output/twi_scanner_pca10040 Release/Obj/nrf_log_default_backends.o
+                                      0x6c8e8 (size before relaxing)
+ .debug_str     0x000000000006f9ae     0x13b2 Output/twi_scanner_pca10040 Release/Obj/nrf_log_frontend.o
+                                      0x6dda3 (size before relaxing)
+ .debug_str     0x0000000000070d60      0x303 Output/twi_scanner_pca10040 Release/Obj/nrf_log_str_formatter.o
+                                      0x6cc85 (size before relaxing)
+ .debug_str     0x0000000000071063      0x162 Output/twi_scanner_pca10040 Release/Obj/app_error.o
+                                      0x5e899 (size before relaxing)
+ .debug_str     0x00000000000711c5       0xec Output/twi_scanner_pca10040 Release/Obj/app_error_weak.o
+                                      0x6cfc0 (size before relaxing)
+ .debug_str     0x00000000000712b1      0x409 Output/twi_scanner_pca10040 Release/Obj/app_util_platform.o
+                                      0x5f0a6 (size before relaxing)
+ .debug_str     0x00000000000716ba      0x6e9 Output/twi_scanner_pca10040 Release/Obj/nrf_atomic.o
+                                      0x69057 (size before relaxing)
+ .debug_str     0x0000000000071da3      0x18e Output/twi_scanner_pca10040 Release/Obj/nrf_balloc.o
+                                      0x6c977 (size before relaxing)
+ .debug_str     0x0000000000071f31      0x12c Output/twi_scanner_pca10040 Release/Obj/nrf_fprintf.o
+                                      0x68bf1 (size before relaxing)
+ .debug_str     0x000000000007205d      0x53b Output/twi_scanner_pca10040 Release/Obj/nrf_fprintf_format.o
+                                      0x690da (size before relaxing)
+ .debug_str     0x0000000000072598      0x1d6 Output/twi_scanner_pca10040 Release/Obj/nrf_memobj.o
+                                      0x6ad07 (size before relaxing)
+ .debug_str     0x000000000007276e      0x106 Output/twi_scanner_pca10040 Release/Obj/nrf_ringbuf.o
+                                      0x6942d (size before relaxing)
+ .debug_str     0x0000000000072874     0x1dd7 Output/twi_scanner_pca10040 Release/Obj/nrf_drv_twi.o
+                                      0x6dc87 (size before relaxing)
+ .debug_str     0x000000000007464b      0x736 Output/twi_scanner_pca10040 Release/Obj/nrfx_prs.o
+                                      0x6f4a9 (size before relaxing)
+ .debug_str     0x0000000000074d81     0x1213 Output/twi_scanner_pca10040 Release/Obj/nrfx_twim.o
+                                      0x7113b (size before relaxing)
+ .debug_str     0x0000000000075f94      0xd42 Output/twi_scanner_pca10040 Release/Obj/nrfx_uart.o
+                                      0x7065b (size before relaxing)
+ .debug_str     0x0000000000076cd6      0xf87 Output/twi_scanner_pca10040 Release/Obj/nrfx_uarte.o
+                                      0x70ae3 (size before relaxing)
+ .debug_str     0x0000000000077c5d     0x1141 Output/twi_scanner_pca10040 Release/Obj/main.o
                                       0x7288a (size before relaxing)
- .debug_str     0x0000000000078db4      0x552 Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT.o
-                                      0x61f80 (size before relaxing)
- .debug_str     0x0000000000079306      0x50e Output/twi_scanner_pca10040 Release/Obj/system_nrf52.o
-                                      0x5d29f (size before relaxing)
+ .debug_str     0x0000000000078d9e      0x54b Output/twi_scanner_pca10040 Release/Obj/SEGGER_RTT.o
+                                      0x61f72 (size before relaxing)
+ .debug_str     0x00000000000792e9      0x507 Output/twi_scanner_pca10040 Release/Obj/system_nrf52.o
+                                      0x5d291 (size before relaxing)

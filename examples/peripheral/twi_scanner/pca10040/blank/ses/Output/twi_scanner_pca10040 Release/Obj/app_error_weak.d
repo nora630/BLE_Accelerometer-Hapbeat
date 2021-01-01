@@ -1,6 +1,6 @@
 Output/twi_scanner_pca10040\ Release/Obj/app_error_weak.o: \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\app_error_weak.c \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\app_error.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\app_error_weak.c \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\app_error.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdint.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdio.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/__crossworks.h \
@@ -17,10 +17,10 @@ Output/twi_scanner_pca10040\ Release/Obj/app_error_weak.o: \
  ../../../../../../modules/nrfx/mdk/nrf51_to_nrf52.h \
  ../../../../../../modules/nrfx/mdk/nrf52_name_change.h \
  ../../../../../../modules/nrfx/mdk/compiler_abstraction.h \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\sdk_errors.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\sdk_errors.h \
  ../../../../../../components/drivers_nrf/nrf_soc_nosd/nrf_error.h \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\nordic_common.h \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\app_error_weak.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\nordic_common.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\app_error_weak.h \
  ../../../../../../components/libraries/log/nrf_log.h \
  ../../../../../../components/libraries/util/sdk_common.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/string.h \
@@ -50,4 +50,4 @@ Output/twi_scanner_pca10040\ Release/Obj/app_error_weak.o: \
  ../../../../../../components/libraries/balloc/nrf_balloc.h \
  ../../../../../../components/libraries/util/app_util_platform.h \
  ../../../../../../components/libraries/util/app_error.h \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\app_util_platform.h
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\util\app_util_platform.h

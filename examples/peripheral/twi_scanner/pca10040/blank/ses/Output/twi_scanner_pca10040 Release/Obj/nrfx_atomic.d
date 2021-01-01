@@ -1,6 +1,6 @@
 Output/twi_scanner_pca10040\ Release/Obj/nrfx_atomic.o: \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\modules\nrfx\soc\nrfx_atomic.c \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\modules\nrfx\soc\nrfx_atomic.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\modules\nrfx\soc\nrfx_atomic.c \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\modules\nrfx\soc\nrfx_atomic.h \
  ../../../../../../modules/nrfx/nrfx.h \
  ../../../../../../integration/nrfx/nrfx_config.h ../config/sdk_config.h \
  ../../../../../../modules/nrfx/drivers/nrfx_common.h \
@@ -43,4 +43,4 @@ Output/twi_scanner_pca10040\ Release/Obj/nrfx_atomic.o: \
  ../../../../../../components/libraries/util/sdk_errors.h \
  ../../../../../../components/libraries/util/sdk_resources.h \
  ../../../../../../modules/nrfx/drivers/nrfx_errors.h \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\modules\nrfx\soc\nrfx_atomic_internal.h
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\modules\nrfx\soc\nrfx_atomic_internal.h

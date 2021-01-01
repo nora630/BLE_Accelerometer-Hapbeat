@@ -1,5 +1,5 @@
 Output/twi_scanner_pca10040\ Release/Obj/nrf_fprintf.o: \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\external\fprintf\nrf_fprintf.c \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\external\fprintf\nrf_fprintf.c \
  ../../../../../../components/libraries/util/sdk_common.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdint.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdbool.h \
@@ -29,5 +29,5 @@ Output/twi_scanner_pca10040\ Release/Obj/nrf_fprintf.o: \
  ../../../../../../components/libraries/util/nrf_assert.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdarg.h \
  ../../../../../../components/libraries/util/nrf_assert.h \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\external\fprintf\nrf_fprintf_format.h \
- C:\Users\sho_o\labo\DeviceDownload\ (1)\nRF5SDK1702\nRF5_SDK_17.0.2\external\fprintf\nrf_fprintf.h
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\external\fprintf\nrf_fprintf_format.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\external\fprintf\nrf_fprintf.h

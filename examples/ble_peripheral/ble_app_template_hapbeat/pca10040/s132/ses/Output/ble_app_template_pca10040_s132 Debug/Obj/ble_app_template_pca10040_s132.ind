@@ -81,7 +81,7 @@
 "Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh.o"
 "Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_ble.o"
 "Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_soc.o"
-"Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o"
+"Output/ble_app_template_pca10040_s132 Debug/Obj/ble_hpbs.o"
 "C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libdebugio_mempoll_v7em_fpv4_sp_d16_hard_t_le_eabi.a"
 "C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libm_v7em_fpv4_sp_d16_hard_t_le_eabi.a"
 "C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libc_v7em_fpv4_sp_d16_hard_t_le_eabi.a"

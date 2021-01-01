@@ -141,8 +141,8 @@
       <file file_name="../../../../../../components/softdevice/common/nrf_sdh_soc.c" />
     </folder>
     <folder Name="nRF_BLE_Services">
-      <file file_name="ble_acs.c" />
-      <file file_name="ble_acs.h" />
+      <file file_name="ble_hpbs.c" />
+      <file file_name="ble_hpbs.h" />
     </folder>
   </project>
   <configuration

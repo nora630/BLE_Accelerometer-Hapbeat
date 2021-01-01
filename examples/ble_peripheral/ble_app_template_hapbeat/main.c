@@ -78,11 +78,12 @@
 #include "nrf_ble_qwr.h"
 #include "nrf_pwr_mgmt.h"
 
-#include "ble_acs.h"
+#include "ble_hpbs.h"
 
 #include "boards.h"
 #include "app_util_platform.h"
 #include "nrf_drv_ppi.h"
+#include "nrf_drv_pwm.h"
 //#include "nrf_drv_clock.h"
 #include "nrf_drv_timer.h"
 #include "nrf_drv_twi.h"
@@ -106,7 +107,7 @@
 #define SLAVE_LATENCY                   0                                       /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)         /**< Connection supervisory timeout (4 seconds). */
 //#define APP_ADV_TIMEOUT_IN_SECONDS      180                                     /**< The advertising timeout in units of seconds. */
-#define ACS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN
+#define HPBS_SERVICE_UUID_TYPE           BLE_UUID_TYPE_VENDOR_BEGIN
 
 #define FIRST_CONN_PARAMS_UPDATE_DELAY  APP_TIMER_TICKS(5000)                   /**< Time from initiating event (connect or start of notification) to first time sd_ble_gap_conn_param_update is called (5 seconds). */
 #define NEXT_CONN_PARAMS_UPDATE_DELAY   APP_TIMER_TICKS(30000)                  /**< Time between each call to sd_ble_gap_conn_param_update after the first call (30 seconds). */
@@ -123,85 +124,94 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                              /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
-#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(25)                   // ble accel send interval
 
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
 BLE_ADVERTISING_DEF(m_advertising);                                             /**< Advertising module instance. */
 
-BLE_ACS_DEF(m_acs);                                                             // Accelerometer Service instance
-APP_TIMER_DEF(m_accel_timer_id);                                                // Accelerometer timer
-
-static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
-
-static uint8_t aData[20];
-static uint16_t alen = 20;
-
-
-//*****************************************************//
-// twi communication
-//*****************************************************//
-
-
-/* TWI instance ID. */
-#define TWI_INSTANCE_ID     0
-
-/* Common address for LIS2DH */
-#define LIS2DH_ADDR      0x18U
-
-#define LIS2DH_CTRL_REG   0xA0U
-#define LIS2DH_DATA_REG   0xA8U
-#define WHO_AM_I          0x0FU
-#define LIS2DH_CTRL_REG1  0x20U
-#define LIS2DH_CTRL_REG4  0x23U
-
-/* range */
-#define LIS2DH_RANGE_2GA    0x00U
-#define LIS2DH_RANGE_4GA    0x10U
-
-/* mode */
-#define LOW_POWER_MODE    0x2FU // Low Power and ODR = 10Hz
-#define LOW_POWER_MODE1   0x7FU // Low Power and ODR = 400Hz
-#define LOW_POWER_MODE2   0x8FU // Low Power and ODR = 1620Hz
+#define PWM_PIN  (3)
+#define STBY_PIN (4)
+#define IN1_PIN  (20)
+#define IN2_PIN  (28)
 
 /* PPI */
-#define PPI_TIMER1_INTERVAL   (1.25) // Timer interval in milliseconds, this is twi sampling rate. 
+#define PPI_TIMER3_INTERVAL   (1) // Timer interval in milliseconds, this is PWM Play interval. 
 
-/* buffer size */
-#define TWIM_RX_BUF_WIDTH    6
-#define TWIM_RX_BUF_LENGTH  20 
+// pwm variable
+static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
+static const nrf_drv_timer_t m_timer3 = NRF_DRV_TIMER_INSTANCE(3);
+static nrf_ppi_channel_t     m_ppi_channel3;
 
-/* Indicates if operation on TWI has ended. */
-static volatile bool m_xfer_done = false;
 
-/* TWI instance. */
-static const nrf_drv_twi_t m_twi = NRF_DRV_TWI_INSTANCE(TWI_INSTANCE_ID);
+static uint16_t const           m_motor_top  = 400;
+static uint16_t                 m_motor_step1 = 400;
+static uint16_t                 m_motor_step2 = 200;
 
-/* Buffer for samples read from accelerometer */
-typedef struct ArrayList
+static nrf_pwm_values_individual_t m_seq_values;
+static nrf_pwm_sequence_t const    m_seq =
 {
-    uint8_t buffer[TWIM_RX_BUF_WIDTH];
-} array_list_t;
+    .values.p_individual = &m_seq_values,
+    .length              = NRF_PWM_VALUES_LENGTH(m_seq_values),
+    .repeats             = 0,
+    .end_delay           = 0
+};
 
-static array_list_t p_rx_buffer[TWIM_RX_BUF_LENGTH];
+static int32_t sum = 0;
 static int16_t x;
 static int16_t y;
 static int16_t z;
-static int32_t sum;
 
-static uint8_t m_sensorData[6];
-static uint8_t m_dataReg[1] = {LIS2DH_DATA_REG};
 
-/* ppi setting */
-static const nrf_drv_timer_t m_timer1 = NRF_DRV_TIMER_INSTANCE(1);
-static const nrf_drv_timer_t m_timer2 = NRF_DRV_TIMER_INSTANCE(2);
+BLE_HPBS_DEF(m_hpbs);                                                             // Hapbeat Service instance
 
-static nrf_ppi_channel_t     m_ppi_channel1;
-static nrf_ppi_channel_t     m_ppi_channel2;
+static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
-/* etc.. */
-static uint32_t              m_evt_counter;
 
+/* filter setting */
+static  float in1, in2, out1, out2;
+static  float a0, a1, a2, b0, b1, b2;
+
+static   float bandpass[] = {
+             0.0000000000000000 ,
+            -0.0000248598847283 ,
+            0.0001516523246382 ,
+            -0.0001834267075605 ,
+            0.0019997002466150 ,
+            0.0085820310275102 ,
+            -0.0018208819783212 ,
+            0.0228852711768900 ,
+            -0.0180580186076670 ,
+            -0.0542808170366290 ,
+            -0.0099299349850613 ,
+            -0.2702649781457600 ,
+            0.0286165165403290 ,
+            0.5959259259259300 ,
+            0.0286165165403290 ,
+            -0.2702649781457600 ,
+            -0.0099299349850613 ,
+            -0.0542808170366290 ,
+            -0.0180580186076670 ,
+            0.0228852711768900 ,
+            -0.0018208819783212 ,
+            0.0085820310275102 ,
+            0.0019997002466150 ,
+            -0.0001834267075605 ,
+            0.0001516523246382 ,
+            -0.0000248598847283 ,
+            0.0000000000000000 ,
+
+          };
+const   int16_t bandsize = 27;
+
+static int32_t bandIn[26];
+
+static uint8_t aData[20];
+const  uint8_t alen = 20;
+
+static uint8_t index = 0;
+
+
+//**************************************** etc functions *********************************//
 // sqrt function
 int32_t isqrt(int32_t num) {
     //assert(("sqrt input should be non-negative", num > 0));
@@ -224,218 +234,236 @@ int32_t isqrt(int32_t num) {
     return res;
 }
 
-
-/* Function for setting LIS2DH accelerometer */
-void LIS2DH_set_mode(void)
+// initialize  BiQuad high-pass filter coefficient
+void high_filter_set(void)
 {
-    ret_code_t err_code;
+    in1 = 0;
+    //in2 = 0;
+    out1 = 0;
+    //out2 = 0;
+    //omega = 2.0f * 3.14159265f * freq / samplerate;
+    //alpha = sin(omega) / (2.0f * q);
     
-    /* Writing to LIS2DH_CTR_REG set range and Low Power mode(ODR=10Hz) */
-    //uint8_t reg[7] = {LIS2DH_CTRL_REG, LOW_POWER_MODE1, 0x00, 0x00, LIS2DH_RANGE_2GA, 0x00, 0x00};
-    uint8_t reg[2] = {LIS2DH_CTRL_REG1, LOW_POWER_MODE1};
-    //uint8_t reg[1] = {LIS2DH_CTRL_REG1};
-    m_xfer_done = false;
-    err_code = nrf_drv_twi_tx(&m_twi, LIS2DH_ADDR, reg, sizeof(reg), false);
-    APP_ERROR_CHECK(err_code);
-    while (m_xfer_done == false);
-    m_xfer_done = false;
-
+    a0 =   1;
+    a1 =   -0.9691;
+    //a2 =   1.0f - alpha;
+    b0 =  0.9845;
+    b1 = -0.9845;
+    //b2 =  (1.0f + cos(omega)) / 2.0f;
 }
 
-/**
- * @brief TWI events handler.
- */
-void twi_handler(nrf_drv_twi_evt_t const * p_event, void * p_context)
+void band_filter_set(void)
 {
-    switch (p_event->type)
-    {
-        case NRF_DRV_TWI_EVT_DONE:
-            m_xfer_done = true;
-            break;
-        default:
-            break;
+    for(int16_t i=0; i<bandsize-1; i++) bandIn[i] = 0;
+    for(int16_t i=0; i<bandsize; i++){
+        if(i==0) bandpass[i] += 1;
+        else bandpass[i] *= 4;
     }
+    
 }
 
-/**
- * @brief UART initialization.
- */
-void twi_init (void)
-{
-    ret_code_t err_code;
 
-    const nrf_drv_twi_config_t twi_lis2dh_config = {
-       .scl                = ARDUINO_SCL_PIN,
-       .sda                = ARDUINO_SDA_PIN,
-       .frequency          = NRF_TWI_FREQ_100K,
-       .interrupt_priority = APP_IRQ_PRIORITY_LOW,
-       .clear_bus_init     = true
+// apply filter
+int32_t filter(int32_t input)
+{
+    float output;
+    output = b0/a0 * (float)input + b1/a0 * in1 - a1/a0 * out1;
+    in1 = input;
+    out1 = output;
+  
+    return (int32_t)output;
+}
+
+
+int32_t bandFilter(int32_t input)
+{
+    float output = 0;
+    for(int16_t i=0; i<bandsize; i++){
+        if(i==0) output += bandpass[i] * input;
+        else output += bandpass[i] * bandIn[bandsize-1-i];
+    }
+
+    int32_t temp1, temp2;
+
+    for(int16_t i=0; i<bandsize-1; i++){
+        if(i==0) {
+            temp1 = bandIn[bandsize-2];
+            //bandIn[bandsize-2] = (int32_t)output;
+            bandIn[bandsize-2] = input;
+        } else {
+            temp2 = bandIn[bandsize-2-i];
+            bandIn[bandsize-2-i] = temp1;
+            temp1 = temp2;
+        }
+    }
+
+    return (int32_t)output;
+}
+
+/* PWM functions */
+static void motor_forward(void)
+{
+    nrf_gpio_pin_set(IN1_PIN);
+    nrf_gpio_pin_clear(IN2_PIN);
+}
+
+static void motor_back(void)
+{
+    nrf_gpio_pin_set(IN2_PIN);
+    nrf_gpio_pin_clear(IN1_PIN);
+}
+
+static void pwm_init(void)
+{
+    nrf_drv_pwm_config_t const config0 =
+    {
+        .output_pins =
+        {
+            PWM_PIN, // channel 0
+            NRF_DRV_PWM_PIN_NOT_USED, // channel 1
+            NRF_DRV_PWM_PIN_NOT_USED, // channel 2
+            NRF_DRV_PWM_PIN_NOT_USED  // channel 3
+        },
+        .irq_priority = APP_IRQ_PRIORITY_LOWEST,
+        .base_clock   = NRF_PWM_CLK_16MHz,
+        .count_mode   = NRF_PWM_MODE_UP,
+        .top_value    = m_motor_top,
+        .load_mode    = NRF_PWM_LOAD_INDIVIDUAL,
+        .step_mode    = NRF_PWM_STEP_AUTO
     };
 
-    err_code = nrf_drv_twi_init(&m_twi, &twi_lis2dh_config, twi_handler, NULL);
-    APP_ERROR_CHECK(err_code);
+    //APP_ERROR_CHECK(nrf_drv_pwm_init(&m_pwm0, &config0, pwm_handler));
+    APP_ERROR_CHECK(nrf_drv_pwm_init(&m_pwm0, &config0, NULL));
+    
+    m_seq_values.channel_0 = m_motor_step1;
+    m_seq_values.channel_1 = 0;
+    m_seq_values.channel_2 = 0;
+    m_seq_values.channel_3 = 0;
 
-    nrf_drv_twi_enable(&m_twi);
-}
 
-/*
-
-*/
-void twi_check_connection(void)
-{
-    ret_code_t err_code;
-    uint8_t samp;
-
-    err_code = nrf_drv_twi_rx(&m_twi, LIS2DH_ADDR, &samp, sizeof(samp));
-    APP_ERROR_CHECK(err_code);
-    if (err_code == NRF_SUCCESS)
-    {
-        NRF_LOG_INFO("TWI device detected at address 0x%x.", LIS2DH_ADDR);
-    }
-    while (m_xfer_done == false);
-    //NRF_LOG_FLUSH();
-}
-
-/* empty function */
-static void timer1_handler(nrf_timer_event_t event_type, void * p_context)
-{
+    //(void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 100,
+    //                                  NRF_DRV_PWM_FLAG_LOOP);
 
 }
 
-
-/* TWIM counter handler */
-static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
+static void smb_motor_pin_init(void)
 {
-    m_xfer_done = true;
+    nrf_gpio_cfg_output(STBY_PIN);
+    nrf_gpio_cfg_output(IN1_PIN);
+    nrf_gpio_cfg_output(IN2_PIN);
 
-    for(int16_t i=0; i<alen; i++)
-    {
-        x = (int8_t)p_rx_buffer[0].buffer[1]; 
-        y = (int8_t)p_rx_buffer[0].buffer[3];
-        z = (int8_t)p_rx_buffer[0].buffer[5];
-        sum = x * x + y * y + z * z;
+    nrf_gpio_pin_set(STBY_PIN);
+}
+
+/* PWM play handler */
+static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
+{
+    uint16_t *p_channels = (uint16_t *)&m_seq_values;
+        /*
+        uint16_t value = p_channels[0];
+        value += 1;
+        if(value>=400) 
+        {
+            value = 0;
+        }
+        if(flag) motor_forward();
+        else motor_back();
+        flag = !flag;
+        p_channels[0] = value;
+        */
+        //x = (((int8_t)p_rx_buffer[0].buffer[1]) << 8) + p_rx_buffer[0].buffer[0];
+        //y = (((int8_t)p_rx_buffer[0].buffer[3]) << 8) + p_rx_buffer[0].buffer[2];
+        //z = (((int8_t)p_rx_buffer[0].buffer[5]) << 8) + p_rx_buffer[0].buffer[4];
+
+        sum = aData[index];
         sum = isqrt(sum);
-        aData[i] = (uint8_t)sum;
-        //aData[i] = sum & 0x0f;
-        //printf("%d\n", aData[i]);
-        //aData[2*i+1] = (sum >> 8) & 0x0f;
-    }
-
-    accel_data_send();
-
-
-    nrf_drv_twi_xfer_desc_t xfer = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
-                                      sizeof(m_dataReg), (uint8_t*)p_rx_buffer, sizeof(p_rx_buffer) / TWIM_RX_BUF_LENGTH);
-
-    uint32_t flags = NRF_DRV_TWI_FLAG_HOLD_XFER             |
-                     NRF_DRV_TWI_FLAG_RX_POSTINC            |
-                     NRF_DRV_TWI_FLAG_NO_XFER_EVT_HANDLER   |
-                     NRF_DRV_TWI_FLAG_REPEATED_XFER;
-
-    ret_code_t err_code = nrf_drv_twi_xfer(&m_twi, &xfer, flags);
-    APP_ERROR_CHECK(err_code);
-
+        //printf("%d\n", sum);
+        //sum -= 64;
+        //printf("%d\n", sum);
+        //printf("%d\n", sum);
+        //sum = lfilter(sum);
+        sum = bandFilter(sum);
+        sum = filter(sum);
+        //if(sum<0) sum *= -1;
+        //NRF_LOG_INFO("%d", sum);
+        //NRF_LOG_FLUSH();
+        //printf("%d\n", sum);
+        //tmp = sum - preSum;
+        //motor_forward();
+        //printf("%d\n", tmp);
+        
+        if(sum>=0) motor_forward();
+        else{
+            motor_back();
+            sum *= -1;
+        }
+        
+        // 8192 x+y+z  32 x  
+        uint16_t value = m_motor_top - 7.5 * sum;//8192;//32 x;
+        //uint16_t value = m_motor_top - m_motor_top * sum / 60;//8192;//32 x;
+        if(value > m_motor_top) value = m_motor_top;
+        else if(value < 0) value = 0;
+        p_channels[0] = value;
+        index++;
+        if(index>=20) index = 0;
 }
 
-
-// Function for Timer 1 initialization
-static void timer1_init(void)
+// Function for Timer 3 initialization
+static void timer3_init(void)
 {
-    nrf_drv_timer_config_t timer1_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
-    timer1_config.frequency = NRF_TIMER_FREQ_31250Hz;
-    ret_code_t err_code = nrf_drv_timer_init(&m_timer1, &timer1_config, timer1_handler);
+    nrf_drv_timer_config_t timer3_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
+    timer3_config.frequency = NRF_TIMER_FREQ_31250Hz;
+    ret_code_t err_code = nrf_drv_timer_init(&m_timer3, &timer3_config, timer3_handler);
     APP_ERROR_CHECK(err_code);
 
-    nrf_drv_timer_extended_compare(&m_timer1,
+    nrf_drv_timer_extended_compare(&m_timer3,
                                    NRF_TIMER_CC_CHANNEL0,
-                                   nrf_drv_timer_ms_to_ticks(&m_timer1,
-                                                             PPI_TIMER1_INTERVAL),
+                                   nrf_drv_timer_ms_to_ticks(&m_timer3,
+                                                             PPI_TIMER3_INTERVAL),
                                    NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
-                                   false);
-
+                                   true);
 }
 
-// Function for Timer 2 initialization
-static void timer2_init(void)
-{
-    nrf_drv_timer_config_t timer2_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
-    timer2_config.mode = NRF_TIMER_MODE_LOW_POWER_COUNTER;
-    ret_code_t err_code = nrf_drv_timer_init(&m_timer2, &timer2_config, timer2_handler);
-    APP_ERROR_CHECK(err_code);
-
-    nrf_drv_timer_extended_compare(&m_timer2,
-                                    NRF_TIMER_CC_CHANNEL0,
-                                    TWIM_RX_BUF_LENGTH,
-                                    NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
-                                    true);
-}
-
-/* initialize ppi channel */
-static void twi_accel_ppi_init(void)
+/* initialize twi & pwm ppi channel */
+static void ppi_init(void)
 {
     ret_code_t err_code;
     
     err_code = nrf_drv_ppi_init();
     APP_ERROR_CHECK(err_code);
+
+    // setup timer3
+    timer3_init();
+
     
-    // setup timer1
-    timer1_init();
+    // set up PPI to play pwm
+    uint32_t pwm_start_task_addr = nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq,100, // more than 40
+                                        NRF_DRV_PWM_FLAG_STOP | NRF_DRV_PWM_FLAG_START_VIA_TASK);
+    err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel3);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_ppi_channel_assign(m_ppi_channel3,
+                                          nrf_drv_timer_event_address_get(&m_timer3,
+                                                                          NRF_TIMER_EVENT_COMPARE0),
+                                          pwm_start_task_addr);
+    APP_ERROR_CHECK(err_code);
 
-    //setup timer2
-    timer2_init();
-
-    nrf_drv_twi_xfer_desc_t xfer = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
-                                      sizeof(m_dataReg), (uint8_t*)p_rx_buffer, sizeof(p_rx_buffer)  / TWIM_RX_BUF_LENGTH);
-
-    uint32_t flags = NRF_DRV_TWI_FLAG_HOLD_XFER             |
-                     NRF_DRV_TWI_FLAG_RX_POSTINC            |
-                     NRF_DRV_TWI_FLAG_NO_XFER_EVT_HANDLER   |
-                     NRF_DRV_TWI_FLAG_REPEATED_XFER;
-
-    err_code = nrf_drv_twi_xfer(&m_twi, &xfer, flags);
     
-    // TWIM is now configured and ready to be started.
-    if (err_code == NRF_SUCCESS)
-    {   
-        // set up PPI to trigger the transfer
-        uint32_t twi_start_task_addr = nrf_drv_twi_start_task_get(&m_twi, xfer.type);
-        err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel1);
-        APP_ERROR_CHECK(err_code);
-        err_code = nrf_drv_ppi_channel_assign(m_ppi_channel1,
-                                              nrf_drv_timer_event_address_get(&m_timer1,
-                                                                              NRF_TIMER_EVENT_COMPARE0),
-                                              twi_start_task_addr);
-        APP_ERROR_CHECK(err_code);
-        
-        // set up PPI to count the number of transfers 
-        uint32_t twi_stopped_event_addr = nrf_drv_twi_stopped_event_get(&m_twi);
-        err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel2);
-        APP_ERROR_CHECK(err_code);
-        err_code = nrf_drv_ppi_channel_assign(m_ppi_channel2,
-                                              twi_stopped_event_addr,
-                                              nrf_drv_timer_task_address_get(&m_timer2,
-                                                                             NRF_TIMER_TASK_COUNT));
-    }
 }
 
 
-static void twi_accel_ppi_enable(void)
+static void ppi_enable(void)
 {
     ret_code_t err_code;
-    err_code = nrf_drv_ppi_channel_enable(m_ppi_channel1);
-    APP_ERROR_CHECK(err_code);
-    err_code = nrf_drv_ppi_channel_enable(m_ppi_channel2);
+    
+    err_code = nrf_drv_ppi_channel_enable(m_ppi_channel3);
     APP_ERROR_CHECK(err_code);
 }
 
-void twi_start(void)
+void ppi_start(void)
 {
-    // enable the counter counting
-    nrf_drv_timer_enable(&m_timer2);
-    
-    //m_xfer_done = false;
-    // enable timer triggering TWI transfer
-    nrf_drv_timer_enable(&m_timer1);
+    // enable timer triggering pwm
+     nrf_drv_timer_enable(&m_timer3);
+
 }
 
 /*******************************************************************************************************/
@@ -443,7 +471,7 @@ void twi_start(void)
 static ble_uuid_t m_adv_uuids[] =                                               /**< Universally unique service identifiers. */
 {
     //{BLE_UUID_DEVICE_INFORMATION_SERVICE, BLE_UUID_TYPE_BLE}
-    {ACS_UUID_SERVICE, ACS_SERVICE_UUID_TYPE}
+    {HPBS_UUID_SERVICE, HPBS_SERVICE_UUID_TYPE}
 };
 
 
@@ -488,32 +516,6 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
     }
 }
 
-/* Function for performing accel measurement and updating the tx accel characteristic in Accelerometer Service */
-void accel_data_send(void)
-{
-    ret_code_t err_code;
-    //uint8_t aData[2] = {0x4d, 0x3a};
-    //uint16_t alen = 2;
-    //for (int i=0; i<4; i++) aData[i] |= 0x11 ;
-
-    err_code = ble_acs_accel_data_send(&m_acs, &aData, &alen);
-    if((err_code != NRF_SUCCESS) &&
-       (err_code != NRF_ERROR_INVALID_STATE) &&
-       (err_code != NRF_ERROR_RESOURCES) &&
-       (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
-      )
-    {
-        APP_ERROR_HANDLER(err_code);
-    }
-}
-
-/* Function for handling the Accelerometer measurement timer timeout  */
-static void accel_meas_timeout_handler(void * p_context)
-{
-    UNUSED_PARAMETER(p_context);
-    accel_data_send();
-
-}
 
 /**@brief Function for the Timer initialization.
  *
@@ -524,12 +526,6 @@ static void timers_init(void)
     // Initialize timer module.
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
-
-    // Create timers.
-     err_code = app_timer_create(&m_accel_timer_id,
-                                 APP_TIMER_MODE_REPEATED,
-                                 accel_meas_timeout_handler);
-     APP_ERROR_CHECK(err_code);
 }
 
 
@@ -587,32 +583,22 @@ static void nrf_qwr_error_handler(uint32_t nrf_error)
     APP_ERROR_HANDLER(nrf_error);
 }
 
-
-/**@brief Function for handling the YYY Service events.
- * YOUR_JOB implement a service handler function depending on the event the service you are using can generate
- *
- * @details This function will be called for all YY Service events which are passed to
- *          the application.
- *
- * @param[in]   p_yy_service   YY Service structure.
- * @param[in]   p_evt          Event received from the YY Service.
- *
- *
-static void on_yys_evt(ble_yy_service_t     * p_yy_service,
-                       ble_yy_service_evt_t * p_evt)
+/* Function for receiving the data from the smartphone */
+static void accel_read_handler(ble_hpbs_evt_t * p_evt)
 {
-    switch (p_evt->evt_type)
+    if(p_evt->type == BLE_HPBS_EVT_RX_DATA)
     {
-        case BLE_YY_NAME_EVT_WRITE:
-            APPL_LOG("[APPL]: charact written with value %s. ", p_evt->params.char_xx.value.p_str);
-            break;
+         uint32_t err_code;
+         NRF_LOG_HEXDUMP_DEBUG(p_evt->params.rx_data.p_data, p_evt->params.rx_data.length);
 
-        default:
-            // No implementation needed.
-            break;
+         for(uint32_t i=0; i<p_evt->params.rx_data.length; i++)
+         {
+            //printf("%d\n", p_evt->params.rx_data.p_data[i]);
+            aData[i] = p_evt->params.rx_data.p_data[i];
+         }
     }
 }
-*/
+
 
 /**@brief Function for initializing services that will be used by the application.
  */
@@ -627,15 +613,13 @@ static void services_init(void)
     err_code = nrf_ble_qwr_init(&m_qwr, &qwr_init);
     APP_ERROR_CHECK(err_code);
 
-    ble_acs_init_t acs_init;
-    
-    // Initialize Accelerometer Service
-    memset(&acs_init, 0, sizeof(acs_init));
+    ble_hpbs_init_t hpbs_init;
 
-    acs_init.accel_write_handler  = NULL;
-    acs_init.notification_enabled = true;
+    memset(&hpbs_init, 0, sizeof(hpbs_init));
 
-    err_code = ble_acs_init(&m_acs, &acs_init);
+    hpbs_init.accel_read_handler = accel_read_handler;
+
+    err_code = ble_hpbs_init(&m_hpbs, &hpbs_init);
     APP_ERROR_CHECK(err_code);
 
 }
@@ -700,9 +684,7 @@ static void conn_params_init(void)
  */
 static void application_timers_start(void)
 {
-    ret_code_t err_code;
-    err_code = app_timer_start(m_accel_timer_id, ACCEL_SEND_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
+    
 }
 
 
@@ -1049,6 +1031,16 @@ int main(void)
     conn_params_init();
     peer_manager_init();
 
+    high_filter_set();
+    band_filter_set();
+
+    smb_motor_pin_init();
+    pwm_init();
+
+    ppi_init();
+    ppi_enable();
+    ppi_start();
+
     // Start execution.
     NRF_LOG_INFO("Template example started.");
     //NRF_LOG_FLUSH();
@@ -1057,13 +1049,7 @@ int main(void)
     advertising_start(erase_bonds);
     NRF_LOG_FLUSH();
 
-    twi_init();
-   
-    LIS2DH_set_mode();
-    twi_accel_ppi_init();
-    twi_accel_ppi_enable();
-    twi_start();
-
+    
     // Enter main loop.
     for (;;)
     {
