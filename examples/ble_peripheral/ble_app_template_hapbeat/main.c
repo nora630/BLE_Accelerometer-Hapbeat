@@ -94,7 +94,7 @@
 #include "nrf_log_default_backends.h"
 
 
-#define DEVICE_NAME                     "Nordic_Template"                       /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "Hapbeat"                       /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
 #define APP_ADV_INTERVAL                300                                     /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). */
 
@@ -384,6 +384,7 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         //sum = lfilter(sum);
         sum = bandFilter(sum);
         sum = filter(sum);
+        
         //if(sum<0) sum *= -1;
         //NRF_LOG_INFO("%d", sum);
         //NRF_LOG_FLUSH();
@@ -406,6 +407,7 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         p_channels[0] = value;
         index++;
         if(index>=20) index = 0;
+
 }
 
 // Function for Timer 3 initialization
