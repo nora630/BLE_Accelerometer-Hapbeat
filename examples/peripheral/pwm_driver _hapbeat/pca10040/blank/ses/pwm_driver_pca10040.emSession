@@ -56,12 +56,12 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="6" y="828" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="803" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="24" y="376" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" debugPath="../config/sdk_config.h" selected="0" top="344" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="818" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="785" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="376" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" debugPath="../config/sdk_config.h" selected="0" top="344" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="145" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/boards/pca10040.h" debugPath="../../../../../../components/boards/pca10040.h" selected="0" top="123" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/include/nrfx_timer.h" debugPath="../../../../../../modules/nrfx/drivers/include/nrfx_timer.h" selected="0" top="33" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="283" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/nrf_drv_twi.h" debugPath="../../../../../../integration/nrfx/legacy/nrf_drv_twi.h" selected="0" top="258" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="109" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/mdk/ses_startup_nrf_common.s" debugPath="../../../../../../modules/nrfx/mdk/ses_startup_nrf_common.s" selected="0" top="81" codecName=""/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="109" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/mdk/ses_startup_nrf_common.s" debugPath="../../../../../../modules/nrfx/mdk/ses_startup_nrf_common.s" selected="0" top="84" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="pwm_driver_pca10040" fileDialogDefaultFilter="" autoConnectTarget="J-Link" buildConfiguration="Debug" debugSearchFileMap="" fileDialogInitialDirectory="C:/Users/sho_o/labo/Nordic52SDK/nRF5SDK1702/nRF5_SDK_17.0.2/integration/nrfx/legacy" debugSearchPath="" autoConnectCapabilities="3711"/>
+ <ARMCrossStudioWindow activeProject="pwm_driver_pca10040" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Debug" debugSearchFileMap="" fileDialogInitialDirectory="C:/Users/sho_o/labo/Nordic52SDK/nRF5SDK1702/nRF5_SDK_17.0.2/integration/nrfx/legacy" debugSearchPath="" autoConnectCapabilities="3711"/>
 </session>

@@ -94,7 +94,7 @@
 #include "nrf_log_default_backends.h"
 
 
-#define DEVICE_NAME                     "Nordic_Template"                       /**< Name of device. Will be included in the advertising data. */
+#define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
 #define APP_ADV_INTERVAL                300                                     /**< The advertising interval (in units of 0.625 ms. This value corresponds to 187.5 ms). */
 
@@ -595,6 +595,7 @@ static void accel_read_handler(ble_hpbs_evt_t * p_evt)
          {
             //printf("%d\n", p_evt->params.rx_data.p_data[i]);
             aData[i] = p_evt->params.rx_data.p_data[i];
+            NRF_LOG_INFO("%d: %d", i, aData[i]);
          }
     }
 }
