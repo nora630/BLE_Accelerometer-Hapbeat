@@ -1,6 +1,6 @@
 Output/twi_sensor_pca10040\ Debug/Obj/lis2dh.o: \
- C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\peripheral\twi_sensor\ _accelerometer\pca10040\blank\ses\lis2dh.c \
- C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\peripheral\twi_sensor\ _accelerometer\pca10040\blank\ses\lis2dh.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\peripheral\twi_sensor\ _two_accelerometer\pca10040\blank\ses\lis2dh.c \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\peripheral\twi_sensor\ _two_accelerometer\pca10040\blank\ses\lis2dh.h \
  ../../../../../../components/libraries/twi_sensor/nrf_twi_sensor.h \
  ../../../../../../components/libraries/twi_mngr/nrf_twi_mngr.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdint.h \
@@ -57,4 +57,4 @@ Output/twi_sensor_pca10040\ Debug/Obj/lis2dh.o: \
  ../../../../../../components/libraries/experimental_section_vars/nrf_section.h \
  ../../../../../../components/libraries/log/nrf_log_types.h \
  ../../../../../../components/libraries/balloc/nrf_balloc.h \
- C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\peripheral\twi_sensor\ _accelerometer\pca10040\blank\ses\lis2dh_internal.h
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\peripheral\twi_sensor\ _two_accelerometer\pca10040\blank\ses\lis2dh_internal.h

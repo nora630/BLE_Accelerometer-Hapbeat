@@ -438,7 +438,7 @@
  
 
 #ifndef TIMER3_ENABLED
-#define TIMER3_ENABLED 0
+#define TIMER3_ENABLED 1
 #endif
 
 // <q> TIMER4_ENABLED  - Enable TIMER4 instance
@@ -977,13 +977,13 @@
 // <e> TWI1_ENABLED - Enable TWI1 instance
 //==========================================================
 #ifndef TWI1_ENABLED
-#define TWI1_ENABLED 0
+#define TWI1_ENABLED 1
 #endif
 // <q> TWI1_USE_EASY_DMA  - Use EasyDMA (if present)
  
 
 #ifndef TWI1_USE_EASY_DMA
-#define TWI1_USE_EASY_DMA 0
+#define TWI1_USE_EASY_DMA 1
 #endif
 
 // </e>

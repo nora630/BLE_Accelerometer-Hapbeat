@@ -68,6 +68,7 @@
 
 /* TWI instance ID. */
 #define TWI_INSTANCE_ID     0
+#define TWI_INSTANCE_ID2    1
 
 /* Common address for LIS2DH */
 #define LIS2DH_ADDR      0x18U
@@ -102,9 +103,11 @@
 
 /* Indicates if operation on TWI has ended. */
 static volatile bool m_xfer_done = false;
+static volatile bool m_xfer_done2 = false;
 
 /* TWI instance. */
 static const nrf_drv_twi_t m_twi = NRF_DRV_TWI_INSTANCE(TWI_INSTANCE_ID);
+static const nrf_drv_twi_t m_twi2 = NRF_DRV_TWI_INSTANCE(TWI_INSTANCE_ID2);
 
 /* Buffer for samples read from temperature sensor. */
 static uint8_t m_sample;
@@ -116,12 +119,22 @@ typedef struct ArrayList
 } array_list_t;
 
 static array_list_t p_rx_buffer[TWIM_RX_BUF_LENGTH];
+
 static int16_t x;
 static int16_t y;
 static int16_t z;
 
 static uint8_t m_sensorData[6];
 static uint8_t m_dataReg[1] = {LIS2DH_DATA_REG};
+
+static array_list_t p_rx_buffer2[TWIM_RX_BUF_LENGTH];
+
+static int16_t x2;
+static int16_t y2;
+static int16_t z2;
+
+static uint8_t m_sensorData2[6];
+static uint8_t m_dataReg2[1] = {LIS2DH_DATA_REG};
 
 /* ppi setting */
 /*
@@ -130,9 +143,12 @@ static const nrf_drv_rtc_t   m_rtc2 = NRF_DRV_RTC_INSTANCE(2);
 */
 static const nrf_drv_timer_t m_timer1 = NRF_DRV_TIMER_INSTANCE(1);
 static const nrf_drv_timer_t m_timer2 = NRF_DRV_TIMER_INSTANCE(2);
+static const nrf_drv_timer_t m_timer3 = NRF_DRV_TIMER_INSTANCE(3);
 
 static nrf_ppi_channel_t     m_ppi_channel1;
 static nrf_ppi_channel_t     m_ppi_channel2;
+static nrf_ppi_channel_t     m_ppi_channel3;
+static nrf_ppi_channel_t     m_ppi_channel4;
 
 /* etc.. */
 static uint32_t              m_evt_counter;
@@ -150,6 +166,21 @@ void LIS2DH_set_mode(void)
     APP_ERROR_CHECK(err_code);
     while (m_xfer_done == false);
     m_xfer_done = false;
+
+}
+
+void LIS2DH_set_mode2(void)
+{
+    ret_code_t err_code;
+    
+    /* Writing to LIS2DH_CTR_REG set range and Low Power mode */
+    //uint8_t reg[7] = {LIS2DH_CTRL_REG, LOW_POWER_MODE1, 0x00, 0x00, LIS2DH_RANGE_2GA, 0x00, 0x00};
+    uint8_t reg[2] = {LIS2DH_CTRL_REG, LOW_POWER_MODE1};
+    //uint8_t reg[1] = {LIS2DH_CTRL_REG1};
+    err_code = nrf_drv_twi_tx(&m_twi2, LIS2DH_ADDR, reg, sizeof(reg), false);
+    APP_ERROR_CHECK(err_code);
+    while (m_xfer_done2 == false);
+    m_xfer_done2 = false;
 
 }
 
@@ -182,11 +213,34 @@ void twi_handler(nrf_drv_twi_evt_t const * p_event, void * p_context)
     switch (p_event->type)
     {
         case NRF_DRV_TWI_EVT_DONE:
+            /*
             if (p_event->xfer_desc.type == NRF_DRV_TWI_XFER_RX)
             {
                 data_handler(m_sensorData);
             }
+            */
             m_xfer_done = true;
+            break;
+        default:
+            break;
+    }
+}
+
+/**
+ * @brief TWI events handler.
+ */
+void twi_handler2(nrf_drv_twi_evt_t const * p_event, void * p_context)
+{
+    switch (p_event->type)
+    {
+        case NRF_DRV_TWI_EVT_DONE:
+            /*
+            if (p_event->xfer_desc.type == NRF_DRV_TWI_XFER_RX)
+            {
+                data_handler(m_sensorData);
+            }
+            */
+            m_xfer_done2 = true;
             break;
         default:
             break;
@@ -201,8 +255,8 @@ void twi_init (void)
     ret_code_t err_code;
 
     const nrf_drv_twi_config_t twi_lis2dh_config = {
-       .scl                = ARDUINO_SCL_PIN,
-       .sda                = ARDUINO_SDA_PIN,
+       .scl                = 2,
+       .sda                = 3,
        .frequency          = NRF_TWI_FREQ_100K,
        .interrupt_priority = APP_IRQ_PRIORITY_HIGH,
        .clear_bus_init     = true
@@ -211,7 +265,20 @@ void twi_init (void)
     err_code = nrf_drv_twi_init(&m_twi, &twi_lis2dh_config, twi_handler, NULL);
     APP_ERROR_CHECK(err_code);
 
+    const nrf_drv_twi_config_t twi_lis2dh_config2 = {
+       .scl                = 4,
+       .sda                = 18,
+       .frequency          = NRF_TWI_FREQ_100K,
+       .interrupt_priority = APP_IRQ_PRIORITY_HIGH,
+       .clear_bus_init     = true
+    };
+
+    err_code = nrf_drv_twi_init(&m_twi2, &twi_lis2dh_config2, twi_handler2, NULL);
+    APP_ERROR_CHECK(err_code);
+
     nrf_drv_twi_enable(&m_twi);
+    nrf_drv_twi_enable(&m_twi2);
+
 }
 
 /* Function for reading data from accelerometer*/
@@ -274,6 +341,24 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
 
 }
 
+/* TWIM counter handler */
+static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
+{
+    m_xfer_done2 = true;
+
+    nrf_drv_twi_xfer_desc_t xfer2 = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg2, 
+                                      sizeof(m_dataReg2), (uint8_t*)p_rx_buffer2, sizeof(p_rx_buffer2) / TWIM_RX_BUF_LENGTH);
+
+    uint32_t flags2 = NRF_DRV_TWI_FLAG_HOLD_XFER             |
+                     NRF_DRV_TWI_FLAG_RX_POSTINC            |
+                     NRF_DRV_TWI_FLAG_NO_XFER_EVT_HANDLER   |
+                     NRF_DRV_TWI_FLAG_REPEATED_XFER;
+
+    ret_code_t err_code = nrf_drv_twi_xfer(&m_twi2, &xfer2, flags2);
+    APP_ERROR_CHECK(err_code);
+
+}
+
 /** @brief Function starting the internal LFCLK XTAL oscillator.
  
 static void lfclk_config(void)
@@ -311,6 +396,21 @@ static void timer2_init(void)
     APP_ERROR_CHECK(err_code);
 
     nrf_drv_timer_extended_compare(&m_timer2,
+                                    NRF_TIMER_CC_CHANNEL0,
+                                    TWIM_RX_BUF_LENGTH,
+                                    NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
+                                    true);
+}
+
+// Function for Timer 3 initialization
+static void timer3_init(void)
+{
+    nrf_drv_timer_config_t timer3_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
+    timer3_config.mode = NRF_TIMER_MODE_LOW_POWER_COUNTER;
+    ret_code_t err_code = nrf_drv_timer_init(&m_timer3, &timer3_config, timer3_handler);
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_timer_extended_compare(&m_timer3,
                                     NRF_TIMER_CC_CHANNEL0,
                                     TWIM_RX_BUF_LENGTH,
                                     NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
@@ -358,6 +458,8 @@ static void twi_accel_ppi_init(void)
     //setup timer2
     timer2_init();
 
+    timer3_init();
+
     nrf_drv_twi_xfer_desc_t xfer = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
                                       sizeof(m_dataReg), (uint8_t*)p_rx_buffer, sizeof(p_rx_buffer)  / TWIM_RX_BUF_LENGTH);
 
@@ -390,6 +492,34 @@ static void twi_accel_ppi_init(void)
                                               nrf_drv_timer_task_address_get(&m_timer2,
                                                                              NRF_TIMER_TASK_COUNT));
     }
+
+    nrf_drv_twi_xfer_desc_t xfer2 = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg2, 
+                                      sizeof(m_dataReg2), (uint8_t*)p_rx_buffer2, sizeof(p_rx_buffer2)  / TWIM_RX_BUF_LENGTH);
+
+    err_code = nrf_drv_twi_xfer(&m_twi2, &xfer2, flags);
+    
+    // TWIM is now configured and ready to be started.
+    if (err_code == NRF_SUCCESS)
+    {   
+        // set up PPI to trigger the transfer
+        uint32_t twi_start_task_addr2 = nrf_drv_twi_start_task_get(&m_twi2, xfer2.type);
+        err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel3);
+        APP_ERROR_CHECK(err_code);
+        err_code = nrf_drv_ppi_channel_assign(m_ppi_channel3,
+                                              nrf_drv_timer_event_address_get(&m_timer1,
+                                                                              NRF_TIMER_EVENT_COMPARE0),
+                                              twi_start_task_addr2);
+        APP_ERROR_CHECK(err_code);
+        
+        // set up PPI to count the number of transfers 
+        uint32_t twi_stopped_event_addr2 = nrf_drv_twi_stopped_event_get(&m_twi2);
+        err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel4);
+        APP_ERROR_CHECK(err_code);
+        err_code = nrf_drv_ppi_channel_assign(m_ppi_channel4,
+                                              twi_stopped_event_addr2,
+                                              nrf_drv_timer_task_address_get(&m_timer3,
+                                                                             NRF_TIMER_TASK_COUNT));
+    }
 }
 
 static void twi_accel_ppi_enable(void)
@@ -399,10 +529,17 @@ static void twi_accel_ppi_enable(void)
     APP_ERROR_CHECK(err_code);
     err_code = nrf_drv_ppi_channel_enable(m_ppi_channel2);
     APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_ppi_channel_enable(m_ppi_channel3);
+    APP_ERROR_CHECK(err_code);
+    err_code = nrf_drv_ppi_channel_enable(m_ppi_channel4);
+    APP_ERROR_CHECK(err_code);
 }
 
 void twi_start(void)
 {
+    // enable the counter counting
+    nrf_drv_timer_enable(&m_timer3);
+
     // enable the counter counting
     nrf_drv_timer_enable(&m_timer2);
     
@@ -424,6 +561,7 @@ int main(void)
     NRF_LOG_FLUSH();
     twi_init();
     LIS2DH_set_mode();
+    LIS2DH_set_mode2();
 
     twi_accel_ppi_init();
     twi_accel_ppi_enable();
@@ -452,7 +590,11 @@ int main(void)
               x = (((int8_t)p_rx_buffer[j].buffer[1]) << 8) + p_rx_buffer[j].buffer[0];
               y = (((int8_t)p_rx_buffer[j].buffer[3]) << 8) + p_rx_buffer[j].buffer[2];
               z = (((int8_t)p_rx_buffer[j].buffer[5]) << 8) + p_rx_buffer[j].buffer[4];
-              NRF_LOG_INFO("%d, %d, %d", x, y, z);
+
+              x2 = (((int8_t)p_rx_buffer2[j].buffer[1]) << 8) + p_rx_buffer2[j].buffer[0];
+              y2 = (((int8_t)p_rx_buffer2[j].buffer[3]) << 8) + p_rx_buffer2[j].buffer[2];
+              z2 = (((int8_t)p_rx_buffer2[j].buffer[5]) << 8) + p_rx_buffer2[j].buffer[4];
+              NRF_LOG_INFO("%d", x+x2);
         }
        
 
