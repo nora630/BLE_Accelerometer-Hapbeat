@@ -9445,7 +9445,7 @@ OUTPUT(Output/Debug/Exe/pwm_driver_pca10040.elf elf32-littlearm)
  .debug_line    0x0000000000011a1e       0xc0 Output/pwm_driver_pca10040 Debug/Obj/ses_startup_nrf_common.o
  .debug_line    0x0000000000011ade     0x274f Output/pwm_driver_pca10040 Debug/Obj/system_nrf52.o
 
-.debug_info     0x0000000000000000    0x2a20c
+.debug_info     0x0000000000000000    0x2a210
  .debug_info    0x0000000000000000       0xeb Output/pwm_driver_pca10040 Debug/Obj/thumb_crt0.o
  .debug_info    0x00000000000000eb      0xbfc Output/pwm_driver_pca10040 Debug/Obj/nrf_log_backend_rtt.o
  .debug_info    0x0000000000000ce7      0xc83 Output/pwm_driver_pca10040 Debug/Obj/nrf_log_backend_serial.o
@@ -9483,8 +9483,8 @@ OUTPUT(Output/Debug/Exe/pwm_driver_pca10040.elf elf32-littlearm)
  .debug_info    0x00000000000246bf     0x1269 Output/pwm_driver_pca10040 Debug/Obj/SEGGER_RTT.o
  .debug_info    0x0000000000025928      0x915 Output/pwm_driver_pca10040 Debug/Obj/SEGGER_RTT_Syscalls_SES.o
  .debug_info    0x000000000002623d      0x100 Output/pwm_driver_pca10040 Debug/Obj/ses_startup_nrf52.o
- .debug_info    0x000000000002633d      0x105 Output/pwm_driver_pca10040 Debug/Obj/ses_startup_nrf_common.o
- .debug_info    0x0000000000026442     0x3dca Output/pwm_driver_pca10040 Debug/Obj/system_nrf52.o
+ .debug_info    0x000000000002633d      0x109 Output/pwm_driver_pca10040 Debug/Obj/ses_startup_nrf_common.o
+ .debug_info    0x0000000000026446     0x3dca Output/pwm_driver_pca10040 Debug/Obj/system_nrf52.o
 
 .debug_abbrev   0x0000000000000000     0x54e1
  .debug_abbrev  0x0000000000000000       0x12 Output/pwm_driver_pca10040 Debug/Obj/thumb_crt0.o

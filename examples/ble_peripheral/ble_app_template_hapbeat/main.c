@@ -54,6 +54,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include "speak.h"
 
 #include "nordic_common.h"
 #include "nrf.h"
@@ -375,15 +376,28 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         //y = (((int8_t)p_rx_buffer[0].buffer[3]) << 8) + p_rx_buffer[0].buffer[2];
         //z = (((int8_t)p_rx_buffer[0].buffer[5]) << 8) + p_rx_buffer[0].buffer[4];
 
-        sum = aData[index];
-        sum = isqrt(sum);
+        //sum = aData[index];
+        sum = speak[index];
+
+
+        //sum = isqrt(sum);
+
+
+
+
         //printf("%d\n", sum);
         //sum -= 64;
         //printf("%d\n", sum);
         //printf("%d\n", sum);
         //sum = lfilter(sum);
+
+        
+        /*
         sum = bandFilter(sum);
         sum = filter(sum);
+        */
+
+
         //if(sum<0) sum *= -1;
         //NRF_LOG_INFO("%d", sum);
         //NRF_LOG_FLUSH();
@@ -405,7 +419,8 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         else if(value < 0) value = 0;
         p_channels[0] = value;
         index++;
-        if(index>=20) index = 0;
+        //if(index>=20) index = 0;
+        if(index>=12) index = 0;
 }
 
 // Function for Timer 3 initialization

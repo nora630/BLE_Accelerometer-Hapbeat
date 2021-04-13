@@ -165,7 +165,7 @@ static uint16_t alen = 20;
 #define LOW_POWER_MODE2   0x8FU // Low Power and ODR = 1620Hz
 
 /* PPI */
-#define PPI_TIMER1_INTERVAL   (1.25) // Timer interval in milliseconds, this is twi sampling rate. 
+#define PPI_TIMER1_INTERVAL   (1) // Timer interval in milliseconds, this is twi sampling rate. 
 
 /* buffer size */
 #define TWIM_RX_BUF_WIDTH    6
@@ -310,9 +310,9 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
 
     for(int16_t i=0; i<alen; i++)
     {
-        x = (int8_t)p_rx_buffer[0].buffer[1]; 
-        y = (int8_t)p_rx_buffer[0].buffer[3];
-        z = (int8_t)p_rx_buffer[0].buffer[5];
+        x = (int8_t)p_rx_buffer[i].buffer[1]; 
+        y = (int8_t)p_rx_buffer[i].buffer[3];
+        z = (int8_t)p_rx_buffer[i].buffer[5];
         sum = x * x + y * y + z * z;
         sum = isqrt(sum);
         aData[i] = (uint8_t)sum;
