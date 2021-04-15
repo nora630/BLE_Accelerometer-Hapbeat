@@ -640,7 +640,10 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         //if(sum<0) sum *= -1;
         //NRF_LOG_INFO("%d", sum);
         //NRF_LOG_FLUSH();
+
         printf("%d\n", sum);
+
+
         //tmp = sum - preSum;
         //motor_forward();
         //printf("%d\n", tmp);

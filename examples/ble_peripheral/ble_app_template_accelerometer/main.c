@@ -123,7 +123,7 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                              /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
-#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(25)                   // ble accel send interval
+#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(20)                   // ble accel send interval
 
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
