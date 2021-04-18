@@ -94,6 +94,8 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+#include "nrf_ringbuf.h"
+
 
 #define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
@@ -210,8 +212,10 @@ const   int16_t bandsize = 27;
 
 static int32_t bandIn[26];
 
-static uint8_t aData[20];
-const  uint8_t alen = 20;
+static uint8_t aData[1] = {0};
+const  size_t alen = 20;
+
+NRF_RINGBUF_DEF(m_ringbuf, 256);
 
 /* Buufer for samples read from a smartphone */
 typedef struct ArrayList
@@ -391,11 +395,20 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         //y = (((int8_t)p_rx_buffer[0].buffer[3]) << 8) + p_rx_buffer[0].buffer[2];
         //z = (((int8_t)p_rx_buffer[0].buffer[5]) << 8) + p_rx_buffer[0].buffer[4];
 
-        sum = aData[index];
+        //sum = aData[index];
         //sum = speak[index];
 
-
+      
         //sum = isqrt(sum);
+
+        ret_code_t err_code;
+
+        //uint8_t * data;
+        size_t    len = 1;
+
+        err_code = nrf_ringbuf_cpy_get(&m_ringbuf, aData, &len);
+
+        sum = aData;
 
 
 
@@ -624,19 +637,30 @@ static void accel_read_handler(ble_hpbs_evt_t * p_evt)
 {
     if(p_evt->type == BLE_HPBS_EVT_RX_DATA)
     {
-         uint32_t err_code;
+         ret_code_t err_code;
          NRF_LOG_HEXDUMP_DEBUG(p_evt->params.rx_data.p_data, p_evt->params.rx_data.length);
 
+          
+         size_t len = sizeof(p_evt->params.rx_data.p_data);
+         err_code = nrf_ringbuf_cpy_put(&m_ringbuf, p_evt->params.rx_data.p_data, &len);
+
+         
+
+
+         /*
          for(uint16_t i=0; i<p_evt->params.rx_data.length; i++)
          {
             //printf("%d\n", p_evt->params.rx_data.p_data[i]);
 
-            aData[i] = p_evt->params.rx_data.p_data[i];
+            //aData[i] = p_evt->params.rx_data.p_data[i];
             
             //ble_buffer[0].buffer[i] = p_evt->params.rx_data.p_data[i];
             
             //NRF_LOG_INFO("%d: %d", i, aData[i]);
-         }
+
+            data = p_evt->params.rx_data.p_data[i];
+
+         } */
          //flag = true;
     }
 }
@@ -1072,6 +1096,8 @@ int main(void)
     advertising_init();
     conn_params_init();
     peer_manager_init();
+    
+    nrf_ringbuf_init(&m_ringbuf);
 
     high_filter_set();
     band_filter_set();
@@ -1082,6 +1108,7 @@ int main(void)
     ppi_init();
     ppi_enable();
     ppi_start();
+
 
     // Start execution.
     NRF_LOG_INFO("Template example started.");
