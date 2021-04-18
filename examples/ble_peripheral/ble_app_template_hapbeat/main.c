@@ -94,6 +94,8 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+#include "nrf_queue.h"
+
 
 #define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
@@ -129,6 +131,7 @@
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
 BLE_ADVERTISING_DEF(m_advertising);                                             /**< Advertising module instance. */
+
 
 #define PWM_PIN  (3)
 #define STBY_PIN (4)
@@ -213,6 +216,10 @@ static int32_t bandIn[26];
 static uint8_t aData[20];
 const  uint8_t alen = 20;
 
+uint8_t dat = 0;
+
+NRF_QUEUE_DEF(uint8_t, m_byte_queue, 1024, NRF_QUEUE_MODE_NO_OVERFLOW);
+
 /* Buufer for samples read from a smartphone */
 typedef struct ArrayList
 {
@@ -258,13 +265,23 @@ void high_filter_set(void)
     //out2 = 0;
     //omega = 2.0f * 3.14159265f * freq / samplerate;
     //alpha = sin(omega) / (2.0f * q);
-    
+
+    // cut f = 0.01Hz
     a0 =   1;
     a1 =   -0.9691;
     //a2 =   1.0f - alpha;
     b0 =  0.9845;
     b1 = -0.9845;
     //b2 =  (1.0f + cos(omega)) / 2.0f;
+    
+
+    /*
+    // cut f = 0.1Hz
+    a0 = 1;
+    a1 = -0.7265;
+    b0 = 0.8633;
+    b1 = -0.8633;
+    */
 }
 
 void band_filter_set(void)
@@ -390,14 +407,23 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         //x = (((int8_t)p_rx_buffer[0].buffer[1]) << 8) + p_rx_buffer[0].buffer[0];
         //y = (((int8_t)p_rx_buffer[0].buffer[3]) << 8) + p_rx_buffer[0].buffer[2];
         //z = (((int8_t)p_rx_buffer[0].buffer[5]) << 8) + p_rx_buffer[0].buffer[4];
+        
 
-        sum = aData[index];
-        //sum = speak[index];
-
+        //sum = aData[index];
+        
 
         //sum = isqrt(sum);
+        
+        if(!nrf_queue_is_empty(&m_byte_queue))
+        {
+            ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
+            //APP_ERROR_CHECK(err_code);
+            sum = dat;
+            sum = bandFilter(sum);
+            sum = filter(sum);
+        }
 
-
+        //sum = dat;
 
 
         //printf("%d\n", sum);
@@ -408,8 +434,8 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
 
         
         
-        sum = bandFilter(sum);
-        sum = filter(sum);
+        //sum = bandFilter(sum);
+        //sum = filter(sum);
        
 
 
@@ -435,12 +461,14 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         if(value > m_motor_top) value = m_motor_top;
         else if(value < 0) value = 0;
         p_channels[0] = value;
+        /*
         index++;
         if(index>=20) 
         {
             index = 0;
             //flag = false;
         }
+        */
         //if(index>=12) index = 0;
 }
 
@@ -624,18 +652,26 @@ static void accel_read_handler(ble_hpbs_evt_t * p_evt)
 {
     if(p_evt->type == BLE_HPBS_EVT_RX_DATA)
     {
-         uint32_t err_code;
+         ret_code_t err_code;
          NRF_LOG_HEXDUMP_DEBUG(p_evt->params.rx_data.p_data, p_evt->params.rx_data.length);
 
          for(uint16_t i=0; i<p_evt->params.rx_data.length; i++)
          {
             //printf("%d\n", p_evt->params.rx_data.p_data[i]);
 
-            aData[i] = p_evt->params.rx_data.p_data[i];
+            //aData[i] = p_evt->params.rx_data.p_data[i];
             
             //ble_buffer[0].buffer[i] = p_evt->params.rx_data.p_data[i];
             
             //NRF_LOG_INFO("%d: %d", i, aData[i]);
+
+            uint8_t data = p_evt->params.rx_data.p_data[i];
+            if(!nrf_queue_is_full(&m_byte_queue))
+            {
+                err_code = nrf_queue_push(&m_byte_queue, &data);
+                //APP_ERROR_CHECK(err_code);
+            }
+
          }
          //flag = true;
     }
