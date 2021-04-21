@@ -54,7 +54,6 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
-#include "speak.h"
 
 #include "nordic_common.h"
 #include "nrf.h"
@@ -95,6 +94,7 @@
 #include "nrf_log_default_backends.h"
 
 #include "nrf_queue.h"
+#include "app_scheduler.h"
 
 
 #define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
@@ -104,6 +104,8 @@
 #define APP_ADV_DURATION                18000                                   /**< The advertising duration (180 seconds) in units of 10 milliseconds. */
 #define APP_BLE_OBSERVER_PRIO           3                                       /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
+
+#define PWM_INTERVAL                    APP_TIMER_TICKS(1)
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (20 milliseconds). */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (20 millisecond). */
@@ -171,6 +173,8 @@ static int16_t z;
 
 
 BLE_HPBS_DEF(m_hpbs);                                                             // Hapbeat Service instance
+APP_TIMER_DEF(m_pwm_timer_id);                                                    /**< PWM timer. */
+
 
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
@@ -580,6 +584,43 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
     }
 }
 
+static void pwm_update(void)
+{
+    uint16_t *p_channels = (uint16_t *)&m_seq_values;
+    if(!nrf_queue_is_empty(&m_byte_queue))
+    {
+        ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
+        //APP_ERROR_CHECK(err_code);
+        sum = dat;
+        sum = bandFilter(sum);
+        sum = filter(sum);
+    }
+
+    printf("%d\n", sum);
+    
+    if(sum>=0) motor_forward();
+    else{
+        motor_back();
+        sum *= -1;
+    }
+    
+    // 8192 x+y+z  32 x  
+    uint16_t value = m_motor_top - 7.5 * sum;//8192;//32 x;
+    //uint16_t value = m_motor_top - m_motor_top * sum / 60;//8192;//32 x;
+    if(value > m_motor_top) value = m_motor_top;
+    else if(value < 0) value = 0;
+    p_channels[0] = value;
+
+    (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 40, NRF_DRV_PWM_FLAG_STOP);
+       
+}
+
+static void pwm_timeout_handler(void * p_context)
+{
+    UNUSED_PARAMETER(p_context);
+    pwm_update();
+}
+
 
 /**@brief Function for the Timer initialization.
  *
@@ -590,6 +631,12 @@ static void timers_init(void)
     // Initialize timer module.
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
+
+    err_code = app_timer_create(&m_pwm_timer_id,
+                                APP_TIMER_MODE_REPEATED,
+                                pwm_timeout_handler);
+    APP_ERROR_CHECK(err_code);
+
 }
 
 
@@ -762,7 +809,9 @@ static void conn_params_init(void)
  */
 static void application_timers_start(void)
 {
-    
+    ret_code_t err_code;
+    err_code = app_timer_start(m_pwm_timer_id, PWM_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
 }
 
 
@@ -1097,6 +1146,7 @@ int main(void)
 
     // Initialize.
     log_init();
+    pwm_init();
     timers_init();
     buttons_leds_init(&erase_bonds);
     power_management_init();
@@ -1113,26 +1163,27 @@ int main(void)
     band_filter_set();
 
     smb_motor_pin_init();
-    pwm_init();
+    //pwm_init();
 
-    ppi_init();
-    ppi_enable();
-    ppi_start();
+    //ppi_init();
+    //ppi_enable();
+    //ppi_start();
 
     // Start execution.
     NRF_LOG_INFO("Template example started.");
     //NRF_LOG_FLUSH();
-    //application_timers_start();
+    application_timers_start();
 
     advertising_start(erase_bonds);
     NRF_LOG_FLUSH();
 
     
     // Enter main loop.
-    for (;;)
-    {
-        idle_state_handle();
-    }
+    do {
+      //app_sched_execute();
+      idle_state_handle();
+    } while (true);
+
 }
 
 
