@@ -719,6 +719,7 @@ int main(void)
     services_init();
     conn_params_init();
     peer_manager_init();
+    NRF_LOG_FLUSH();
 
     // Start execution.
     //NRF_LOG_INFO("Template example started.");

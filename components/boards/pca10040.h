@@ -144,7 +144,7 @@ extern "C" {
 
 // Arduino board mappings
 #define ARDUINO_SCL_PIN             2    // SCL signal pin
-#define ARDUINO_SDA_PIN             18    // SDA signal pin
+#define ARDUINO_SDA_PIN             3    // SDA signal pin
 #define ARDUINO_AREF_PIN            2     // Aref pin
 #define ARDUINO_13_PIN              25    // Digital pin 13
 #define ARDUINO_12_PIN              24    // Digital pin 12

@@ -275,6 +275,7 @@ void twi_init (void)
     err_code = nrf_drv_twi_init(&m_twi, &twi_lis2dh_config, twi_handler, NULL);
     APP_ERROR_CHECK(err_code);
 
+
     nrf_drv_twi_enable(&m_twi);
 }
 
@@ -1034,6 +1035,8 @@ static void advertising_start(bool erase_bonds)
 int main(void)
 {
     bool erase_bonds;
+    //NRF_LOG_INFO("Template example started.");
+    //NRF_LOG_FLUSH();
 
     // Initialize.
     log_init();
@@ -1043,7 +1046,7 @@ int main(void)
     ble_stack_init();
     gap_params_init();
     gatt_init();
-    //advertising_init();
+    //printf("perfect!\n");
     services_init();
     advertising_init();
     conn_params_init();
@@ -1051,8 +1054,8 @@ int main(void)
 
     // Start execution.
     NRF_LOG_INFO("Template example started.");
-    //NRF_LOG_FLUSH();
-    //application_timers_start();
+    NRF_LOG_FLUSH();
+    application_timers_start();
 
     advertising_start(erase_bonds);
     NRF_LOG_FLUSH();
