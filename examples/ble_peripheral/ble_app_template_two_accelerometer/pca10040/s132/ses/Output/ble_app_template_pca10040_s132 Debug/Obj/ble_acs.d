@@ -1,5 +1,5 @@
 Output/ble_app_template_pca10040_s132\ Debug/Obj/ble_acs.o: \
- C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\ble_peripheral\ble_app_template_accelerometer\pca10040\s132\ses\ble_acs.c \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\ble_peripheral\ble_app_template_two_accelerometer\pca10040\s132\ses\ble_acs.c \
  ../../../../../../components/libraries/util/sdk_common.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdint.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdbool.h \
@@ -29,7 +29,7 @@ Output/ble_app_template_pca10040_s132\ Debug/Obj/ble_acs.o: \
  ../../../../../../components/softdevice/s132/headers/nrf_svc.h \
  ../../../../../../components/libraries/util/sdk_macros.h \
  ../../../../../../components/libraries/util/nrf_assert.h \
- C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\ble_peripheral\ble_app_template_accelerometer\pca10040\s132\ses\ble_acs.h \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\ble_peripheral\ble_app_template_two_accelerometer\pca10040\s132\ses\ble_acs.h \
  ../../../../../../components/softdevice/s132/headers/ble.h \
  ../../../../../../components/softdevice/s132/headers/nrf_svc.h \
  ../../../../../../components/softdevice/s132/headers/nrf_error.h \

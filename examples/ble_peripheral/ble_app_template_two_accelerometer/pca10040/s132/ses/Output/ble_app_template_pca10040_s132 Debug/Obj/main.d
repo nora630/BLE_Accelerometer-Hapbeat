@@ -1,5 +1,5 @@
 Output/ble_app_template_pca10040_s132\ Debug/Obj/main.o: \
- C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\ble_peripheral\ble_app_template_accelerometer\main.c \
+ C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\examples\ble_peripheral\ble_app_template_two_accelerometer\main.c \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdbool.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/stdint.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/string.h \
