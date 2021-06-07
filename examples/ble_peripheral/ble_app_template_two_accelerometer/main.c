@@ -123,7 +123,7 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                              /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
-#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(25)                   // ble accel send interval
+#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(20)                   // ble accel send interval
 
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
@@ -134,7 +134,8 @@ APP_TIMER_DEF(m_accel_timer_id);                                                
 
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
-static uint8_t aData[20];
+static uint8_t aData1[20];
+static uint8_t aData2[20];
 static uint16_t alen = 20;
 
 
@@ -180,6 +181,9 @@ static uint16_t alen = 20;
 /* Indicates if operation on TWI has ended. */
 static volatile bool m_xfer_done1 = false;
 static volatile bool m_xfer_done2 = false;
+
+static volatile bool m_send_done1 = false;
+static volatile bool m_send_done2 = false;
 
 /* TWI instance. */
 static const nrf_drv_twi_t m_twi1 = NRF_DRV_TWI_INSTANCE(TWI_INSTANCE_ID1);
@@ -357,12 +361,12 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
 
     for(int16_t i=0; i<alen; i++)
     {
-        x = (int8_t)p_rx_buffer1[0].buffer[1]; // change 0 to i
-        y = (int8_t)p_rx_buffer1[0].buffer[3];
-        z = (int8_t)p_rx_buffer1[0].buffer[5];
+        x = (int8_t)p_rx_buffer1[i].buffer[1]; // change 0 to i
+        y = (int8_t)p_rx_buffer1[i].buffer[3];
+        z = (int8_t)p_rx_buffer1[i].buffer[5];
         sum = x * x + y * y + z * z;
         sum = isqrt(sum);
-        aData[i] = (uint8_t)sum;
+        aData1[i] = (uint8_t)sum;
         //aData[i] = sum & 0x0f;
         //printf("%d\n", aData[i]);
         //aData[2*i+1] = (sum >> 8) & 0x0f;
@@ -370,7 +374,7 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
     //printf("111  %d\n", sum);
 
     //accel_data_send();
-
+    m_send_done1 = true;
 
     nrf_drv_twi_xfer_desc_t xfer = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
                                       sizeof(m_dataReg), (uint8_t*)p_rx_buffer1, sizeof(p_rx_buffer1) / TWIM_RX_BUF_LENGTH);
@@ -394,17 +398,17 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
 
     for(int16_t i=0; i<alen; i++)
     {
-        x = (int8_t)p_rx_buffer2[0].buffer[1]; // change 0 to i
-        y = (int8_t)p_rx_buffer2[0].buffer[3];
-        z = (int8_t)p_rx_buffer2[0].buffer[5];
+        x = (int8_t)p_rx_buffer2[i].buffer[1]; // change 0 to i
+        y = (int8_t)p_rx_buffer2[i].buffer[3];
+        z = (int8_t)p_rx_buffer2[i].buffer[5];
         sum = x * x + y * y + z * z;
         sum = isqrt(sum);
-        aData[i] = (uint8_t)sum;
+        aData2[i] = (uint8_t)sum;
         //aData[i] = sum & 0x0f;
         //printf("%d\n", aData[i]);
         //aData[2*i+1] = (sum >> 8) & 0x0f;
     }
-
+    m_send_done2 = true;
     //accel_data_send();
     //printf("222  %d\n", sum);
 
@@ -634,7 +638,18 @@ void accel_data_send(void)
     //uint8_t aData[2] = {0x4d, 0x3a};
     //uint16_t alen = 2;
     //for (int i=0; i<4; i++) aData[i] |= 0x11 ;
-
+    uint8_t aData[20];
+    uint8_t s;
+    if(!(m_send_done1&&m_send_done2)) return;
+    m_send_done1 = false;
+    m_send_done2 = false;
+    for(int16_t i=0; i<20; i++){
+        s = aData1[i];
+        aData[i] = s / 2;
+        s = aData2[i];
+        aData[i] += s / 2;
+        printf("%d\n", aData[i]);
+    }
     err_code = ble_acs_accel_data_send(&m_acs, &aData, &alen);
     if((err_code != NRF_SUCCESS) &&
        (err_code != NRF_ERROR_INVALID_STATE) &&
@@ -1202,6 +1217,7 @@ int main(void)
     twi_accel_ppi_init();
     twi_accel_ppi_enable();
     twi_start();
+    application_timers_start();
 
     // Enter main loop.
     for (;;)
