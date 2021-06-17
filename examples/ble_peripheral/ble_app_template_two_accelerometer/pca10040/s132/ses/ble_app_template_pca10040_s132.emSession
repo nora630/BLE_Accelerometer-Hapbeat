@@ -1,9 +1,7 @@
 <!DOCTYPE CrossStudio_Session_File>
 <session>
  <Bookmarks/>
- <Breakpoints groups="Breakpoints" active_group="Breakpoints">
-  <Exceptions set="MemManage;UsageFault_Coprocessor;UsageFault_CheckingError;UsageFault_StateError;BusFault;ExceptionEntryReturnFault;HardFault"/>
- </Breakpoints>
+ <Breakpoints groups="Breakpoints" active_group="Breakpoints"/>
  <ExecutionProfileWindow/>
  <FrameBufferWindow>
   <FrameBufferWindow bufferHeight="-1" addressSpace="" addressText="" bufferWidth="-1"/>
@@ -60,7 +58,7 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="406" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="392" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="652" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="628" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="5658" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" debugPath="../config/sdk_config.h" selected="0" top="5630" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="46" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/src/nrfx_pwm.c" debugPath="../../../../../../modules/nrfx/drivers/src/nrfx_pwm.c" selected="0" top="8" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="174" useTextEdit="1" useBinaryEdit="0" left="0" path="ble_acs.c" debugPath="ble_acs.c" selected="0" top="0" codecName="Default"/>
@@ -75,6 +73,8 @@
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="149" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/ble/nrf_ble_qwr/nrf_ble_qwr.h" debugPath="../../../../../../components/ble/nrf_ble_qwr/nrf_ble_qwr.h" selected="0" top="128" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="0" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/boards/boards.c" debugPath="../../../../../../components/boards/boards.c" selected="0" top="126" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="283" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/nrf_drv_twi.h" debugPath="../../../../../../integration/nrfx/legacy/nrf_drv_twi.h" selected="0" top="264" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="550" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/src/nrfx_twim.c" debugPath="../../../../../../modules/nrfx/drivers/src/nrfx_twim.c" selected="0" top="534" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="445" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/hal/nrf_twim.h" debugPath="../../../../../../modules/nrfx/hal/nrf_twim.h" selected="0" top="429" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="ble_app_template_pca10040_s132" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Debug" debugSearchFileMap="" fileDialogInitialDirectory="C:/Nordic52SDK/examples/ble_peripheral/ble_app_template_accelerometer/pca10040/s132/ses" debugSearchPath="" autoConnectCapabilities="3711"/>
+ <ARMCrossStudioWindow activeProject="ble_app_template_pca10040_s132" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Debug" debugSearchFileMap="" fileDialogInitialDirectory="C:/Nordic52SDK/examples/ble_peripheral/ble_app_template_accelerometer/pca10040/s132/ses" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>

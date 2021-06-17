@@ -447,7 +447,7 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         //NRF_LOG_INFO("%d", sum);
         //NRF_LOG_FLUSH();
 
-        printf("%d\n", sum);
+        //printf("%d\n", sum);
 
         //tmp = sum - preSum;
         //motor_forward();
@@ -596,7 +596,7 @@ static void pwm_update(void)
         sum = filter(sum);
     }
 
-    printf("%d\n", sum);
+    //printf("%d\n", sum);
     
     if(sum>=0) motor_forward();
     else{
@@ -827,12 +827,13 @@ static void sleep_mode_enter(void)
     APP_ERROR_CHECK(err_code);
 
     // Prepare wakeup buttons.
+    sum = 0;
     err_code = bsp_btn_ble_sleep_mode_prepare();
     APP_ERROR_CHECK(err_code);
 
     // Go to system-off mode (this function will not return; wakeup will cause a reset).
-    //err_code = sd_power_system_off();
-    //APP_ERROR_CHECK(err_code);
+    err_code = sd_power_system_off();
+    APP_ERROR_CHECK(err_code);
 }
 
 
