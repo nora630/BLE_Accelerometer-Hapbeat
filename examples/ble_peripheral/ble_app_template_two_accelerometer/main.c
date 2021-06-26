@@ -648,7 +648,7 @@ void accel_data_send(void)
         aData[i] = s / 2;
         s = aData2[i];
         aData[i] += s / 2;
-        printf("%d\n", aData[i]);
+        //printf("%d\n", aData[i]);
     }
     err_code = ble_acs_accel_data_send(&m_acs, &aData, &alen);
     if((err_code != NRF_SUCCESS) &&
