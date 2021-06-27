@@ -814,6 +814,12 @@ static void application_timers_start(void)
     APP_ERROR_CHECK(err_code);
 }
 
+static void application_timers_stop(void)
+{
+    ret_code_t err_code;
+    err_code = app_timer_stop(m_pwm_timer_id);
+    APP_ERROR_CHECK(err_code);
+}
 
 /**@brief Function for putting the chip into sleep mode.
  *
@@ -879,6 +885,7 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
         case BLE_GAP_EVT_DISCONNECTED:
             NRF_LOG_INFO("Disconnected.");
             // LED indication will be changed when advertising starts.
+            application_timers_stop();
             break;
 
         case BLE_GAP_EVT_CONNECTED:
@@ -888,6 +895,7 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             err_code = nrf_ble_qwr_conn_handle_assign(&m_qwr, m_conn_handle);
             APP_ERROR_CHECK(err_code);
+            application_timers_start();
             break;
 
         case BLE_GAP_EVT_PHY_UPDATE_REQUEST:
@@ -1173,7 +1181,7 @@ int main(void)
     // Start execution.
     NRF_LOG_INFO("Template example started.");
     //NRF_LOG_FLUSH();
-    application_timers_start();
+    //application_timers_start();
 
     advertising_start(erase_bonds);
     NRF_LOG_FLUSH();
