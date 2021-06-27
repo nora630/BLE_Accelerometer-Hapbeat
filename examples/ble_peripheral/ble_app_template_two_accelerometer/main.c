@@ -252,11 +252,14 @@ void LIS2DH_set_mode(void)
     //uint8_t reg[7] = {LIS2DH_CTRL_REG, LOW_POWER_MODE1, 0x00, 0x00, LIS2DH_RANGE_2GA, 0x00, 0x00};
     uint8_t reg[2] = {LIS2DH_CTRL_REG1, LOW_POWER_MODE1};
     //uint8_t reg[1] = {LIS2DH_CTRL_REG1};
+
+    /*
     m_xfer_done1 = false;
     err_code = nrf_drv_twi_tx(&m_twi1, LIS2DH_ADDR, reg, sizeof(reg), false);
     APP_ERROR_CHECK(err_code);
     while (m_xfer_done1 == false);
     m_xfer_done1 = false;
+    */
 
     m_xfer_done2 = false;
     err_code = nrf_drv_twi_tx(&m_twi2, LIS2DH_ADDR, reg, sizeof(reg), false);
@@ -487,11 +490,12 @@ static void twi_accel_ppi_init(void)
     timer1_init();
 
     //setup timer2
-    timer2_init();
+    //timer2_init();
 
     //setup timer3
     timer3_init();
-
+    
+    /*
     nrf_drv_twi_xfer_desc_t xfer1 = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
                                       sizeof(m_dataReg), (uint8_t*)p_rx_buffer1, sizeof(p_rx_buffer1)  / TWIM_RX_BUF_LENGTH);
 
@@ -524,10 +528,15 @@ static void twi_accel_ppi_init(void)
                                               nrf_drv_timer_task_address_get(&m_timer2,
                                                                              NRF_TIMER_TASK_COUNT));
     }
-
+    */
 
     nrf_drv_twi_xfer_desc_t xfer2 = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
                                       sizeof(m_dataReg), (uint8_t*)p_rx_buffer2, sizeof(p_rx_buffer2)  / TWIM_RX_BUF_LENGTH);
+
+    uint32_t flags = NRF_DRV_TWI_FLAG_HOLD_XFER             |
+                     NRF_DRV_TWI_FLAG_RX_POSTINC            |
+                     NRF_DRV_TWI_FLAG_NO_XFER_EVT_HANDLER   |
+                     NRF_DRV_TWI_FLAG_REPEATED_XFER;
 
 
     err_code = nrf_drv_twi_xfer(&m_twi2, &xfer2, flags);
@@ -554,16 +563,19 @@ static void twi_accel_ppi_init(void)
                                               nrf_drv_timer_task_address_get(&m_timer3,
                                                                              NRF_TIMER_TASK_COUNT));
     }
+    
 }
 
 
 static void twi_accel_ppi_enable(void)
 {
     ret_code_t err_code;
+    /*
     err_code = nrf_drv_ppi_channel_enable(m_ppi_channel1);
     APP_ERROR_CHECK(err_code);
     err_code = nrf_drv_ppi_channel_enable(m_ppi_channel2);
     APP_ERROR_CHECK(err_code);
+    */
     err_code = nrf_drv_ppi_channel_enable(m_ppi_channel3);
     APP_ERROR_CHECK(err_code);
     err_code = nrf_drv_ppi_channel_enable(m_ppi_channel4);
@@ -573,7 +585,7 @@ static void twi_accel_ppi_enable(void)
 void twi_start(void)
 {
     // enable the counter counting
-    nrf_drv_timer_enable(&m_timer2);
+    //nrf_drv_timer_enable(&m_timer2);
     nrf_drv_timer_enable(&m_timer3);
     
     //m_xfer_done1 = false;
@@ -640,14 +652,16 @@ void accel_data_send(void)
     //for (int i=0; i<4; i++) aData[i] |= 0x11 ;
     uint8_t aData[20];
     uint8_t s;
-    if(!(m_send_done1&&m_send_done2)) return;
-    m_send_done1 = false;
+    
+    //if(!(m_send_done1&&m_send_done2)) return;
+    if(!(m_send_done2)) return;
     m_send_done2 = false;
+    //m_send_done2 = false;
     for(int16_t i=0; i<20; i++){
-        s = aData1[i];
-        aData[i] = s / 2;
+        //s = aData1[i];
+        //aData[i] = s / 2;
         s = aData2[i];
-        aData[i] += s / 2;
+        aData[i] = s / 2;
         //printf("%d\n", aData[i]);
     }
     err_code = ble_acs_accel_data_send(&m_acs, &aData, &alen);
