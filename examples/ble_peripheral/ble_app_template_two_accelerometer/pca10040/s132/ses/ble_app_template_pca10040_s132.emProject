@@ -144,6 +144,10 @@
       <file file_name="ble_acs.c" />
       <file file_name="ble_acs.h" />
     </folder>
+    <folder Name="Adpcm">
+      <file file_name="adpcm.h" />
+      <file file_name="adpcm.c" />
+    </folder>
   </project>
   <configuration
     Name="Release"

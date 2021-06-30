@@ -17351,6 +17351,37 @@ Discarded input sections
  .debug_macro   0x0000000000000000       0x31 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
  .debug_macro   0x0000000000000000       0x11 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
  .debug_macro   0x0000000000000000       0x1c Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
+ .group         0x0000000000000000        0x8 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .group         0x0000000000000000        0x8 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .text          0x0000000000000000        0x0 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .data          0x0000000000000000        0x0 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .bss           0x0000000000000000        0x0 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .data.IndexTable
+                0x0000000000000000       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .data.StepSizeTable
+                0x0000000000000000      0x164 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .text.ADPCMEncoder
+                0x0000000000000000      0x134 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .text.ADPCMDecoder
+                0x0000000000000000       0xe8 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_frame   0x0000000000000000       0x50 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_info    0x0000000000000000      0x1e7 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_abbrev  0x0000000000000000       0xd9 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_pubnames
+                0x0000000000000000       0x55 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_pubtypes
+                0x0000000000000000       0xde Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_aranges
+                0x0000000000000000       0x28 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_ranges  0x0000000000000000       0x18 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_macro   0x0000000000000000       0x24 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_macro   0x0000000000000000      0x904 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_macro   0x0000000000000000      0x189 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_line    0x0000000000000000      0x171 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .debug_str     0x0000000000000000     0x2cba Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .comment       0x0000000000000000       0x4d Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
+ .ARM.attributes
+                0x0000000000000000       0x39 Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
  .text.libc     0x0000000000000000        0x0 C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libc_v7em_fpv4_sp_d16_hard_t_le_eabi.a(libc_asm.o)
  .data.libc     0x0000000000000000        0x0 C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libc_v7em_fpv4_sp_d16_hard_t_le_eabi.a(libc_asm.o)
  .bss.libc      0x0000000000000000        0x0 C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libc_v7em_fpv4_sp_d16_hard_t_le_eabi.a(libc_asm.o)
@@ -22889,6 +22920,7 @@ LOAD Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh.o
 LOAD Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_ble.o
 LOAD Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_soc.o
 LOAD Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
+LOAD Output/ble_app_template_pca10040_s132 Debug/Obj/adpcm.o
 LOAD C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libdebugio_mempoll_v7em_fpv4_sp_d16_hard_t_le_eabi.a
 LOAD C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libm_v7em_fpv4_sp_d16_hard_t_le_eabi.a
 LOAD C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libc_v7em_fpv4_sp_d16_hard_t_le_eabi.a
@@ -23116,7 +23148,7 @@ OUTPUT(Output/Debug/Exe/ble_app_template_pca10040_s132.elf elf32-littlearm)
  .comment       0x000000000000004c       0x4d Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
  .comment       0x000000000000004c       0x4d C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libc_v7em_fpv4_sp_d16_hard_t_le_eabi.a(libc2.o)
 
-.debug_line     0x0000000000000000    0x380a5
+.debug_line     0x0000000000000000    0x380b2
  .debug_line    0x0000000000000000      0x2b4 Output/ble_app_template_pca10040_s132 Debug/Obj/thumb_crt0.o
  .debug_line    0x00000000000002b4      0xc74 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_log_backend_rtt.o
  .debug_line    0x0000000000000f28      0x9b5 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_log_backend_serial.o
@@ -23162,30 +23194,30 @@ OUTPUT(Output/Debug/Exe/ble_app_template_pca10040_s132.elf elf32-littlearm)
  .debug_line    0x000000000001c429      0xb61 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_drv_twi.o
  .debug_line    0x000000000001cf8a      0xd61 Output/ble_app_template_pca10040_s132 Debug/Obj/bsp.o
  .debug_line    0x000000000001dceb     0x11b2 Output/ble_app_template_pca10040_s132 Debug/Obj/bsp_btn_ble.o
- .debug_line    0x000000000001ee9d     0x1f9a Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_line    0x0000000000020e37      0xa9d Output/ble_app_template_pca10040_s132 Debug/Obj/SEGGER_RTT.o
- .debug_line    0x00000000000218d4      0xe2d Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advdata.o
- .debug_line    0x0000000000022701     0x1385 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advertising.o
- .debug_line    0x0000000000023a86      0xecc Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_params.o
- .debug_line    0x0000000000024952     0x1214 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_state.o
- .debug_line    0x0000000000025b66      0xb99 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_srv_common.o
- .debug_line    0x00000000000266ff     0x158d Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
- .debug_line    0x0000000000027c8c     0x1265 Output/ble_app_template_pca10040_s132 Debug/Obj/gatts_cache_manager.o
- .debug_line    0x0000000000028ef1     0x1546 Output/ble_app_template_pca10040_s132 Debug/Obj/id_manager.o
- .debug_line    0x000000000002a437      0xde7 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_gatt.o
- .debug_line    0x000000000002b21e      0xbc1 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_qwr.o
- .debug_line    0x000000000002bddf     0x144b Output/ble_app_template_pca10040_s132 Debug/Obj/peer_data_storage.o
- .debug_line    0x000000000002d22a     0x1450 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_database.o
- .debug_line    0x000000000002e67a     0x1002 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_id.o
- .debug_line    0x000000000002f67c     0x1925 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager.o
- .debug_line    0x0000000000030fa1     0x13b3 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager_handler.o
- .debug_line    0x0000000000032354      0x4f9 Output/ble_app_template_pca10040_s132 Debug/Obj/pm_buffer.o
- .debug_line    0x000000000003284d     0x1596 Output/ble_app_template_pca10040_s132 Debug/Obj/security_dispatcher.o
- .debug_line    0x0000000000033de3     0x14c6 Output/ble_app_template_pca10040_s132 Debug/Obj/security_manager.o
- .debug_line    0x00000000000352a9      0xba2 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh.o
- .debug_line    0x0000000000035e4b      0xcfa Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_ble.o
- .debug_line    0x0000000000036b45      0x8d3 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_soc.o
- .debug_line    0x0000000000037418      0xc8d Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
+ .debug_line    0x000000000001ee9d     0x1fa7 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_line    0x0000000000020e44      0xa9d Output/ble_app_template_pca10040_s132 Debug/Obj/SEGGER_RTT.o
+ .debug_line    0x00000000000218e1      0xe2d Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advdata.o
+ .debug_line    0x000000000002270e     0x1385 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advertising.o
+ .debug_line    0x0000000000023a93      0xecc Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_params.o
+ .debug_line    0x000000000002495f     0x1214 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_state.o
+ .debug_line    0x0000000000025b73      0xb99 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_srv_common.o
+ .debug_line    0x000000000002670c     0x158d Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
+ .debug_line    0x0000000000027c99     0x1265 Output/ble_app_template_pca10040_s132 Debug/Obj/gatts_cache_manager.o
+ .debug_line    0x0000000000028efe     0x1546 Output/ble_app_template_pca10040_s132 Debug/Obj/id_manager.o
+ .debug_line    0x000000000002a444      0xde7 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_gatt.o
+ .debug_line    0x000000000002b22b      0xbc1 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_qwr.o
+ .debug_line    0x000000000002bdec     0x144b Output/ble_app_template_pca10040_s132 Debug/Obj/peer_data_storage.o
+ .debug_line    0x000000000002d237     0x1450 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_database.o
+ .debug_line    0x000000000002e687     0x1002 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_id.o
+ .debug_line    0x000000000002f689     0x1925 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager.o
+ .debug_line    0x0000000000030fae     0x13b3 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager_handler.o
+ .debug_line    0x0000000000032361      0x4f9 Output/ble_app_template_pca10040_s132 Debug/Obj/pm_buffer.o
+ .debug_line    0x000000000003285a     0x1596 Output/ble_app_template_pca10040_s132 Debug/Obj/security_dispatcher.o
+ .debug_line    0x0000000000033df0     0x14c6 Output/ble_app_template_pca10040_s132 Debug/Obj/security_manager.o
+ .debug_line    0x00000000000352b6      0xba2 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh.o
+ .debug_line    0x0000000000035e58      0xcfa Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_ble.o
+ .debug_line    0x0000000000036b52      0x8d3 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_soc.o
+ .debug_line    0x0000000000037425      0xc8d Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
 
 .debug_info     0x0000000000000000    0xbf818
  .debug_info    0x0000000000000000       0xfd Output/ble_app_template_pca10040_s132 Debug/Obj/thumb_crt0.o
@@ -23876,7 +23908,7 @@ OUTPUT(Output/Debug/Exe/ble_app_template_pca10040_s132.elf elf32-littlearm)
  .debug_pubtypes
                 0x00000000000271ca     0x1413 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
 
-.debug_macro    0x0000000000000000    0x22237
+.debug_macro    0x0000000000000000    0x22241
  .debug_macro   0x0000000000000000      0x360 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_log_backend_rtt.o
  .debug_macro   0x0000000000000360      0x904 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_log_backend_rtt.o
  .debug_macro   0x0000000000000c64      0x189 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_log_backend_rtt.o
@@ -24053,60 +24085,60 @@ OUTPUT(Output/Debug/Exe/ble_app_template_pca10040_s132.elf elf32-littlearm)
  .debug_macro   0x000000000001d2bc       0xf4 Output/ble_app_template_pca10040_s132 Debug/Obj/bsp_btn_ble.o
  .debug_macro   0x000000000001d3b0       0x3c Output/ble_app_template_pca10040_s132 Debug/Obj/bsp_btn_ble.o
  .debug_macro   0x000000000001d3ec       0x1c Output/ble_app_template_pca10040_s132 Debug/Obj/bsp_btn_ble.o
- .debug_macro   0x000000000001d408      0x6d0 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001dad8       0x22 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001dafa      0x343 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001de3d       0x6a Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001dea7       0x22 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001dec9       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001ded9       0x88 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001df61       0x42 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001dfa3       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001dfb3       0x22 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001dfd5       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001dfe5       0x16 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001dffb       0x1c Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001e017       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001e027       0x22 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001e049       0x94 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001e0dd       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
- .debug_macro   0x000000000001e0ed      0x1cd Output/ble_app_template_pca10040_s132 Debug/Obj/SEGGER_RTT.o
- .debug_macro   0x000000000001e2ba       0x47 Output/ble_app_template_pca10040_s132 Debug/Obj/SEGGER_RTT.o
- .debug_macro   0x000000000001e301      0x21e Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advdata.o
- .debug_macro   0x000000000001e51f      0x296 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advertising.o
- .debug_macro   0x000000000001e7b5      0x2b5 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_params.o
- .debug_macro   0x000000000001ea6a       0x40 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_params.o
- .debug_macro   0x000000000001eaaa      0x291 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_state.o
- .debug_macro   0x000000000001ed3b      0x1d4 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_srv_common.o
- .debug_macro   0x000000000001ef0f      0x377 Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
- .debug_macro   0x000000000001f286       0x3a Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
- .debug_macro   0x000000000001f2c0       0x16 Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
- .debug_macro   0x000000000001f2d6      0x173 Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
- .debug_macro   0x000000000001f449      0x353 Output/ble_app_template_pca10040_s132 Debug/Obj/gatts_cache_manager.o
- .debug_macro   0x000000000001f79c      0x368 Output/ble_app_template_pca10040_s132 Debug/Obj/id_manager.o
- .debug_macro   0x000000000001fb04      0x250 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_gatt.o
- .debug_macro   0x000000000001fd54       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_gatt.o
- .debug_macro   0x000000000001fd64      0x211 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_qwr.o
- .debug_macro   0x000000000001ff75       0x16 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_qwr.o
- .debug_macro   0x000000000001ff8b      0x345 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_data_storage.o
- .debug_macro   0x00000000000202d0       0x34 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_data_storage.o
- .debug_macro   0x0000000000020304       0x16 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_data_storage.o
- .debug_macro   0x000000000002031a      0x353 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_database.o
- .debug_macro   0x000000000002066d       0x3c Output/ble_app_template_pca10040_s132 Debug/Obj/peer_database.o
- .debug_macro   0x00000000000206a9       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_database.o
- .debug_macro   0x00000000000206b9      0x25e Output/ble_app_template_pca10040_s132 Debug/Obj/peer_id.o
- .debug_macro   0x0000000000020917      0x3ba Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager.o
- .debug_macro   0x0000000000020cd1      0x381 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager_handler.o
- .debug_macro   0x0000000000021052      0x17a Output/ble_app_template_pca10040_s132 Debug/Obj/pm_buffer.o
- .debug_macro   0x00000000000211cc      0x360 Output/ble_app_template_pca10040_s132 Debug/Obj/security_dispatcher.o
- .debug_macro   0x000000000002152c      0x361 Output/ble_app_template_pca10040_s132 Debug/Obj/security_manager.o
- .debug_macro   0x000000000002188d      0x275 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh.o
- .debug_macro   0x0000000000021b02      0x2a0 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_ble.o
- .debug_macro   0x0000000000021da2      0x24c Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_soc.o
- .debug_macro   0x0000000000021fee      0x22d Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
- .debug_macro   0x000000000002221b       0x1c Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
+ .debug_macro   0x000000000001d408      0x6da Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001dae2       0x22 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001db04      0x343 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001de47       0x6a Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001deb1       0x22 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001ded3       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001dee3       0x88 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001df6b       0x42 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001dfad       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001dfbd       0x22 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001dfdf       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001dfef       0x16 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001e005       0x1c Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001e021       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001e031       0x22 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001e053       0x94 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001e0e7       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+ .debug_macro   0x000000000001e0f7      0x1cd Output/ble_app_template_pca10040_s132 Debug/Obj/SEGGER_RTT.o
+ .debug_macro   0x000000000001e2c4       0x47 Output/ble_app_template_pca10040_s132 Debug/Obj/SEGGER_RTT.o
+ .debug_macro   0x000000000001e30b      0x21e Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advdata.o
+ .debug_macro   0x000000000001e529      0x296 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advertising.o
+ .debug_macro   0x000000000001e7bf      0x2b5 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_params.o
+ .debug_macro   0x000000000001ea74       0x40 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_params.o
+ .debug_macro   0x000000000001eab4      0x291 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_state.o
+ .debug_macro   0x000000000001ed45      0x1d4 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_srv_common.o
+ .debug_macro   0x000000000001ef19      0x377 Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
+ .debug_macro   0x000000000001f290       0x3a Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
+ .debug_macro   0x000000000001f2ca       0x16 Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
+ .debug_macro   0x000000000001f2e0      0x173 Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
+ .debug_macro   0x000000000001f453      0x353 Output/ble_app_template_pca10040_s132 Debug/Obj/gatts_cache_manager.o
+ .debug_macro   0x000000000001f7a6      0x368 Output/ble_app_template_pca10040_s132 Debug/Obj/id_manager.o
+ .debug_macro   0x000000000001fb0e      0x250 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_gatt.o
+ .debug_macro   0x000000000001fd5e       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_gatt.o
+ .debug_macro   0x000000000001fd6e      0x211 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_qwr.o
+ .debug_macro   0x000000000001ff7f       0x16 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_qwr.o
+ .debug_macro   0x000000000001ff95      0x345 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_data_storage.o
+ .debug_macro   0x00000000000202da       0x34 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_data_storage.o
+ .debug_macro   0x000000000002030e       0x16 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_data_storage.o
+ .debug_macro   0x0000000000020324      0x353 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_database.o
+ .debug_macro   0x0000000000020677       0x3c Output/ble_app_template_pca10040_s132 Debug/Obj/peer_database.o
+ .debug_macro   0x00000000000206b3       0x10 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_database.o
+ .debug_macro   0x00000000000206c3      0x25e Output/ble_app_template_pca10040_s132 Debug/Obj/peer_id.o
+ .debug_macro   0x0000000000020921      0x3ba Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager.o
+ .debug_macro   0x0000000000020cdb      0x381 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager_handler.o
+ .debug_macro   0x000000000002105c      0x17a Output/ble_app_template_pca10040_s132 Debug/Obj/pm_buffer.o
+ .debug_macro   0x00000000000211d6      0x360 Output/ble_app_template_pca10040_s132 Debug/Obj/security_dispatcher.o
+ .debug_macro   0x0000000000021536      0x361 Output/ble_app_template_pca10040_s132 Debug/Obj/security_manager.o
+ .debug_macro   0x0000000000021897      0x275 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh.o
+ .debug_macro   0x0000000000021b0c      0x2a0 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_ble.o
+ .debug_macro   0x0000000000021dac      0x24c Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_soc.o
+ .debug_macro   0x0000000000021ff8      0x22d Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
+ .debug_macro   0x0000000000022225       0x1c Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
 
-.debug_str      0x0000000000000000    0xa4048
+.debug_str      0x0000000000000000    0xa4053
  .debug_str     0x0000000000000000    0x7a458 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_log_backend_rtt.o
                                       0x7c46d (size before relaxing)
  .debug_str     0x000000000007a458      0x205 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_log_backend_serial.o
@@ -24191,51 +24223,51 @@ OUTPUT(Output/Debug/Exe/ble_app_template_pca10040_s132.elf elf32-littlearm)
                                       0x7b063 (size before relaxing)
  .debug_str     0x000000000009165a     0x8925 Output/ble_app_template_pca10040_s132 Debug/Obj/bsp_btn_ble.o
                                       0x824ee (size before relaxing)
- .debug_str     0x0000000000099f7f     0x44f1 Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
-                                      0x8e744 (size before relaxing)
- .debug_str     0x000000000009e470      0x56b Output/ble_app_template_pca10040_s132 Debug/Obj/SEGGER_RTT.o
+ .debug_str     0x0000000000099f7f     0x44fc Output/ble_app_template_pca10040_s132 Debug/Obj/main.o
+                                      0x8e74f (size before relaxing)
+ .debug_str     0x000000000009e47b      0x56b Output/ble_app_template_pca10040_s132 Debug/Obj/SEGGER_RTT.o
                                       0x6999f (size before relaxing)
- .debug_str     0x000000000009e9db      0x43b Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advdata.o
+ .debug_str     0x000000000009e9e6      0x43b Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advdata.o
                                       0x78470 (size before relaxing)
- .debug_str     0x000000000009ee16      0x34c Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advertising.o
+ .debug_str     0x000000000009ee21      0x34c Output/ble_app_template_pca10040_s132 Debug/Obj/ble_advertising.o
                                       0x7c68f (size before relaxing)
- .debug_str     0x000000000009f162      0x2f3 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_params.o
+ .debug_str     0x000000000009f16d      0x2f3 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_params.o
                                       0x7a9f7 (size before relaxing)
- .debug_str     0x000000000009f455      0x871 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_state.o
+ .debug_str     0x000000000009f460      0x871 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_conn_state.o
                                       0x7a671 (size before relaxing)
- .debug_str     0x000000000009fcc6      0x306 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_srv_common.o
+ .debug_str     0x000000000009fcd1      0x306 Output/ble_app_template_pca10040_s132 Debug/Obj/ble_srv_common.o
                                       0x6f282 (size before relaxing)
- .debug_str     0x000000000009ffcc      0x8b5 Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
+ .debug_str     0x000000000009ffd7      0x8b5 Output/ble_app_template_pca10040_s132 Debug/Obj/gatt_cache_manager.o
                                       0x7eab2 (size before relaxing)
- .debug_str     0x00000000000a0881      0x358 Output/ble_app_template_pca10040_s132 Debug/Obj/gatts_cache_manager.o
+ .debug_str     0x00000000000a088c      0x358 Output/ble_app_template_pca10040_s132 Debug/Obj/gatts_cache_manager.o
                                       0x7d641 (size before relaxing)
- .debug_str     0x00000000000a0bd9      0x4c4 Output/ble_app_template_pca10040_s132 Debug/Obj/id_manager.o
+ .debug_str     0x00000000000a0be4      0x4c4 Output/ble_app_template_pca10040_s132 Debug/Obj/id_manager.o
                                       0x7e759 (size before relaxing)
- .debug_str     0x00000000000a109d      0x2c3 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_gatt.o
+ .debug_str     0x00000000000a10a8      0x2c3 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_gatt.o
                                       0x7a776 (size before relaxing)
- .debug_str     0x00000000000a1360      0x1ce Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_qwr.o
+ .debug_str     0x00000000000a136b      0x1ce Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_ble_qwr.o
                                       0x78e5d (size before relaxing)
- .debug_str     0x00000000000a152e      0x4c9 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_data_storage.o
+ .debug_str     0x00000000000a1539      0x4c9 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_data_storage.o
                                       0x7d9b0 (size before relaxing)
- .debug_str     0x00000000000a19f7      0x5fe Output/ble_app_template_pca10040_s132 Debug/Obj/peer_database.o
+ .debug_str     0x00000000000a1a02      0x5fe Output/ble_app_template_pca10040_s132 Debug/Obj/peer_database.o
                                       0x7daa4 (size before relaxing)
- .debug_str     0x00000000000a1ff5      0x12f Output/ble_app_template_pca10040_s132 Debug/Obj/peer_id.o
+ .debug_str     0x00000000000a2000      0x12f Output/ble_app_template_pca10040_s132 Debug/Obj/peer_id.o
                                       0x78acb (size before relaxing)
- .debug_str     0x00000000000a2124      0x77b Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager.o
+ .debug_str     0x00000000000a212f      0x77b Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager.o
                                       0x7edfc (size before relaxing)
- .debug_str     0x00000000000a289f      0x383 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager_handler.o
+ .debug_str     0x00000000000a28aa      0x383 Output/ble_app_template_pca10040_s132 Debug/Obj/peer_manager_handler.o
                                       0x7e517 (size before relaxing)
- .debug_str     0x00000000000a2c22      0x190 Output/ble_app_template_pca10040_s132 Debug/Obj/pm_buffer.o
+ .debug_str     0x00000000000a2c2d      0x190 Output/ble_app_template_pca10040_s132 Debug/Obj/pm_buffer.o
                                       0x6f56e (size before relaxing)
- .debug_str     0x00000000000a2db2      0x3e9 Output/ble_app_template_pca10040_s132 Debug/Obj/security_dispatcher.o
+ .debug_str     0x00000000000a2dbd      0x3e9 Output/ble_app_template_pca10040_s132 Debug/Obj/security_dispatcher.o
                                       0x7e9ab (size before relaxing)
- .debug_str     0x00000000000a319b      0x442 Output/ble_app_template_pca10040_s132 Debug/Obj/security_manager.o
+ .debug_str     0x00000000000a31a6      0x442 Output/ble_app_template_pca10040_s132 Debug/Obj/security_manager.o
                                       0x7e6d1 (size before relaxing)
- .debug_str     0x00000000000a35dd      0x3d7 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh.o
+ .debug_str     0x00000000000a35e8      0x3d7 Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh.o
                                       0x750de (size before relaxing)
- .debug_str     0x00000000000a39b4      0x3ed Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_ble.o
+ .debug_str     0x00000000000a39bf      0x3ed Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_ble.o
                                       0x7b07d (size before relaxing)
- .debug_str     0x00000000000a3da1      0x19a Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_soc.o
+ .debug_str     0x00000000000a3dac      0x19a Output/ble_app_template_pca10040_s132 Debug/Obj/nrf_sdh_soc.o
                                       0x73c83 (size before relaxing)
- .debug_str     0x00000000000a3f3b      0x10d Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
+ .debug_str     0x00000000000a3f46      0x10d Output/ble_app_template_pca10040_s132 Debug/Obj/ble_acs.o
                                       0x79589 (size before relaxing)
