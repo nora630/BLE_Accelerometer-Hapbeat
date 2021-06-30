@@ -96,6 +96,8 @@
 #include "nrf_queue.h"
 #include "app_scheduler.h"
 
+#include "adpcm.h"
+
 
 #define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
@@ -107,8 +109,8 @@
 
 #define PWM_INTERVAL                    APP_TIMER_TICKS(1)
 
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (20 milliseconds). */
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (20 millisecond). */
+#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (40 milliseconds). */
+#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (40 millisecond). */
 #define SLAVE_LATENCY                   0                                       /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)         /**< Connection supervisory timeout (4 seconds). */
 //#define APP_ADV_TIMEOUT_IN_SECONDS      180                                     /**< The advertising timeout in units of seconds. */
@@ -146,6 +148,8 @@ BLE_ADVERTISING_DEF(m_advertising);                                             
 /* buffer size */
 #define BLE_BUF_WIDTH    20
 #define BLE_BUF_LENGTH   5
+
+static struct ADPCMstate state; 
 
 // pwm variable
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
@@ -694,6 +698,12 @@ static void nrf_qwr_error_handler(uint32_t nrf_error)
     APP_ERROR_HANDLER(nrf_error);
 }
 
+void adpcm_state_init(void)
+{
+    state.prevsample = 0;
+    state.previndex = 0;
+}
+
 /* Function for receiving the data from the smartphone */
 static void accel_read_handler(ble_hpbs_evt_t * p_evt)
 {
@@ -715,8 +725,12 @@ static void accel_read_handler(ble_hpbs_evt_t * p_evt)
             uint8_t data = p_evt->params.rx_data.p_data[i];
             if(!nrf_queue_is_full(&m_byte_queue))
             {
-                err_code = nrf_queue_push(&m_byte_queue, &data);
+                uint8_t data1, data2;
+                data1 = ADPCMDecoder((data >> 4) & 0x0f, &state);
+                err_code = nrf_queue_push(&m_byte_queue, &data1);
                 //APP_ERROR_CHECK(err_code);
+                data2 = ADPCMDecoder(data & 0x0f, &state);
+                err_code = nrf_queue_push(&m_byte_queue, &data2);
             }
 
          }
@@ -1182,11 +1196,10 @@ int main(void)
     NRF_LOG_INFO("Template example started.");
     //NRF_LOG_FLUSH();
     //application_timers_start();
-
+    adpcm_state_init();
     advertising_start(erase_bonds);
     NRF_LOG_FLUSH();
 
-    
     // Enter main loop.
     do {
       //app_sched_execute();
