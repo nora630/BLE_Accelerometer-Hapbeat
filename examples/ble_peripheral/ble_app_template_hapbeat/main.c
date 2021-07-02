@@ -107,8 +107,8 @@
 
 #define PWM_INTERVAL                    APP_TIMER_TICKS(1)
 
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (20 milliseconds). */
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (20 millisecond). */
+#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
+#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
 #define SLAVE_LATENCY                   0                                       /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)         /**< Connection supervisory timeout (4 seconds). */
 //#define APP_ADV_TIMEOUT_IN_SECONDS      180                                     /**< The advertising timeout in units of seconds. */
@@ -220,7 +220,7 @@ static int32_t bandIn[26];
 static uint8_t aData[20];
 const  uint8_t alen = 20;
 
-uint8_t dat = 0;
+uint16_t dat = 0;
 
 NRF_QUEUE_DEF(uint8_t, m_byte_queue, 1024, NRF_QUEUE_MODE_NO_OVERFLOW);
 
@@ -587,11 +587,23 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 static void pwm_update(void)
 {
     uint16_t *p_channels = (uint16_t *)&m_seq_values;
+    /*
     if(!nrf_queue_is_empty(&m_byte_queue))
     {
         ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
         //APP_ERROR_CHECK(err_code);
         sum = dat;
+        sum = bandFilter(sum);
+        sum = filter(sum);
+    }
+    */
+    if(nrf_queue_utilization_get(&m_byte_queue)>1)
+    {
+        ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
+        //APP_ERROR_CHECK(err_code);
+        sum = (dat << 8) & 0xff00;
+        err_code = nrf_queue_pop(&m_byte_queue, &dat);
+        sum |= dat & 0xff;
         sum = bandFilter(sum);
         sum = filter(sum);
     }

@@ -101,8 +101,8 @@
 #define APP_BLE_OBSERVER_PRIO           3                                       /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
 
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (20 milliseconds). */
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (20 millisecond). */
+#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
+#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
 #define SLAVE_LATENCY                   0                                       /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)         /**< Connection supervisory timeout (4 seconds). */
 //#define APP_ADV_TIMEOUT_IN_SECONDS      180                                     /**< The advertising timeout in units of seconds. */
@@ -123,7 +123,7 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                              /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
-#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(20)                   // ble accel send interval
+#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(10)                   // ble accel send interval
 
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
@@ -134,9 +134,10 @@ APP_TIMER_DEF(m_accel_timer_id);                                                
 
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
-static uint8_t aData1[20];
-static uint8_t aData2[20];
-static uint16_t alen = 20;
+static uint8_t aData1[10];
+static uint8_t aData2[10];
+static uint16_t alen = 10;
+static uint16_t asendlen = 20;
 
 
 //*****************************************************//
@@ -176,7 +177,7 @@ static uint16_t alen = 20;
 
 /* buffer size */
 #define TWIM_RX_BUF_WIDTH    6
-#define TWIM_RX_BUF_LENGTH  20 
+#define TWIM_RX_BUF_LENGTH  10 
 
 /* Indicates if operation on TWI has ended. */
 static volatile bool m_xfer_done1 = false;
@@ -639,18 +640,17 @@ void accel_data_send(void)
     //uint16_t alen = 2;
     //for (int i=0; i<4; i++) aData[i] |= 0x11 ;
     uint8_t aData[20];
-    uint8_t s;
+    uint16_t s;
     if(!(m_send_done1&&m_send_done2)) return;
     m_send_done1 = false;
     m_send_done2 = false;
-    for(int16_t i=0; i<20; i++){
-        s = aData1[i];
-        aData[i] = s / 2;
-        s = aData2[i];
-        aData[i] += s / 2;
-        //printf("%d\n", aData[i]);
+    for(uint16_t i=0; i<alen; i++){
+        s = aData1[i] + aData2[i];
+        printf("%d\n", s);
+        aData[2*i] = (s >> 8) & 0xff;
+        aData[2*i+1] = s & 0xff;
     }
-    err_code = ble_acs_accel_data_send(&m_acs, &aData, &alen);
+    err_code = ble_acs_accel_data_send(&m_acs, &aData, &asendlen);
     if((err_code != NRF_SUCCESS) &&
        (err_code != NRF_ERROR_INVALID_STATE) &&
        (err_code != NRF_ERROR_RESOURCES) &&
