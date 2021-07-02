@@ -639,16 +639,15 @@ void accel_data_send(void)
     //uint16_t alen = 2;
     //for (int i=0; i<4; i++) aData[i] |= 0x11 ;
     uint8_t aData[20];
-    uint8_t s;
+    uint16_t s;
     if(!(m_send_done1&&m_send_done2)) return;
     m_send_done1 = false;
     m_send_done2 = false;
     for(int16_t i=0; i<20; i++){
-        s = aData1[i];
-        aData[i] = s / 2;
-        s = aData2[i];
-        aData[i] += s / 2;
-        //printf("%d\n", aData[i]);
+        s = aData1[i] + aData2[i];
+        if(s>255) s = 255;
+        printf("%d\n", s);
+        aData[i] = s & 0xff;
     }
     err_code = ble_acs_accel_data_send(&m_acs, &aData, &alen);
     if((err_code != NRF_SUCCESS) &&
