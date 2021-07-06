@@ -96,6 +96,7 @@
 #include "nrf_queue.h"
 #include "app_scheduler.h"
 
+#include "speak.h"
 
 #define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
@@ -179,9 +180,17 @@ APP_TIMER_DEF(m_pwm_timer_id);                                                  
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
 
-/* filter setting */
+/* highpass filter setting */
 static  float in1, in2, out1, out2;
 static  float a0, a1, a2, b0, b1, b2;
+
+/* lowpass filter setting */
+static float lin1, lout1;
+static float la0, la1, lb0, lb1;
+
+static float noisecut[20];
+const int16_t noisecutsize = 20;
+static int32_t noisecutin[19];
 
 static   float bandpass[] = {
              0.0000000000000000 ,
@@ -232,7 +241,7 @@ typedef struct ArrayList
 
 static array_list_t ble_buffer[BLE_BUF_LENGTH];
 
-static uint8_t index = 0;
+static uint16_t index = 0;
 
 volatile static flag = false;
 
@@ -260,7 +269,7 @@ int32_t isqrt(int32_t num) {
     return res;
 }
 
-// initialize  BiQuad high-pass filter coefficient
+// initialize high-pass filter coefficient
 void high_filter_set(void)
 {
     in1 = 0;
@@ -277,7 +286,6 @@ void high_filter_set(void)
     b0 =  0.9845;
     b1 = -0.9845;
     //b2 =  (1.0f + cos(omega)) / 2.0f;
-    
 
     /*
     // cut f = 0.1Hz
@@ -286,6 +294,43 @@ void high_filter_set(void)
     b0 = 0.8633;
     b1 = -0.8633;
     */
+    
+}
+
+void low_filter_set(void)
+{
+    lin1 = 0;
+    //in2 = 0;
+    lout1 = 0;
+    //out2 = 0;
+    //omega = 2.0f * 3.14159265f * freq / samplerate;
+    //alpha = sin(omega) / (2.0f * q);
+
+    // cut f = 0.01Hz
+    la0 =   1;
+    la1 =   -0.3249;
+    //a2 =   1.0f - alpha;
+    lb0 =  0.3375;
+    lb1 = 0.3375;
+    //b2 =  (1.0f + cos(omega)) / 2.0f;
+
+    /*
+    // cut f = 0.1Hz
+    a0 = 1;
+    a1 = -0.7265;
+    b0 = 0.8633;
+    b1 = -0.8633;
+    */
+    
+}
+
+
+void noisecut_filter_set(void)
+{
+  for(int16_t i=0; i<noisecutsize; i++){ 
+        noisecut[i] = 1.0/20;
+        if(i!=noisecutsize-1) noisecutin[i] = 0;
+  }
 }
 
 void band_filter_set(void)
@@ -306,6 +351,16 @@ int32_t filter(int32_t input)
     output = b0/a0 * (float)input + b1/a0 * in1 - a1/a0 * out1;
     in1 = input;
     out1 = output;
+  
+    return (int32_t)output;
+}
+
+int32_t lowFilter(int32_t input)
+{
+    float output;
+    output = lb0/la0 * (float)input + lb1/la0 * lin1 - la1/la0 * lout1;
+    lin1 = input;
+    lout1 = output;
   
     return (int32_t)output;
 }
@@ -335,6 +390,29 @@ int32_t bandFilter(int32_t input)
 
     return (int32_t)output;
 }
+
+int32_t noisecutFilter(int32_t input)
+{
+    float output = 0;
+    for(int16_t i=0; i<noisecutsize; i++){
+        if(i==0) output += noisecut[i] * input;
+        else output += noisecut[i] * noisecutin[noisecutsize-1-i];
+    }
+    int32_t temp1, temp2;
+    for(int16_t i=0; i<noisecutsize-1; i++){
+        if(i==0){
+            temp1 = noisecutin[noisecutsize-2];
+            noisecutin[noisecutsize-2] = input;
+        } else {
+            temp2 = noisecutin[noisecutsize-2-i];
+            noisecutin[noisecutsize-2-i] = temp1;
+            temp1 = temp2;
+        }
+    }
+    return (int32_t)output;
+}
+
+
 
 /* PWM functions */
 static void motor_forward(void)
@@ -597,6 +675,8 @@ static void pwm_update(void)
         sum = filter(sum);
     }
     */
+
+    /*
     if(nrf_queue_utilization_get(&m_byte_queue)>1)
     {
         ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
@@ -604,11 +684,26 @@ static void pwm_update(void)
         sum = (dat << 8) & 0xff00;
         err_code = nrf_queue_pop(&m_byte_queue, &dat);
         sum |= dat & 0xff;
-        sum = bandFilter(sum);
+        //printf("%d\n", sum);
+        //sum = bandFilter(sum);
+        //sum = noisecutFilter(sum);
+        //printf("%d\n", 7.5 * sum);
+
+        //sum = bandFilter(sum);
+        //sum = lowFilter(sum);
+
         sum = filter(sum);
+        
+        //float yobi;
+        //yobi = sum * 7.5;
+        //printf("%d\n", (int16_t)yobi);
     }
+    */
+    sum = (int32_t)speak[index];
+    if(++index>9999) index = 0;
 
     //printf("%d\n", sum);
+
     
     if(sum>=0) motor_forward();
     else{
@@ -617,7 +712,7 @@ static void pwm_update(void)
     }
     
     // 8192 x+y+z  32 x  
-    uint16_t value = m_motor_top - 7.5 * sum;//8192;//32 x;
+    uint16_t value = m_motor_top - sum;//8192;//32 x;
     //uint16_t value = m_motor_top - m_motor_top * sum / 60;//8192;//32 x;
     if(value > m_motor_top) value = m_motor_top;
     else if(value < 0) value = 0;
@@ -1180,8 +1275,10 @@ int main(void)
     conn_params_init();
     peer_manager_init();
 
+    //low_filter_set();
     high_filter_set();
     band_filter_set();
+    //noisecut_filter_set();
 
     smb_motor_pin_init();
     //pwm_init();
