@@ -96,7 +96,7 @@
 #include "nrf_queue.h"
 #include "app_scheduler.h"
 
-#include "speak.h"
+#include "input_data.h"
 
 #define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
