@@ -107,7 +107,7 @@
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
 
 #define PWM_INTERVAL                    APP_TIMER_TICKS(1)
-#define NOISE_CUT_INTERVAL              APP_TIMER_TICKS(256)
+#define NOISE_CUT_INTERVAL              APP_TIMER_TICKS(128)
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
@@ -150,7 +150,7 @@ BLE_ADVERTISING_DEF(m_advertising);                                             
 #define BLE_BUF_WIDTH    20
 #define BLE_BUF_LENGTH   5
 
-#define NOISE_CUT_LENGTH    256
+#define NOISE_CUT_LENGTH    128
 
 // pwm variable
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
@@ -613,16 +613,16 @@ static void pwm_update(void)
         //sum = filter(sum);
     }
 
-    //printf("%d\n", sum);
+    printf("%d\n", sum);
     
     if(sum>=0) motor_forward();
     else{
         motor_back();
-        sum *= -1;
+        //sum *= -1;
     }
     
     // 8192 x+y+z  32 x  
-    uint16_t value = m_motor_top - 7.5 * sum;//8192;//32 x;
+    uint16_t value = m_motor_top - 7.5 * abs(sum);//8192;//32 x;
     //uint16_t value = m_motor_top - m_motor_top * sum / 60;//8192;//32 x;
     if(value > m_motor_top) value = m_motor_top;
     else if(value < 0) value = 0;
@@ -662,7 +662,7 @@ static void noise_cut_update(void)
 
         for(uint16_t i=0; i<NOISE_CUT_LENGTH; i++)
         {
-            h[i] = 1 - 500 / fft_mag[i];
+            h[i] = 1 - 120 / fft_mag[i];
             if(h[i]<0) h[i] = 0;
             fft_out[2*i] = h[i] * fft_out[2*i];
             fft_out[2*i+1] = h[i] * fft_out[2*i+1];
@@ -1231,7 +1231,7 @@ int main(void)
     // Initialize.
     log_init();
     pwm_init();
-    arm_rfft_fast_init_f32(&fft_inst, NOISE_CUT_LENGTH);
+    arm_rfft_fast_init_f32(&fft_inst, NOISE_CUT_LENGTH*2);
     timers_init();
     buttons_leds_init(&erase_bonds);
     power_management_init();
