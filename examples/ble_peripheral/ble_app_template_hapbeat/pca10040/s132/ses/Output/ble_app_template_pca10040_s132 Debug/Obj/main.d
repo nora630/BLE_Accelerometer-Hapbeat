@@ -136,4 +136,12 @@ Output/ble_app_template_pca10040_s132\ Debug/Obj/main.o: \
  ../../../../../../components/libraries/balloc/nrf_balloc.h \
  ../../../../../../components/libraries/log/nrf_log_default_backends.h \
  ../../../../../../components/libraries/queue/nrf_queue.h \
- ../../../../../../components/libraries/scheduler/app_scheduler.h
+ ../../../../../../components/libraries/scheduler/app_scheduler.h \
+ input_data.h \
+ ../../../../../../components/toolchain/cmsis/dsp/include/arm_math.h \
+ ../../../../../../components/toolchain/cmsis/include/cmsis_compiler.h \
+ C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/math.h \
+ C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/float.h \
+ ../../../../../../components/toolchain/cmsis/dsp/include/arm_const_structs.h \
+ ../../../../../../components/toolchain/cmsis/dsp/include/arm_math.h \
+ ../../../../../../components/toolchain/cmsis/dsp/include/arm_common_tables.h

@@ -97,6 +97,7 @@
 #include "app_scheduler.h"
 
 #include "input_data.h"
+#include "arm_const_structs.h"
 
 #define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
@@ -129,7 +130,7 @@
 #define SEC_PARAM_MAX_KEY_SIZE          16                                      /**< Maximum encryption key size. */
 
 #define DEAD_BEEF                       0xDEADBEEF                              /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
-
+#define FPU_EXCEPTION_MASK               0x0000009F                      //!< FPU exception mask used to clear exceptions in FPSCR register.
 
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
@@ -147,6 +148,12 @@ BLE_ADVERTISING_DEF(m_advertising);                                             
 /* buffer size */
 #define BLE_BUF_WIDTH    20
 #define BLE_BUF_LENGTH   5
+
+#define FFT_SIZE    512
+
+arm_rfft_fast_instance_f32 fft_inst, fft_inst2;
+float32_t fft_in[FFT_SIZE], fft_out[FFT_SIZE];
+float32_t fft_mag[FFT_SIZE/2];
 
 // pwm variable
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
@@ -1281,21 +1288,66 @@ int main(void)
     //noisecut_filter_set();
 
     smb_motor_pin_init();
-    //pwm_init();
 
-    //ppi_init();
-    //ppi_enable();
-    //ppi_start();
+    for(int16_t i=0; i<FFT_SIZE; i++){
+        if(i%2==0){
+          float32_t c = speak[i/2];
+          fft_in[i] = c;
+        } else {
+          fft_in[i] = 0;
+        }    
+    }
 
     // Start execution.
     NRF_LOG_INFO("Template example started.");
-    //NRF_LOG_FLUSH();
-    //application_timers_start();
-
-    advertising_start(erase_bonds);
-    NRF_LOG_FLUSH();
 
     
+    advertising_start(erase_bonds);
+    //NRF_LOG_FLUSH();
+
+
+
+
+    float32_t max_val;
+    uint32_t max_val_index;
+
+
+    arm_rfft_fast_init_f32(&fft_inst, FFT_SIZE);
+    arm_rfft_fast_f32(&fft_inst, fft_in, fft_out, 0);
+    //arm_cmplx_mag_f32(fft_out, fft_mag, FFT_SIZE/2);
+    //arm_max_f32(fft_mag, FFT_SIZE/2, &max_val, &max_val_index);
+
+    float32_t fft_in2[FFT_SIZE], fft_out2[FFT_SIZE];
+
+    for(int16_t i=0; i<FFT_SIZE; i++){
+        float32_t c = fft_out[i];
+        fft_out2[i] = c;
+    }
+
+    /*
+    // fft debug   
+    for(int16_t i=0; i<FFT_SIZE/2; i++) {
+        //uint32_t c = 100 * (fft_mag[i] / max_val);
+        printf("%lf\n", fft_mag[i]);
+        nrf_delay_ms(10);
+    }
+    //printf("%d\n", max_val);
+    */
+
+    arm_rfft_fast_f32(&fft_inst, fft_out, fft_in, 1);
+    //arm_max_f32(fft_in2, FFT_SIZE, &max_val, &max_val_index);
+
+    
+    /*
+    // ifft debug
+    for(int32_t i=0; i<FFT_SIZE; i++){
+        //float32_t c = 100 * fft_in2[i] / max_val;
+        if(i%2==0) printf("%lf\n", fft_in[i]);
+        nrf_delay_ms(10);
+    } 
+    //printf("%d\n", max_val);
+    */
+
     // Enter main loop.
     do {
       //app_sched_execute();
