@@ -149,7 +149,7 @@ BLE_ADVERTISING_DEF(m_advertising);                                             
 #define BLE_BUF_WIDTH    20
 #define BLE_BUF_LENGTH   5
 
-#define FFT_SIZE    512
+#define FFT_SIZE    256
 
 arm_rfft_fast_instance_f32 fft_inst, fft_inst2;
 float32_t fft_in[FFT_SIZE], fft_out[FFT_SIZE];
@@ -1278,26 +1278,27 @@ int main(void)
 
     // Initialize.
     log_init();
-    pwm_init();
-    timers_init();
-    buttons_leds_init(&erase_bonds);
-    power_management_init();
-    ble_stack_init();
-    gap_params_init();
-    gatt_init();
+    //pwm_init();
+    //timers_init();
+    //buttons_leds_init(&erase_bonds);
+    //power_management_init();
+    //ble_stack_init();
+    //gap_params_init();
+    //gatt_init();
     //advertising_init();
-    services_init();
-    advertising_init();
-    conn_params_init();
-    peer_manager_init();
+    //services_init();
+    //advertising_init();
+    //conn_params_init();
+    //peer_manager_init();
 
     //low_filter_set();
-    high_filter_set();
-    band_filter_set();
+    //high_filter_set();
+    //band_filter_set();
     //noisecut_filter_set();
 
-    smb_motor_pin_init();
-
+    //smb_motor_pin_init();
+    
+    /*
     for(int16_t i=0; i<FFT_SIZE; i++){
         if(i%2==0){
           float32_t c = speak[i/2];
@@ -1305,13 +1306,13 @@ int main(void)
         } else {
           fft_in[i] = 0;
         }    
-    }
+    } */
 
     // Start execution.
     NRF_LOG_INFO("Template example started.");
 
     
-    advertising_start(erase_bonds);
+    //advertising_start(erase_bonds);
     //NRF_LOG_FLUSH();
 
 
@@ -1319,19 +1320,42 @@ int main(void)
 
     float32_t max_val;
     uint32_t max_val_index;
-
-
     arm_rfft_fast_init_f32(&fft_inst, FFT_SIZE);
-    arm_rfft_fast_f32(&fft_inst, fft_in, fft_out, 0);
+    
+    float32_t maxY[FFT_SIZE/2];
+    for(int16_t i=0; i<FFT_SIZE/2; i++) maxY[i] = 0;
+
+    for(int16_t i=0; i<35; i++)
+    {
+        for(int16_t j=0; j<FFT_SIZE/2; j++) 
+        {
+            fft_in[2*j] = speak[FFT_SIZE/2*i+j];
+            fft_in[2*j+1] = 0;
+        }
+        arm_rfft_fast_f32(&fft_inst, fft_in, fft_out, 0);
+        arm_cmplx_mag_f32(fft_out, fft_mag, FFT_SIZE/2);
+
+        for(int16_t j=0; j<FFT_SIZE/2; j++)
+        {
+            if (maxY[j]<fft_mag[j]) maxY[j] = fft_mag[j];
+        }
+    }
+
+    for(int16_t j=0; j<FFT_SIZE/2; j++){
+        printf("%lf\n", maxY[j]);
+        nrf_delay_ms(10);
+    }
+
     //arm_cmplx_mag_f32(fft_out, fft_mag, FFT_SIZE/2);
     //arm_max_f32(fft_mag, FFT_SIZE/2, &max_val, &max_val_index);
-
+    /*
     float32_t fft_in2[FFT_SIZE], fft_out2[FFT_SIZE];
 
     for(int16_t i=0; i<FFT_SIZE; i++){
         float32_t c = fft_out[i];
         fft_out2[i] = c;
     }
+    */
 
     /*
     // fft debug   
@@ -1343,7 +1367,7 @@ int main(void)
     //printf("%d\n", max_val);
     */
 
-    arm_rfft_fast_f32(&fft_inst, fft_out, fft_in, 1);
+    //arm_rfft_fast_f32(&fft_inst, fft_out, fft_in, 1);
     //arm_max_f32(fft_in2, FFT_SIZE, &max_val, &max_val_index);
 
     
@@ -1360,7 +1384,7 @@ int main(void)
     // Enter main loop.
     do {
       //app_sched_execute();
-      idle_state_handle();
+      //idle_state_handle();
     } while (true);
 
 }
