@@ -286,16 +286,25 @@ void high_filter_set(void)
     //omega = 2.0f * 3.14159265f * freq / samplerate;
     //alpha = sin(omega) / (2.0f * q);
 
-    // cut f = 0.01Hz
+    // cut f = 0.001 * 500
+    a0 =   1;
+    a1 =   -0.9969;
+    //a2 =   1.0f - alpha;
+    b0 =  0.9984;
+    b1 = -0.9984;
+
+    /*
+    // cut f = 0.01 * 500
     a0 =   1;
     a1 =   -0.9691;
     //a2 =   1.0f - alpha;
     b0 =  0.9845;
     b1 = -0.9845;
     //b2 =  (1.0f + cos(omega)) / 2.0f;
+    */
 
     /*
-    // cut f = 0.1Hz
+    // cut f = 0.1 * 500 Hz
     a0 = 1;
     a1 = -0.7265;
     b0 = 0.8633;
