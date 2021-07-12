@@ -95,6 +95,7 @@
 
 #include "nrf_queue.h"
 #include "app_scheduler.h"
+#include "arm_const_structs.h"
 
 
 #define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
@@ -106,6 +107,7 @@
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
 
 #define PWM_INTERVAL                    APP_TIMER_TICKS(1)
+#define NOISE_CUT_INTERVAL              APP_TIMER_TICKS(256)
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
@@ -140,12 +142,15 @@ BLE_ADVERTISING_DEF(m_advertising);                                             
 #define IN1_PIN  (20)
 #define IN2_PIN  (28)
 
-/* PPI */
+
 #define PPI_TIMER3_INTERVAL   (1) // Timer interval in milliseconds, this is PWM Play interval. 
+
 
 /* buffer size */
 #define BLE_BUF_WIDTH    20
 #define BLE_BUF_LENGTH   5
+
+#define NOISE_CUT_LENGTH    256
 
 // pwm variable
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
@@ -174,10 +179,10 @@ static int16_t z;
 
 BLE_HPBS_DEF(m_hpbs);                                                             // Hapbeat Service instance
 APP_TIMER_DEF(m_pwm_timer_id);                                                    /**< PWM timer. */
+APP_TIMER_DEF(m_noise_cut_id);                                                    // noise cut timer
 
 
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
-
 
 /* filter setting */
 static  float in1, in2, out1, out2;
@@ -220,9 +225,10 @@ static int32_t bandIn[26];
 static uint8_t aData[20];
 const  uint8_t alen = 20;
 
-uint16_t dat = 0;
+//uint16_t dat = 0;
 
-NRF_QUEUE_DEF(uint8_t, m_byte_queue, 1024, NRF_QUEUE_MODE_NO_OVERFLOW);
+NRF_QUEUE_DEF(uint8_t, m_byte_queue, 4096, NRF_QUEUE_MODE_NO_OVERFLOW);
+NRF_QUEUE_DEF(int32_t, m_play_queue, 2048, NRF_QUEUE_MODE_NO_OVERFLOW);
 
 /* Buufer for samples read from a smartphone */
 typedef struct ArrayList
@@ -235,6 +241,8 @@ static array_list_t ble_buffer[BLE_BUF_LENGTH];
 static uint8_t index = 0;
 
 volatile static flag = false;
+
+static arm_rfft_fast_instance_f32   fft_inst;
 
 
 //**************************************** etc functions *********************************//
@@ -420,11 +428,11 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         
         if(!nrf_queue_is_empty(&m_byte_queue))
         {
-            ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
+            //ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
             //APP_ERROR_CHECK(err_code);
-            sum = dat;
-            sum = bandFilter(sum);
-            sum = filter(sum);
+            //sum = dat;
+            //sum = bandFilter(sum);
+            //sum = filter(sum);
         }
 
         //sum = dat;
@@ -597,15 +605,12 @@ static void pwm_update(void)
         sum = filter(sum);
     }
     */
-    if(nrf_queue_utilization_get(&m_byte_queue)>1)
+    if(!nrf_queue_is_empty(&m_play_queue))
     {
-        ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
+        ret_code_t err_code = nrf_queue_pop(&m_play_queue, &sum);
         //APP_ERROR_CHECK(err_code);
-        sum = (dat << 8) & 0xff00;
-        err_code = nrf_queue_pop(&m_byte_queue, &dat);
-        sum |= dat & 0xff;
         sum = bandFilter(sum);
-        sum = filter(sum);
+        //sum = filter(sum);
     }
 
     //printf("%d\n", sum);
@@ -633,6 +638,56 @@ static void pwm_timeout_handler(void * p_context)
     pwm_update();
 }
 
+static void noise_cut_update(void)
+{
+    float32_t fft_in[NOISE_CUT_LENGTH*2], fft_out[NOISE_CUT_LENGTH*2], fft_mag[NOISE_CUT_LENGTH], h[NOISE_CUT_LENGTH];
+    uint8_t dat;
+    int32_t d;
+    if(nrf_queue_utilization_get(&m_byte_queue)>=NOISE_CUT_LENGTH*2)
+    {
+        for(uint16_t i=0; i<NOISE_CUT_LENGTH; i++)
+        {
+            ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
+            //APP_ERROR_CHECK(err_code);
+            d = (dat << 8) & 0xff00;
+            err_code = nrf_queue_pop(&m_byte_queue, &dat);
+            d |= dat & 0xff;
+            d = filter(d);
+            fft_in[2*i] = d;
+            fft_in[2*i+1] = 0;
+        }
+
+        arm_rfft_fast_f32(&fft_inst, fft_in, fft_out, 0);
+        arm_cmplx_mag_f32(fft_out, fft_mag, NOISE_CUT_LENGTH);
+
+        for(uint16_t i=0; i<NOISE_CUT_LENGTH; i++)
+        {
+            h[i] = 1 - 500 / fft_mag[i];
+            if(h[i]<0) h[i] = 0;
+            fft_out[2*i] = h[i] * fft_out[2*i];
+            fft_out[2*i+1] = h[i] * fft_out[2*i+1];
+        }
+        arm_rfft_fast_f32(&fft_inst, fft_out, fft_in, 1);
+
+        for(uint16_t i=0; i<NOISE_CUT_LENGTH; i++)
+        {
+            int32_t dd;
+            if(!nrf_queue_is_full(&m_play_queue))
+            {
+                dd = fft_in[2*i];
+                ret_code_t err_code = nrf_queue_push(&m_play_queue, &dd);
+                //APP_ERROR_CHECK(err_code);
+            }
+        }
+    }    
+}
+
+static void noise_cut_timeout_handler(void * p_context)
+{
+    UNUSED_PARAMETER(p_context);
+    noise_cut_update();
+}
+
 
 /**@brief Function for the Timer initialization.
  *
@@ -647,6 +702,10 @@ static void timers_init(void)
     err_code = app_timer_create(&m_pwm_timer_id,
                                 APP_TIMER_MODE_REPEATED,
                                 pwm_timeout_handler);
+    APP_ERROR_CHECK(err_code);
+    err_code = app_timer_create(&m_noise_cut_id,
+                                APP_TIMER_MODE_REPEATED,
+                                noise_cut_timeout_handler);
     APP_ERROR_CHECK(err_code);
 
 }
@@ -824,12 +883,16 @@ static void application_timers_start(void)
     ret_code_t err_code;
     err_code = app_timer_start(m_pwm_timer_id, PWM_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
+    err_code = app_timer_start(m_noise_cut_id, NOISE_CUT_INTERVAL, NULL);
+    APP_ERROR_CHECK(err_code);
 }
 
 static void application_timers_stop(void)
 {
     ret_code_t err_code;
     err_code = app_timer_stop(m_pwm_timer_id);
+    APP_ERROR_CHECK(err_code);
+    err_code = app_timer_stop(m_noise_cut_id);
     APP_ERROR_CHECK(err_code);
 }
 
@@ -1168,6 +1231,7 @@ int main(void)
     // Initialize.
     log_init();
     pwm_init();
+    arm_rfft_fast_init_f32(&fft_inst, NOISE_CUT_LENGTH);
     timers_init();
     buttons_leds_init(&erase_bonds);
     power_management_init();
