@@ -442,7 +442,7 @@ void band_filter_set(void)
     for(int16_t i=0; i<bandsize-1; i++) bandIn[i] = 0;
     for(int16_t i=0; i<bandsize; i++){
         if(i==0) bandpass[i] += 1;
-        else bandpass[i] *= 4;
+        else bandpass[i] *= 8;
     }
     
 }
@@ -803,7 +803,7 @@ static void noise_cut_update(void)
 
         for(uint16_t i=0; i<NOISE_CUT_LENGTH; i++)
         {
-            h[i] = 1 - (maxH[i]-50) / fft_mag[i];
+            h[i] = 1 - (maxH[i]) / fft_mag[i];
             if(h[i]<0) h[i] = 0;
             fft_out[2*i] = h[i] * fft_out[2*i];
             fft_out[2*i+1] = h[i] * fft_out[2*i+1];
