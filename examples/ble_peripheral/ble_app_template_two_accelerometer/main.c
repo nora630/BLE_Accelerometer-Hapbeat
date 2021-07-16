@@ -646,7 +646,7 @@ void accel_data_send(void)
     m_send_done2 = false;
     for(uint16_t i=0; i<alen; i++){
         s = aData1[i] + aData2[i];
-        printf("%d\n", s);
+        //printf("%d\n", s);
         aData[2*i] = (s >> 8) & 0xff;
         aData[2*i+1] = s & 0xff;
     }

@@ -442,7 +442,7 @@ void band_filter_set(void)
     for(int16_t i=0; i<bandsize-1; i++) bandIn[i] = 0;
     for(int16_t i=0; i<bandsize; i++){
         if(i==0) bandpass[i] += 1;
-        else bandpass[i] *= 8;
+        else bandpass[i] *= 7;
     }
     
 }
