@@ -142,4 +142,5 @@ Output/ble_app_template_pca10040_s132\ Debug/Obj/main.o: \
  ../../../../../../components/toolchain/cmsis/include/cmsis_compiler.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/math.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/float.h \
- ../../../../../../components/toolchain/cmsis/dsp/include/arm_common_tables.h
+ ../../../../../../components/toolchain/cmsis/dsp/include/arm_common_tables.h \
+ adpcm.h

@@ -92,6 +92,8 @@
 #include "nrf_log_ctrl.h"
 #include "nrf_log_default_backends.h"
 
+#include "adpcm.h"
+
 
 #define DEVICE_NAME                     "Nordic_Template"                       /**< Name of device. Will be included in the advertising data. */
 #define MANUFACTURER_NAME               "NordicSemiconductor"                   /**< Manufacturer. Will be passed to Device Information Service. */
@@ -101,8 +103,8 @@
 #define APP_BLE_OBSERVER_PRIO           3                                       /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
 
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
+#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
+#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
 #define SLAVE_LATENCY                   0                                       /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)         /**< Connection supervisory timeout (4 seconds). */
 //#define APP_ADV_TIMEOUT_IN_SECONDS      180                                     /**< The advertising timeout in units of seconds. */
@@ -123,7 +125,7 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                              /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
-#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(10)                   // ble accel send interval
+#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(40)                   // ble accel send interval
 
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
@@ -134,9 +136,10 @@ APP_TIMER_DEF(m_accel_timer_id);                                                
 
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
-static uint8_t aData1[10];
-static uint8_t aData2[10];
-static uint16_t alen = 10;
+static uint8_t aData[20];
+static uint8_t aData1[40];
+static uint8_t aData2[40];
+static uint16_t alen = 40;
 static uint16_t asendlen = 20;
 
 
@@ -177,7 +180,9 @@ static uint16_t asendlen = 20;
 
 /* buffer size */
 #define TWIM_RX_BUF_WIDTH    6
-#define TWIM_RX_BUF_LENGTH  10 
+#define TWIM_RX_BUF_LENGTH  40
+
+static struct ADPCMstate state;
 
 /* Indicates if operation on TWI has ended. */
 static volatile bool m_xfer_done1 = false;
@@ -632,6 +637,27 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
     }
 }
 
+void adpcm_state_init(void)
+{
+    state.prevsample = 0;
+    state.previndex = 0;
+}
+
+void adpcm_encoder(void)
+{
+    int16_t s;
+    for(int16_t i=0; i<alen; i++)
+    {
+        s = aData1[i] + aData2[i];
+        if(i%2){
+            aData[i/2] |= ADPCMEncoder(s, &state);
+        } else {
+            aData[i/2] = ADPCMEncoder(s, &state);
+            aData[i/2] = (aData[i/2] << 4) & 0xf0;
+        }
+    }
+}
+
 /* Function for performing accel measurement and updating the tx accel characteristic in Accelerometer Service */
 void accel_data_send(void)
 {
@@ -639,17 +665,19 @@ void accel_data_send(void)
     //uint8_t aData[2] = {0x4d, 0x3a};
     //uint16_t alen = 2;
     //for (int i=0; i<4; i++) aData[i] |= 0x11 ;
-    uint8_t aData[20];
+    //uint8_t aData[20];
     uint16_t s;
     if(!(m_send_done1&&m_send_done2)) return;
     m_send_done1 = false;
     m_send_done2 = false;
+    adpcm_encoder();
+    /*
     for(uint16_t i=0; i<alen; i++){
         s = aData1[i] + aData2[i];
         //printf("%d\n", s);
         aData[2*i] = (s >> 8) & 0xff;
         aData[2*i+1] = s & 0xff;
-    }
+    } */
     err_code = ble_acs_accel_data_send(&m_acs, &aData, &asendlen);
     if((err_code != NRF_SUCCESS) &&
        (err_code != NRF_ERROR_INVALID_STATE) &&
@@ -1207,7 +1235,7 @@ int main(void)
     NRF_LOG_INFO("Template example started.");
     //NRF_LOG_FLUSH();
     //application_timers_start();
-
+    adpcm_state_init();
     advertising_start(erase_bonds);
     NRF_LOG_FLUSH();
 

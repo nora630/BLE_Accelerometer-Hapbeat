@@ -96,6 +96,7 @@
 #include "nrf_queue.h"
 #include "app_scheduler.h"
 #include "arm_const_structs.h"
+#include "adpcm.h"
 
 
 #define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
@@ -109,8 +110,8 @@
 #define PWM_INTERVAL                    APP_TIMER_TICKS(1)
 #define NOISE_CUT_INTERVAL              APP_TIMER_TICKS(128)
 
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
+#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
+#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
 #define SLAVE_LATENCY                   0                                       /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)         /**< Connection supervisory timeout (4 seconds). */
 //#define APP_ADV_TIMEOUT_IN_SECONDS      180                                     /**< The advertising timeout in units of seconds. */
@@ -151,6 +152,8 @@ BLE_ADVERTISING_DEF(m_advertising);                                             
 #define BLE_BUF_LENGTH   5
 
 #define NOISE_CUT_LENGTH    128
+
+static struct ADPCMstate state;
 
 // pwm variable
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
@@ -784,20 +787,36 @@ static void noise_cut_update(void)
     float32_t fft_in[NOISE_CUT_LENGTH*2], fft_out[NOISE_CUT_LENGTH*2], fft_mag[NOISE_CUT_LENGTH], h[NOISE_CUT_LENGTH];
     uint8_t dat;
     int32_t d;
-    if(nrf_queue_utilization_get(&m_byte_queue)>=NOISE_CUT_LENGTH*2)
+    if(nrf_queue_utilization_get(&m_byte_queue)>=NOISE_CUT_LENGTH/2)
     {
-        for(uint16_t i=0; i<NOISE_CUT_LENGTH; i++)
+        for(uint16_t i=0; i<NOISE_CUT_LENGTH/2; i++)
         {
             ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
+            d = ADPCMDecoder((dat >> 4) & 0x0f, &state);
+            //printf("%d\n", d);
+            d = filter(d);
+            //printf("%d\n", d);
+            fft_in[4*i] = d;
+            fft_in[4*i+1] = 0;
+
+            d = ADPCMDecoder(dat & 0x0f, &state);
+            //printf("%d\n", d);
+            d = filter(d);
+            //printf("%d\n", d);
+            fft_in[4*i+2] = d;
+            fft_in[4*i+3] = 0;
             //APP_ERROR_CHECK(err_code);
+            /*
             d = (dat << 8) & 0xff00;
             err_code = nrf_queue_pop(&m_byte_queue, &dat);
             d |= dat & 0xff;
             d = filter(d);
             fft_in[2*i] = d;
             fft_in[2*i+1] = 0;
+            */
         }
-
+        
+        
         arm_rfft_fast_f32(&fft_inst, fft_in, fft_out, 0);
         arm_cmplx_mag_f32(fft_out, fft_mag, NOISE_CUT_LENGTH);
 
@@ -809,7 +828,7 @@ static void noise_cut_update(void)
             fft_out[2*i+1] = h[i] * fft_out[2*i+1];
         }
         arm_rfft_fast_f32(&fft_inst, fft_out, fft_in, 1);
-
+        
         for(uint16_t i=0; i<NOISE_CUT_LENGTH; i++)
         {
             int32_t dd;
@@ -904,6 +923,12 @@ static void gatt_init(void)
 static void nrf_qwr_error_handler(uint32_t nrf_error)
 {
     APP_ERROR_HANDLER(nrf_error);
+}
+
+void adpcm_state_init(void)
+{
+    state.prevsample = 0;
+    state.previndex = 0;
 }
 
 /* Function for receiving the data from the smartphone */
@@ -1399,7 +1424,7 @@ int main(void)
     NRF_LOG_INFO("Template example started.");
     //NRF_LOG_FLUSH();
     //application_timers_start();
-
+    adpcm_state_init();
     advertising_start(erase_bonds);
     NRF_LOG_FLUSH();
 
