@@ -148,6 +148,10 @@
     <folder Name="Third_Parties">
       <file file_name="../../../../../../components/toolchain/cmsis/dsp/GCC/libarm_cortexM4lf_math.a" />
     </folder>
+    <folder Name="ADPCM">
+      <file file_name="adpcm.c" />
+      <file file_name="adpcm.h" />
+    </folder>
   </project>
   <configuration
     Name="Release"
