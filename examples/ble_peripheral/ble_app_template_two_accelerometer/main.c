@@ -101,8 +101,8 @@
 #define APP_BLE_OBSERVER_PRIO           3                                       /**< Application's BLE observer priority. You shouldn't need to modify this value. */
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
 
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
+#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
+#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
 #define SLAVE_LATENCY                   0                                       /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)         /**< Connection supervisory timeout (4 seconds). */
 //#define APP_ADV_TIMEOUT_IN_SECONDS      180                                     /**< The advertising timeout in units of seconds. */
@@ -134,9 +134,10 @@ APP_TIMER_DEF(m_accel_timer_id);                                                
 
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
-static uint8_t aData1[10];
-static uint8_t aData2[10];
-static uint16_t alen = 10;
+static uint8_t aData2[20];
+static uint8_t aData1[20];
+static uint8_t aData[20];
+static uint16_t alen = 20;
 static uint16_t asendlen = 20;
 
 
@@ -177,7 +178,7 @@ static uint16_t asendlen = 20;
 
 /* buffer size */
 #define TWIM_RX_BUF_WIDTH    6
-#define TWIM_RX_BUF_LENGTH  10 
+#define TWIM_RX_BUF_LENGTH  20 
 
 /* Indicates if operation on TWI has ended. */
 static volatile bool m_xfer_done1 = false;
@@ -259,12 +260,13 @@ void LIS2DH_set_mode(void)
     while (m_xfer_done1 == false);
     m_xfer_done1 = false;
 
+    /*
     m_xfer_done2 = false;
     err_code = nrf_drv_twi_tx(&m_twi2, LIS2DH_ADDR, reg, sizeof(reg), false);
     APP_ERROR_CHECK(err_code);
     while (m_xfer_done2 == false);
     m_xfer_done2 = false;
-
+    */
 }
 
 /**
@@ -311,7 +313,8 @@ void twi_init (void)
 
     err_code = nrf_drv_twi_init(&m_twi1, &twi_lis2dh_config1, twi_handler1, NULL);
     APP_ERROR_CHECK(err_code);
-
+    
+    /*
     const nrf_drv_twi_config_t twi_lis2dh_config2 = {
        .scl                = SCL2_PIN,
        .sda                = SDA2_PIN,
@@ -322,9 +325,10 @@ void twi_init (void)
 
     err_code = nrf_drv_twi_init(&m_twi2, &twi_lis2dh_config2, twi_handler2, NULL);
     APP_ERROR_CHECK(err_code);
+    */
 
     nrf_drv_twi_enable(&m_twi1);
-    nrf_drv_twi_enable(&m_twi2);
+    //nrf_drv_twi_enable(&m_twi2);
 }
 
 /*
@@ -369,12 +373,20 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
         sum = isqrt(sum);
         aData1[i] = (uint8_t)sum;
         //aData[i] = sum & 0x0f;
-        //printf("%d\n", aData[i]);
+        printf("%d\n", aData1[i]);
         //aData[2*i+1] = (sum >> 8) & 0x0f;
     }
     //printf("111  %d\n", sum);
 
-    //accel_data_send();
+    ret_code_t err_code = ble_acs_accel_data_send(&m_acs, &aData1, &asendlen);
+    if((err_code != NRF_SUCCESS) &&
+       (err_code != NRF_ERROR_INVALID_STATE) &&
+       (err_code != NRF_ERROR_RESOURCES) &&
+       (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+      )
+    {
+        APP_ERROR_HANDLER(err_code);
+    }
     m_send_done1 = true;
 
     nrf_drv_twi_xfer_desc_t xfer = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
@@ -385,7 +397,7 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
                      NRF_DRV_TWI_FLAG_NO_XFER_EVT_HANDLER   |
                      NRF_DRV_TWI_FLAG_REPEATED_XFER;
 
-    ret_code_t err_code = nrf_drv_twi_xfer(&m_twi1, &xfer, flags);
+    err_code = nrf_drv_twi_xfer(&m_twi1, &xfer, flags);
     APP_ERROR_CHECK(err_code);
 
 }
@@ -491,7 +503,7 @@ static void twi_accel_ppi_init(void)
     timer2_init();
 
     //setup timer3
-    timer3_init();
+    //timer3_init();
 
     nrf_drv_twi_xfer_desc_t xfer1 = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
                                       sizeof(m_dataReg), (uint8_t*)p_rx_buffer1, sizeof(p_rx_buffer1)  / TWIM_RX_BUF_LENGTH);
@@ -526,7 +538,7 @@ static void twi_accel_ppi_init(void)
                                                                              NRF_TIMER_TASK_COUNT));
     }
 
-
+    /*
     nrf_drv_twi_xfer_desc_t xfer2 = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
                                       sizeof(m_dataReg), (uint8_t*)p_rx_buffer2, sizeof(p_rx_buffer2)  / TWIM_RX_BUF_LENGTH);
 
@@ -555,6 +567,7 @@ static void twi_accel_ppi_init(void)
                                               nrf_drv_timer_task_address_get(&m_timer3,
                                                                              NRF_TIMER_TASK_COUNT));
     }
+    */
 }
 
 
@@ -565,17 +578,19 @@ static void twi_accel_ppi_enable(void)
     APP_ERROR_CHECK(err_code);
     err_code = nrf_drv_ppi_channel_enable(m_ppi_channel2);
     APP_ERROR_CHECK(err_code);
+    /*
     err_code = nrf_drv_ppi_channel_enable(m_ppi_channel3);
     APP_ERROR_CHECK(err_code);
     err_code = nrf_drv_ppi_channel_enable(m_ppi_channel4);
     APP_ERROR_CHECK(err_code);
+    */
 }
 
 void twi_start(void)
 {
     // enable the counter counting
     nrf_drv_timer_enable(&m_timer2);
-    nrf_drv_timer_enable(&m_timer3);
+    //nrf_drv_timer_enable(&m_timer3);
     
     //m_xfer_done1 = false;
     // enable timer triggering TWI transfer
@@ -1217,7 +1232,7 @@ int main(void)
     twi_accel_ppi_init();
     twi_accel_ppi_enable();
     twi_start();
-    application_timers_start();
+    //application_timers_start();
 
     // Enter main loop.
     for (;;)

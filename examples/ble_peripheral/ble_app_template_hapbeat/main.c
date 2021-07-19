@@ -107,8 +107,8 @@
 
 #define PWM_INTERVAL                    APP_TIMER_TICKS(1)
 
-#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
-#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(10, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
+#define MIN_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
+#define MAX_CONN_INTERVAL               MSEC_TO_UNITS(20, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
 #define SLAVE_LATENCY                   0                                       /**< Slave latency. */
 #define CONN_SUP_TIMEOUT                MSEC_TO_UNITS(4000, UNIT_10_MS)         /**< Connection supervisory timeout (4 seconds). */
 //#define APP_ADV_TIMEOUT_IN_SECONDS      180                                     /**< The advertising timeout in units of seconds. */
@@ -587,16 +587,18 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 static void pwm_update(void)
 {
     uint16_t *p_channels = (uint16_t *)&m_seq_values;
-    /*
+    
     if(!nrf_queue_is_empty(&m_byte_queue))
     {
+        uint8_t dat;
         ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
         //APP_ERROR_CHECK(err_code);
         sum = dat;
-        sum = bandFilter(sum);
+        //sum = bandFilter(sum);
         sum = filter(sum);
     }
-    */
+    
+    /*
     if(nrf_queue_utilization_get(&m_byte_queue)>1)
     {
         ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
@@ -604,20 +606,20 @@ static void pwm_update(void)
         sum = (dat << 8) & 0xff00;
         err_code = nrf_queue_pop(&m_byte_queue, &dat);
         sum |= dat & 0xff;
-        sum = bandFilter(sum);
+        //sum = bandFilter(sum);
         sum = filter(sum);
-    }
+    }*/
 
     //printf("%d\n", sum);
     
     if(sum>=0) motor_forward();
     else{
         motor_back();
-        sum *= -1;
+        //sum *= -1;
     }
     
     // 8192 x+y+z  32 x  
-    uint16_t value = m_motor_top - 7.5 * sum;//8192;//32 x;
+    uint16_t value = m_motor_top - 7.5 * abs(sum);//8192;//32 x;
     //uint16_t value = m_motor_top - m_motor_top * sum / 60;//8192;//32 x;
     if(value > m_motor_top) value = m_motor_top;
     else if(value < 0) value = 0;
