@@ -97,6 +97,7 @@
 #include "app_scheduler.h"
 #include "arm_const_structs.h"
 #include "adpcm.h"
+#include "input_data.h"
 
 
 #define DEVICE_NAME                     "hapbeat"                       /**< Name of device. Will be included in the advertising data. */
@@ -153,7 +154,12 @@ BLE_ADVERTISING_DEF(m_advertising);                                             
 
 #define NOISE_CUT_LENGTH    128
 
-static struct ADPCMstate state;
+#define FFT_SIZE      256
+float32_t fft_in[FFT_SIZE], fft_out[FFT_SIZE];
+float32_t fft_mag[FFT_SIZE/2];
+
+
+static struct ADPCMstate state, state1, state2;
 
 // pwm variable
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
@@ -927,8 +933,10 @@ static void nrf_qwr_error_handler(uint32_t nrf_error)
 
 void adpcm_state_init(void)
 {
-    state.prevsample = 0;
-    state.previndex = 0;
+    state1.prevsample = 0;
+    state1.previndex = 0;
+    state2.prevsample = 0;
+    state2.previndex = 0;
 }
 
 /* Function for receiving the data from the smartphone */
@@ -1396,24 +1404,24 @@ int main(void)
 
     // Initialize.
     log_init();
-    pwm_init();
+    //pwm_init();
     arm_rfft_fast_init_f32(&fft_inst, NOISE_CUT_LENGTH*2);
-    timers_init();
-    buttons_leds_init(&erase_bonds);
-    power_management_init();
-    ble_stack_init();
-    gap_params_init();
-    gatt_init();
+    //timers_init();
+    //buttons_leds_init(&erase_bonds);
+    //power_management_init();
+    //ble_stack_init();
+    //gap_params_init();
+    //gatt_init();
     //advertising_init();
-    services_init();
-    advertising_init();
-    conn_params_init();
-    peer_manager_init();
+    //services_init();
+    //advertising_init();
+    //conn_params_init();
+    //peer_manager_init();
 
     high_filter_set();
-    band_filter_set();
+    //band_filter_set();
 
-    smb_motor_pin_init();
+    //smb_motor_pin_init();
     //pwm_init();
 
     //ppi_init();
@@ -1425,14 +1433,58 @@ int main(void)
     //NRF_LOG_FLUSH();
     //application_timers_start();
     adpcm_state_init();
-    advertising_start(erase_bonds);
-    NRF_LOG_FLUSH();
+    //advertising_start(erase_bonds);
+    //NRF_LOG_FLUSH();
+
+    for(int16_t i=0; i<4480; i++){
+        int32_t d = filter((int32_t)speak[i]);
+        speak[i] = (float32_t)d;
+    }
+
+    for(int16_t i=0; i<4480/2; i++){
+        uint8_t code;
+        code = ADPCMEncoder((int16_t)speak[i], &state1);
+        code = (code << 4) & 0xf0;
+        code |= ADPCMEncoder((int16_t)speak[i], &state1);
+
+        int32_t d;
+        d = ADPCMDecoder((code >> 4) & 0x0f, &state2);
+        speak[i] = (float32_t)d;
+        d = ADPCMDecoder(code & 0x0f, &state2);
+        speak[i+1] = (float32_t)d;
+    }
+
+
+    
+    float32_t maxY[FFT_SIZE/2];
+    for(int16_t i=0; i<FFT_SIZE/2; i++) maxY[i] = 0;
+
+    for(int16_t i=18; i<35; i++)
+    {
+        for(int16_t j=0; j<FFT_SIZE/2; j++) 
+        {
+            fft_in[2*j] = speak[FFT_SIZE/2*i+j];
+            fft_in[2*j+1] = 0;
+        }
+        arm_rfft_fast_f32(&fft_inst, fft_in, fft_out, 0);
+        arm_cmplx_mag_f32(fft_out, fft_mag, FFT_SIZE/2);
+
+        for(int16_t j=0; j<FFT_SIZE/2; j++)
+        {
+            if (maxY[j]<fft_mag[j]) maxY[j] = fft_mag[j];
+        }
+    }
+
+    for(int16_t j=0; j<FFT_SIZE/2; j++){
+        printf("%lf\n", maxY[j]);
+        nrf_delay_ms(10);
+    }
 
     
     // Enter main loop.
     do {
       //app_sched_execute();
-      idle_state_handle();
+      //idle_state_handle();
     } while (true);
 
 }

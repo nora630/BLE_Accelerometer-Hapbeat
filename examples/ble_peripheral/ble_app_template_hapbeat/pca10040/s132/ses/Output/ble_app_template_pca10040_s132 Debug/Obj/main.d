@@ -143,4 +143,5 @@ Output/ble_app_template_pca10040_s132\ Debug/Obj/main.o: \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/math.h \
  C:/Program\ Files/SEGGER/SEGGER\ Embedded\ Studio\ for\ ARM\ 3.34/include/float.h \
  ../../../../../../components/toolchain/cmsis/dsp/include/arm_common_tables.h \
- adpcm.h
+ adpcm.h input_data.h \
+ ../../../../../../components/toolchain/cmsis/dsp/include/arm_math.h

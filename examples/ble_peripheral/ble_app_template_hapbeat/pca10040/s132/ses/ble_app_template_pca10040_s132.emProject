@@ -25,6 +25,7 @@
       gcc_entry_point="Reset_Handler"
       linker_output_format="hex"
       linker_printf_fmt_level="long"
+      linker_printf_fp_enabled="Double"
       linker_printf_width_precision_supported="Yes"
       linker_scanf_fmt_level="long"
       linker_section_placement_file="flash_placement.xml"
@@ -106,6 +107,7 @@
     <folder Name="Application">
       <file file_name="../../../main.c" />
       <file file_name="../config/sdk_config.h" />
+      <file file_name="input_data.h" />
     </folder>
     <folder Name="nRF_Segger_RTT">
       <file file_name="../../../../../../external/segger_rtt/SEGGER_RTT.c" />
