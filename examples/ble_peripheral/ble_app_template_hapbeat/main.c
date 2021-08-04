@@ -179,6 +179,9 @@ static int16_t x;
 static int16_t y;
 static int16_t z;
 
+static uint8_t code;
+static bool decode_flag = false;
+
 
 BLE_HPBS_DEF(m_hpbs);                                                             // Hapbeat Service instance
 APP_TIMER_DEF(m_pwm_timer_id);                                                    /**< PWM timer. */
@@ -740,23 +743,37 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
 static void pwm_update(void)
 {
     uint16_t *p_channels = (uint16_t *)&m_seq_values;
+
+    if(decode_flag){
+        sum = ADPCMDecoder(code & 0x0f, &state);
+        sum = filter(sum);
+        decode_flag = false;
+    } else {
+        if(!nrf_queue_is_empty(&m_byte_queue)){
+            ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &code);
+            sum = ADPCMDecoder((code >> 4) & 0x0f, &state);
+            sum = filter(sum);
+            decode_flag = true;
+        }
+    }
     /*
     if(!nrf_queue_is_empty(&m_byte_queue))
     {
-        ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
+        ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &code);
         //APP_ERROR_CHECK(err_code);
         sum = dat;
-        sum = bandFilter(sum);
+        //sum = bandFilter(sum);
         sum = filter(sum);
-    }
-    */
+    }*/
+    
+    /*
     if(!nrf_queue_is_empty(&m_play_queue))
     {
         ret_code_t err_code = nrf_queue_pop(&m_play_queue, &sum);
         //APP_ERROR_CHECK(err_code);
         sum = bandFilter(sum);
         //sum = filter(sum);
-    }
+    } */
 
     printf("%d\n", sum);
     
@@ -864,11 +881,13 @@ static void timers_init(void)
                                 APP_TIMER_MODE_REPEATED,
                                 pwm_timeout_handler);
     APP_ERROR_CHECK(err_code);
+
+    /*
     err_code = app_timer_create(&m_noise_cut_id,
                                 APP_TIMER_MODE_REPEATED,
                                 noise_cut_timeout_handler);
     APP_ERROR_CHECK(err_code);
-
+    */
 }
 
 
@@ -1050,8 +1069,10 @@ static void application_timers_start(void)
     ret_code_t err_code;
     err_code = app_timer_start(m_pwm_timer_id, PWM_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
+    /*
     err_code = app_timer_start(m_noise_cut_id, NOISE_CUT_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
+    */
 }
 
 static void application_timers_stop(void)
@@ -1059,8 +1080,10 @@ static void application_timers_stop(void)
     ret_code_t err_code;
     err_code = app_timer_stop(m_pwm_timer_id);
     APP_ERROR_CHECK(err_code);
+    /*
     err_code = app_timer_stop(m_noise_cut_id);
     APP_ERROR_CHECK(err_code);
+    */
 }
 
 /**@brief Function for putting the chip into sleep mode.
@@ -1398,7 +1421,7 @@ int main(void)
     // Initialize.
     log_init();
     pwm_init();
-    arm_rfft_fast_init_f32(&fft_inst, NOISE_CUT_LENGTH*2);
+    //arm_rfft_fast_init_f32(&fft_inst, NOISE_CUT_LENGTH*2);
     timers_init();
     buttons_leds_init(&erase_bonds);
     power_management_init();
