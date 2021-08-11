@@ -3949,7 +3949,7 @@
 // <e> NRFX_TIMER_CONFIG_LOG_ENABLED - Enables logging in the module.
 //==========================================================
 #ifndef NRFX_TIMER_CONFIG_LOG_ENABLED
-#define NRFX_TIMER_CONFIG_LOG_ENABLED 0
+#define NRFX_TIMER_CONFIG_LOG_ENABLED 1
 #endif
 // <o> NRFX_TIMER_CONFIG_LOG_LEVEL  - Default Severity level
  

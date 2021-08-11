@@ -318,7 +318,7 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
         sum = isqrt(sum);
         aData[i] = (uint8_t)sum;
         //aData[i] = sum & 0x0f;
-        //printf("%d\n", aData[i]);
+        printf("%d\n", aData[i]);
         //aData[2*i+1] = (sum >> 8) & 0x0f;
     }
 

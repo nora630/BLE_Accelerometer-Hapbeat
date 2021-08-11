@@ -775,7 +775,7 @@ static void pwm_update(void)
         //sum = filter(sum);
     } */
 
-    printf("%d\n", sum);
+    //printf("%d\n", sum);
     
     if(sum>=0) motor_forward();
     else{
@@ -784,13 +784,13 @@ static void pwm_update(void)
     }
     
     // 8192 x+y+z  32 x  
-    uint16_t value = m_motor_top - 7.5 * abs(sum);//8192;//32 x;
+    uint16_t value = m_motor_top - abs(sum);//8192;//32 x;
     //uint16_t value = m_motor_top - m_motor_top * sum / 60;//8192;//32 x;
     if(value > m_motor_top) value = m_motor_top;
     else if(value < 0) value = 0;
     p_channels[0] = value;
 
-    (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 40, NRF_DRV_PWM_FLAG_STOP);
+    (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 40, NRF_DRV_PWM_FLAG_LOOP);
        
 }
 

@@ -374,7 +374,7 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
         sum = isqrt(sum);
         aData1[i] = (uint8_t)sum;
         //aData[i] = sum & 0x0f;
-        //printf("%d\n", aData[i]);
+        printf("%d\n", aData1[i]);
         //aData[2*i+1] = (sum >> 8) & 0x0f;
     }
     //printf("111  %d\n", sum);
@@ -585,6 +585,17 @@ void twi_start(void)
     //m_xfer_done1 = false;
     // enable timer triggering TWI transfer
     nrf_drv_timer_enable(&m_timer1);
+}
+
+void twi_stop(void)
+{
+    // enable the counter counting
+    nrf_drv_timer_disable(&m_timer2);
+    nrf_drv_timer_disable(&m_timer3);
+    
+    //m_xfer_done1 = false;
+    // enable timer triggering TWI transfer
+    nrf_drv_timer_disable(&m_timer1);
 }
 
 /*******************************************************************************************************/
@@ -887,6 +898,14 @@ static void application_timers_start(void)
     APP_ERROR_CHECK(err_code);
 }
 
+static void application_timers_stop(void)
+{
+    ret_code_t err_code;
+    err_code = app_timer_stop(m_accel_timer_id);
+    APP_ERROR_CHECK(err_code);
+    
+}
+
 
 /**@brief Function for putting the chip into sleep mode.
  *
@@ -949,8 +968,11 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_DISCONNECTED:
-            NRF_LOG_INFO("Disconnected.");
+            //NRF_LOG_INFO("Disconnected.");
             // LED indication will be changed when advertising starts.
+            twi_stop();
+            application_timers_stop();
+            NRF_LOG_INFO("Disconnected.");
             break;
 
         case BLE_GAP_EVT_CONNECTED:
@@ -960,6 +982,8 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             err_code = nrf_ble_qwr_conn_handle_assign(&m_qwr, m_conn_handle);
             APP_ERROR_CHECK(err_code);
+            twi_start();
+            application_timers_start();
             break;
 
         case BLE_GAP_EVT_PHY_UPDATE_REQUEST:
@@ -1244,8 +1268,8 @@ int main(void)
     LIS2DH_set_mode();
     twi_accel_ppi_init();
     twi_accel_ppi_enable();
-    twi_start();
-    application_timers_start();
+    //twi_start();
+    //application_timers_start();
 
     // Enter main loop.
     for (;;)
