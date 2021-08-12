@@ -374,7 +374,7 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
         sum = isqrt(sum);
         aData1[i] = (uint8_t)sum;
         //aData[i] = sum & 0x0f;
-        printf("%d\n", aData1[i]);
+        //printf("%d\n", aData1[i]);
         //aData[2*i+1] = (sum >> 8) & 0x0f;
     }
     //printf("111  %d\n", sum);
@@ -968,11 +968,11 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
     switch (p_ble_evt->header.evt_id)
     {
         case BLE_GAP_EVT_DISCONNECTED:
-            //NRF_LOG_INFO("Disconnected.");
+            NRF_LOG_INFO("Disconnected.");
             // LED indication will be changed when advertising starts.
             twi_stop();
             application_timers_stop();
-            NRF_LOG_INFO("Disconnected.");
+            //NRF_LOG_INFO("Disconnected.");
             break;
 
         case BLE_GAP_EVT_CONNECTED:

@@ -1449,6 +1449,7 @@ int main(void)
     //NRF_LOG_FLUSH();
     //application_timers_start();
     adpcm_state_init();
+    //application_timers_start();
     advertising_start(erase_bonds);
     NRF_LOG_FLUSH();
 
