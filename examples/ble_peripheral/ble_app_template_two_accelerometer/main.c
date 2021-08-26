@@ -147,10 +147,10 @@ static uint16_t asendlen = 20;
 // twi communication
 //*****************************************************//
 /* SCL SDA PIN */
-#define SCL1_PIN    2
-#define SDA1_PIN    3
-#define SCL2_PIN    4
-#define SDA2_PIN    18
+#define SCL1_PIN    9
+#define SDA1_PIN    2
+#define SCL2_PIN    29
+#define SDA2_PIN    10
 
 
 /* TWI instance ID. */
