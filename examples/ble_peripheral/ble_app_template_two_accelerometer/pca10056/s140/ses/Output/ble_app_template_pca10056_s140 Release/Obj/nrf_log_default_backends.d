@@ -54,4 +54,4 @@ Output/ble_app_template_pca10056_s140\ Release/Obj/nrf_log_default_backends.o: \
  C:\Users\sho_o\labo\Nordic52SDK\nRF5SDK1702\nRF5_SDK_17.0.2\components\libraries\log\src\nrf_log_internal.h \
  ../../../../../../components/libraries/log/nrf_log_types.h \
  ../../../../../../components/libraries/util/nrf_assert.h \
- ../../../../../../components/libraries/log/nrf_log_backend_uart.h
+ ../../../../../../components/libraries/log/nrf_log_backend_rtt.h
