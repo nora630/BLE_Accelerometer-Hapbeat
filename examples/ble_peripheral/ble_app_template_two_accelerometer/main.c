@@ -482,7 +482,7 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
     }
     m_send_done2 = true;
     //accel_data_send();
-    printf("222  %d\n", aData2[0]);
+    //printf("222  %d\n", aData2[0]);
 
 
     nrf_drv_twi_xfer_desc_t xfer = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
