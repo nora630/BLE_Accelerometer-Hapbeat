@@ -262,17 +262,17 @@ void LIS2DH_set_mode(void)
     /* Writing to LIS2DH_CTR_REG set range and Low Power mode(ODR=10Hz) */
     //uint8_t reg[7] = {LIS2DH_CTRL_REG, LOW_POWER_MODE1, 0x00, 0x00, LIS2DH_RANGE_2GA, 0x00, 0x00};
     //uint8_t reg[2] = {LIS2DH_CTRL_REG1, LOW_POWER_MODE1};
-    uint8_t reg[2] = {LIS2DH_CTRL_REG1, HR_NORMAL_MODE2};
-    //uint8_t reg2[2] = {LIS2DH_CTRL_REG4, HR_MODE};
+    uint8_t reg[2] = {LIS2DH_CTRL_REG1, HR_NORMAL_MODE};
+    uint8_t reg2[2] = {LIS2DH_CTRL_REG4, HR_MODE};
     m_xfer_done1 = false;
     err_code = nrf_drv_twi_tx(&m_twi1, LIS2DH_ADDR, reg, sizeof(reg), false);
     APP_ERROR_CHECK(err_code);
     while (m_xfer_done1 == false);
     m_xfer_done1 = false;
-    //err_code = nrf_drv_twi_tx(&m_twi1, LIS2DH_ADDR, reg2, sizeof(reg2), false);
-    //APP_ERROR_CHECK(err_code);
-    //while (m_xfer_done1 == false);
-    //m_xfer_done1 = false;
+    err_code = nrf_drv_twi_tx(&m_twi1, LIS2DH_ADDR, reg2, sizeof(reg2), false);
+    APP_ERROR_CHECK(err_code);
+    while (m_xfer_done1 == false);
+    m_xfer_done1 = false;
     
 
     m_xfer_done2 = false;
@@ -280,10 +280,10 @@ void LIS2DH_set_mode(void)
     APP_ERROR_CHECK(err_code);
     while (m_xfer_done2 == false);
     m_xfer_done2 = false;
-    //err_code = nrf_drv_twi_tx(&m_twi2, LIS2DH_ADDR, reg2, sizeof(reg2), false);
-    //APP_ERROR_CHECK(err_code);
-    //while (m_xfer_done2 == false);
-    //m_xfer_done2 = false;
+    err_code = nrf_drv_twi_tx(&m_twi2, LIS2DH_ADDR, reg2, sizeof(reg2), false);
+    APP_ERROR_CHECK(err_code);
+    while (m_xfer_done2 == false);
+    m_xfer_done2 = false;
 
 }
 
@@ -382,14 +382,18 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
 
     for(int16_t i=0; i<alen; i++)
     {
-        //x = ((int8_t)p_rx_buffer1[i].buffer[1] << 8) ;//+ (int8_t)p_rx_buffer1[i].buffer[0]; // change 0 to i
-        //y = ((int8_t)p_rx_buffer1[i].buffer[3] << 8) ;//+ (int8_t)p_rx_buffer1[i].buffer[2];
-        //z = ((int8_t)p_rx_buffer1[i].buffer[5] << 8) ;//+ (int8_t)p_rx_buffer1[i].buffer[4];
+        //x = ((int8_t)p_rx_buffer1[i].buffer[1] << 8) ;//+ ((int8_t)p_rx_buffer1[i].buffer[0]); // change 0 to i
+        //x |= (p_rx_buffer1[i].buffer[0]);
+        //y = ((int8_t)p_rx_buffer1[i].buffer[3] << 8) ;//+ ((int8_t)p_rx_buffer1[i].buffer[2]);
+        //y |= ((int8_t)p_rx_buffer1[i].buffer[2]);
+        //z = ((int8_t)p_rx_buffer1[i].buffer[5] << 8) ;//+ ((int8_t)p_rx_buffer1[i].buffer[4]);
+        //z |= ((int8_t)p_rx_buffer1[i].buffer[4]);
         x = (int8_t)p_rx_buffer1[i].buffer[1];
         y = (int8_t)p_rx_buffer1[i].buffer[3];
         z = (int8_t)p_rx_buffer1[i].buffer[5];
         sum = x * x + y * y + z * z;
         sum = isqrt(sum);
+        //sum *= 3;
         aData1[i] = (uint8_t)sum;
         //aData[i] = sum & 0x0f;
         //printf("%d\n", aData1[i]);
@@ -425,9 +429,12 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         x = (int8_t)p_rx_buffer2[i].buffer[1]; // change 0 to i
         y = (int8_t)p_rx_buffer2[i].buffer[3];
         z = (int8_t)p_rx_buffer2[i].buffer[5];
-        //x = ((int8_t)p_rx_buffer2[i].buffer[1] << 8) ;//+ (int8_t)p_rx_buffer2[i].buffer[0]; // change 0 to i
-        //y = ((int8_t)p_rx_buffer2[i].buffer[3] << 8) ;//+ (int8_t)p_rx_buffer2[i].buffer[2];
-        //z = ((int8_t)p_rx_buffer2[i].buffer[5] << 8) ;//+ (int8_t)p_rx_buffer2[i].buffer[4];
+        //x = ((int8_t)p_rx_buffer2[i].buffer[1] << 8) ;//+ ((int8_t)p_rx_buffer2[i].buffer[0] >> 4); // change 0 to i
+        //x |= (p_rx_buffer2[i].buffer[0]);
+        //y = ((int8_t)p_rx_buffer2[i].buffer[3] << 8) ;//+ ((int8_t)p_rx_buffer2[i].buffer[2] >> 4);
+        //y |= ((int8_t)p_rx_buffer2[i].buffer[2]);
+        //z = ((int8_t)p_rx_buffer2[i].buffer[5] << 8) ;//+ ((int8_t)p_rx_buffer2[i].buffer[4] >> 4);
+        //z |= ((int8_t)p_rx_buffer2[i].buffer[4]);
         sum = x * x + y * y + z * z;
         sum = isqrt(sum);
         aData2[i] = (uint8_t)sum;

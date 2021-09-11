@@ -89,5 +89,5 @@
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="179" useTextEdit="1" useBinaryEdit="0" left="0" path="adpcm.c" debugPath="adpcm.c" selected="0" top="166" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="15" useTextEdit="1" useBinaryEdit="0" left="0" path="adpcm.h" debugPath="adpcm.h" selected="0" top="0" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="ble_app_template_pca10040_s132" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="" fileDialogInitialDirectory="C:/Users/sho_o/labo/Nordic52SDK/nRF5SDK1702/nRF5_SDK_17.0.2/components/toolchain/cmsis/dsp/GCC" debugSearchPath="" autoConnectCapabilities="3711"/>
+ <ARMCrossStudioWindow activeProject="ble_app_template_pca10040_s132" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="" fileDialogInitialDirectory="C:/Users/sho_o/labo/Nordic52SDK/nRF5SDK1702/nRF5_SDK_17.0.2/components/toolchain/cmsis/dsp/GCC" debugSearchPath="" autoConnectCapabilities="3199"/>
 </session>
