@@ -147,10 +147,10 @@ static uint16_t asendlen = 20;
 // twi communication
 //*****************************************************//
 /* SCL SDA PIN */
-#define SCL1_PIN    29 //9
-#define SDA1_PIN    10 //2
-#define SCL2_PIN    9 //29
-#define SDA2_PIN    2 //10
+#define SCL1_PIN    9//29 //9
+#define SDA1_PIN    2//10 //2
+#define SCL2_PIN    29//9 //29
+#define SDA2_PIN    10//2 //10
 
 
 /* TWI instance ID. */
@@ -178,7 +178,7 @@ static uint16_t asendlen = 20;
 #define HR_NORMAL_MODE2   0x77U // HR normal and ODR = 400Hz
 #define HR_NORMAL_MODE3   0x27U // HR normal and ODR = 10Hz
 
-#define HR_MODE           0x08U
+#define HR_MODE           0x38U
 
 /* PPI */
 #define PPI_TIMER1_INTERVAL   (1) // Timer interval in milliseconds, this is twi sampling rate. 
@@ -382,15 +382,15 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
 
     for(int16_t i=0; i<alen; i++)
     {
-        //x = ((int8_t)p_rx_buffer1[i].buffer[1] << 8) ;//+ ((int8_t)p_rx_buffer1[i].buffer[0]); // change 0 to i
-        //x |= (p_rx_buffer1[i].buffer[0]);
-        //y = ((int8_t)p_rx_buffer1[i].buffer[3] << 8) ;//+ ((int8_t)p_rx_buffer1[i].buffer[2]);
-        //y |= ((int8_t)p_rx_buffer1[i].buffer[2]);
-        //z = ((int8_t)p_rx_buffer1[i].buffer[5] << 8) ;//+ ((int8_t)p_rx_buffer1[i].buffer[4]);
-        //z |= ((int8_t)p_rx_buffer1[i].buffer[4]);
-        x = (int8_t)p_rx_buffer1[i].buffer[1];
-        y = (int8_t)p_rx_buffer1[i].buffer[3];
-        z = (int8_t)p_rx_buffer1[i].buffer[5];
+        x = ((int16_t)p_rx_buffer1[i].buffer[1] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer1[i].buffer[0]); // change 0 to i
+        x |= ((int8_t)p_rx_buffer1[i].buffer[0] >> 4) & 0x0f;
+        y = ((int16_t)p_rx_buffer1[i].buffer[3] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer1[i].buffer[2]);
+        y |= ((int8_t)p_rx_buffer1[i].buffer[2] >> 4) & 0x0f;
+        z = ((int16_t)p_rx_buffer1[i].buffer[5] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer1[i].buffer[4]);
+        z |= ((int8_t)p_rx_buffer1[i].buffer[4] >> 4) & 0x0f;
+        //x = (int16_t)p_rx_buffer1[i].buffer[1] << 4;
+        //y = (int16_t)p_rx_buffer1[i].buffer[3] << 4;
+        //z = (int16_t)p_rx_buffer1[i].buffer[5] << 4;
         sum = x * x + y * y + z * z;
         sum = isqrt(sum);
         //sum *= 3;
@@ -426,15 +426,15 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
 
     for(int16_t i=0; i<alen; i++)
     {
-        x = (int8_t)p_rx_buffer2[i].buffer[1]; // change 0 to i
-        y = (int8_t)p_rx_buffer2[i].buffer[3];
-        z = (int8_t)p_rx_buffer2[i].buffer[5];
-        //x = ((int8_t)p_rx_buffer2[i].buffer[1] << 8) ;//+ ((int8_t)p_rx_buffer2[i].buffer[0] >> 4); // change 0 to i
-        //x |= (p_rx_buffer2[i].buffer[0]);
-        //y = ((int8_t)p_rx_buffer2[i].buffer[3] << 8) ;//+ ((int8_t)p_rx_buffer2[i].buffer[2] >> 4);
-        //y |= ((int8_t)p_rx_buffer2[i].buffer[2]);
-        //z = ((int8_t)p_rx_buffer2[i].buffer[5] << 8) ;//+ ((int8_t)p_rx_buffer2[i].buffer[4] >> 4);
-        //z |= ((int8_t)p_rx_buffer2[i].buffer[4]);
+        //x = (int16_t)p_rx_buffer2[i].buffer[1] << 4; // change 0 to i
+        //y = (int16_t)p_rx_buffer2[i].buffer[3] << 4;
+        //z = (int16_t)p_rx_buffer2[i].buffer[5] << 4;
+        x = ((int16_t)p_rx_buffer2[i].buffer[1] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer2[i].buffer[0] >> 4); // change 0 to i
+        x |= ((int8_t)p_rx_buffer2[i].buffer[0] >> 4) & 0x0f;
+        y = ((int16_t)p_rx_buffer2[i].buffer[3] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer2[i].buffer[2] >> 4);
+        y |= ((int8_t)p_rx_buffer2[i].buffer[2] >> 4) & 0x0f;
+        z = ((int16_t)p_rx_buffer2[i].buffer[5] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer2[i].buffer[4] >> 4);
+        z |= ((int8_t)p_rx_buffer2[i].buffer[4] >> 4) & 0x0f;
         sum = x * x + y * y + z * z;
         sum = isqrt(sum);
         aData2[i] = (uint8_t)sum;
