@@ -164,7 +164,10 @@ static uint16_t asendlen = 20;
 #define LIS2DH_DATA_REG   0xA8U
 #define WHO_AM_I          0x0FU
 #define LIS2DH_CTRL_REG1  0x20U
+#define LIS2DH_CTRL_REG2  0x21U
 #define LIS2DH_CTRL_REG4  0x23U
+#define LIS2DH_CTRL_REG5  0x24U
+#define FIFO_CTRL_REG     0x2EU
 
 /* range */
 #define LIS2DH_RANGE_2GA    0x00U
@@ -179,6 +182,11 @@ static uint16_t asendlen = 20;
 #define HR_NORMAL_MODE3   0x27U // HR normal and ODR = 10Hz
 
 #define HR_MODE           0x38U
+
+#define HIGH_PASS_MODE    0xB8U
+
+#define FIFO_ENABLE       0x40U
+#define STREAM_MODE       0x80U
 
 /* PPI */
 #define PPI_TIMER1_INTERVAL   (1) // Timer interval in milliseconds, this is twi sampling rate. 
@@ -264,6 +272,9 @@ void LIS2DH_set_mode(void)
     //uint8_t reg[2] = {LIS2DH_CTRL_REG1, LOW_POWER_MODE1};
     uint8_t reg[2] = {LIS2DH_CTRL_REG1, HR_NORMAL_MODE};
     uint8_t reg2[2] = {LIS2DH_CTRL_REG4, HR_MODE};
+    uint8_t reg3[2] = {LIS2DH_CTRL_REG2, HIGH_PASS_MODE};
+    uint8_t reg4[2] = {LIS2DH_CTRL_REG5, FIFO_ENABLE};
+    uint8_t reg5[2] = {FIFO_CTRL_REG, STREAM_MODE};
     m_xfer_done1 = false;
     err_code = nrf_drv_twi_tx(&m_twi1, LIS2DH_ADDR, reg, sizeof(reg), false);
     APP_ERROR_CHECK(err_code);
@@ -273,6 +284,20 @@ void LIS2DH_set_mode(void)
     APP_ERROR_CHECK(err_code);
     while (m_xfer_done1 == false);
     m_xfer_done1 = false;
+    /*
+    //err_code = nrf_drv_twi_tx(&m_twi1, LIS2DH_ADDR, reg3, sizeof(reg3), false);
+    //APP_ERROR_CHECK(err_code);
+    //while (m_xfer_done1 == false);
+    //m_xfer_done1 = false;
+    err_code = nrf_drv_twi_tx(&m_twi1, LIS2DH_ADDR, reg4, sizeof(reg4), false);
+    APP_ERROR_CHECK(err_code);
+    while (m_xfer_done1 == false);
+    m_xfer_done1 = false;
+    err_code = nrf_drv_twi_tx(&m_twi1, LIS2DH_ADDR, reg5, sizeof(reg5), false);
+    APP_ERROR_CHECK(err_code);
+    while (m_xfer_done1 == false);
+    m_xfer_done1 = false;
+    */
     
 
     m_xfer_done2 = false;
@@ -284,7 +309,20 @@ void LIS2DH_set_mode(void)
     APP_ERROR_CHECK(err_code);
     while (m_xfer_done2 == false);
     m_xfer_done2 = false;
-
+    /*
+    //err_code = nrf_drv_twi_tx(&m_twi2, LIS2DH_ADDR, reg3, sizeof(reg3), false);
+    //APP_ERROR_CHECK(err_code);
+    //while (m_xfer_done2 == false);
+    //m_xfer_done2 = false;
+    err_code = nrf_drv_twi_tx(&m_twi2, LIS2DH_ADDR, reg4, sizeof(reg4), false);
+    APP_ERROR_CHECK(err_code);
+    while (m_xfer_done2 == false);
+    m_xfer_done2 = false;
+    err_code = nrf_drv_twi_tx(&m_twi2, LIS2DH_ADDR, reg5, sizeof(reg5), false);
+    APP_ERROR_CHECK(err_code);
+    while (m_xfer_done2 == false);
+    m_xfer_done2 = false;
+    */
 }
 
 /**
@@ -444,7 +482,7 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
     }
     m_send_done2 = true;
     //accel_data_send();
-    //printf("222  %d\n", sum);
+    printf("222  %d\n", aData2[0]);
 
 
     nrf_drv_twi_xfer_desc_t xfer = NRF_DRV_TWI_XFER_DESC_TXRX(LIS2DH_ADDR, m_dataReg, 
