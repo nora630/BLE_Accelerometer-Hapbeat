@@ -324,7 +324,7 @@ void twi_init (void)
     const nrf_drv_twi_config_t twi_lis2dh_config1 = {
        .scl                = SCL1_PIN,
        .sda                = SDA1_PIN,
-       .frequency          = NRF_TWI_FREQ_100K,
+       .frequency          = NRF_TWI_FREQ_250K,
        .interrupt_priority = APP_IRQ_PRIORITY_LOW,
        .clear_bus_init     = true
     };
@@ -335,7 +335,7 @@ void twi_init (void)
     const nrf_drv_twi_config_t twi_lis2dh_config2 = {
        .scl                = SCL2_PIN,
        .sda                = SDA2_PIN,
-       .frequency          = NRF_TWI_FREQ_100K,
+       .frequency          = NRF_TWI_FREQ_250K,
        .interrupt_priority = APP_IRQ_PRIORITY_LOW,
        .clear_bus_init     = true
     };
@@ -382,11 +382,11 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
 
     for(int16_t i=0; i<alen; i++)
     {
-        x = ((int16_t)p_rx_buffer1[i].buffer[1] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer1[i].buffer[0]); // change 0 to i
+        x = ((int8_t)p_rx_buffer1[i].buffer[1] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer1[i].buffer[0]); // change 0 to i
         x |= ((int8_t)p_rx_buffer1[i].buffer[0] >> 4) & 0x0f;
-        y = ((int16_t)p_rx_buffer1[i].buffer[3] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer1[i].buffer[2]);
+        y = ((int8_t)p_rx_buffer1[i].buffer[3] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer1[i].buffer[2]);
         y |= ((int8_t)p_rx_buffer1[i].buffer[2] >> 4) & 0x0f;
-        z = ((int16_t)p_rx_buffer1[i].buffer[5] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer1[i].buffer[4]);
+        z = ((int8_t)p_rx_buffer1[i].buffer[5] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer1[i].buffer[4]);
         z |= ((int8_t)p_rx_buffer1[i].buffer[4] >> 4) & 0x0f;
         //x = (int16_t)p_rx_buffer1[i].buffer[1] << 4;
         //y = (int16_t)p_rx_buffer1[i].buffer[3] << 4;
@@ -429,11 +429,11 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         //x = (int16_t)p_rx_buffer2[i].buffer[1] << 4; // change 0 to i
         //y = (int16_t)p_rx_buffer2[i].buffer[3] << 4;
         //z = (int16_t)p_rx_buffer2[i].buffer[5] << 4;
-        x = ((int16_t)p_rx_buffer2[i].buffer[1] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer2[i].buffer[0] >> 4); // change 0 to i
+        x = ((int8_t)p_rx_buffer2[i].buffer[1] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer2[i].buffer[0] >> 4); // change 0 to i
         x |= ((int8_t)p_rx_buffer2[i].buffer[0] >> 4) & 0x0f;
-        y = ((int16_t)p_rx_buffer2[i].buffer[3] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer2[i].buffer[2] >> 4);
+        y = ((int8_t)p_rx_buffer2[i].buffer[3] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer2[i].buffer[2] >> 4);
         y |= ((int8_t)p_rx_buffer2[i].buffer[2] >> 4) & 0x0f;
-        z = ((int16_t)p_rx_buffer2[i].buffer[5] << 4) & 0xfff0;//+ ((int8_t)p_rx_buffer2[i].buffer[4] >> 4);
+        z = ((int8_t)p_rx_buffer2[i].buffer[5] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer2[i].buffer[4] >> 4);
         z |= ((int8_t)p_rx_buffer2[i].buffer[4] >> 4) & 0x0f;
         sum = x * x + y * y + z * z;
         sum = isqrt(sum);
