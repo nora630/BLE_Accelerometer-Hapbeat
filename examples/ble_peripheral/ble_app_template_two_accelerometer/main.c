@@ -429,8 +429,9 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
         //x = (int16_t)p_rx_buffer1[i].buffer[1] << 4;
         //y = (int16_t)p_rx_buffer1[i].buffer[3] << 4;
         //z = (int16_t)p_rx_buffer1[i].buffer[5] << 4;
-        sum = x * x + y * y + z * z;
-        sum = isqrt(sum);
+        //sum = (x * x) + (y * y) + (z * z);
+        sum = x + y + z;
+        //sum = isqrt(sum);
         //sum *= 3;
         aData1[i] = (uint8_t)sum;
         //aData[i] = sum & 0x0f;
@@ -473,8 +474,9 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         y |= ((int8_t)p_rx_buffer2[i].buffer[2] >> 4) & 0x0f;
         z = ((int8_t)p_rx_buffer2[i].buffer[5] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer2[i].buffer[4] >> 4);
         z |= ((int8_t)p_rx_buffer2[i].buffer[4] >> 4) & 0x0f;
-        sum = x * x + y * y + z * z;
-        sum = isqrt(sum);
+        //sum = (x * x) + (y * y) + (z * z);
+        sum = x + y + z;
+        //sum = isqrt(sum);
         aData2[i] = (uint8_t)sum;
         //aData[i] = sum & 0x0f;
         //printf("%d\n", aData[i]);
