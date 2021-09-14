@@ -137,8 +137,8 @@ APP_TIMER_DEF(m_accel_timer_id);                                                
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
 static uint8_t aData[20];
-static uint8_t aData1[40];
-static uint8_t aData2[40];
+static int16_t aData1[40];
+static int16_t aData2[40];
 static uint16_t alen = 40;
 static uint16_t asendlen = 20;
 
@@ -238,6 +238,56 @@ static nrf_ppi_channel_t     m_ppi_channel4;
 
 /* etc.. */
 static uint32_t              m_evt_counter;
+
+/* filter setting */
+static  float in1, in2, out1, out2;
+static  float a0, a1, a2, b0, b1, b2;
+
+void high_filter_set(void)
+{
+    in1 = 0;
+    //in2 = 0;
+    out1 = 0;
+    //out2 = 0;
+    //omega = 2.0f * 3.14159265f * freq / samplerate;
+    //alpha = sin(omega) / (2.0f * q);
+
+    // cut f = 0.001 * 500 Hz
+    a0 =   1;
+    a1 =   -0.9969;
+    //a2 =   1.0f - alpha;
+    b0 =  0.9984;
+    b1 = -0.9984;
+    //b2 =  (1.0f + cos(omega)) / 2.0f;
+
+    /*
+    // cut f = 0.01 * 500 Hz
+    a0 =   1;
+    a1 =   -0.9691;
+    //a2 =   1.0f - alpha;
+    b0 =  0.9845;
+    b1 = -0.9845;
+    //b2 =  (1.0f + cos(omega)) / 2.0f;
+    */
+
+    /*
+    // cut f = 0.1 * 500 Hz
+    a0 = 1;
+    a1 = -0.7265;
+    b0 = 0.8633;
+    b1 = -0.8633;
+    */
+}
+
+int32_t filter(int32_t input)
+{
+    float output;
+    output = b0/a0 * (float)input + b1/a0 * in1 - a1/a0 * out1;
+    in1 = input;
+    out1 = output;
+  
+    return (int32_t)output;
+}
 
 // sqrt function
 int32_t isqrt(int32_t num) {
@@ -432,7 +482,7 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
         sum = x * x + y * y + z * z;
         sum = isqrt(sum);
         //sum *= 3;
-        aData1[i] = (uint8_t)sum;
+        aData1[i] = (int16_t)sum;
         //aData[i] = sum & 0x0f;
         //printf("%d\n", aData1[i]);
         //aData[2*i+1] = (sum >> 8) & 0x0f;
@@ -475,7 +525,7 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         z |= ((int8_t)p_rx_buffer2[i].buffer[4] >> 4) & 0x0f;
         sum = x * x + y * y + z * z;
         sum = isqrt(sum);
-        aData2[i] = (uint8_t)sum;
+        aData2[i] = (int16_t)sum;
         //aData[i] = sum & 0x0f;
         //printf("%d\n", aData[i]);
         //aData[2*i+1] = (sum >> 8) & 0x0f;
@@ -725,7 +775,9 @@ void adpcm_encoder(void)
     int16_t s;
     for(int16_t i=0; i<alen; i++)
     {
-        s = aData1[i] + aData2[i];
+        //s = (int16_t)filter(aData1[i]) + (int16_t)filter(aData2[i]);
+        s = (int16_t)(aData1[i]) + (int16_t)(aData2[i]);
+        //s = (int16_t)filter(s);
         //printf("%d\n", s);
         if(i%2){
             aData[i/2] |= ADPCMEncoder(s, &state);
@@ -734,6 +786,7 @@ void adpcm_encoder(void)
             aData[i/2] = (aData[i/2] << 4) & 0xf0;
         }
     }
+    printf("%d\n", s);
 }
 
 /* Function for performing accel measurement and updating the tx accel characteristic in Accelerometer Service */
@@ -1326,6 +1379,7 @@ int main(void)
     NRF_LOG_INFO("Template example started.");
     //NRF_LOG_FLUSH();
     //application_timers_start();
+    high_filter_set();
     adpcm_state_init();
     advertising_start(erase_bonds);
     NRF_LOG_FLUSH();
