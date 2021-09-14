@@ -246,9 +246,9 @@ static  float a0, a1, a2, b0, b1, b2;
 void high_filter_set(void)
 {
     in1 = 0;
-    //in2 = 0;
+    in2 = 0;
     out1 = 0;
-    //out2 = 0;
+    out2 = 0;
     //omega = 2.0f * 3.14159265f * freq / samplerate;
     //alpha = sin(omega) / (2.0f * q);
 
@@ -279,7 +279,7 @@ void high_filter_set(void)
     */
 }
 
-int32_t filter(int32_t input)
+int32_t filter1(int32_t input)
 {
     float output;
     output = b0/a0 * (float)input + b1/a0 * in1 - a1/a0 * out1;
@@ -288,6 +288,18 @@ int32_t filter(int32_t input)
   
     return (int32_t)output;
 }
+
+int32_t filter2(int32_t input)
+{
+    float output;
+    output = b0/a0 * (float)input + b1/a0 * in2 - a1/a0 * out2;
+    in2 = input;
+    out2 = output;
+  
+    return (int32_t)output;
+}
+
+
 
 // sqrt function
 int32_t isqrt(int32_t num) {
@@ -775,7 +787,7 @@ void adpcm_encoder(void)
     int16_t s;
     for(int16_t i=0; i<alen; i++)
     {
-        //s = (int16_t)filter(aData1[i]) + (int16_t)filter(aData2[i]);
+        //s = (int16_t)filter1(aData1[i]) + (int16_t)filter2(aData2[i]);
         s = (int16_t)(aData1[i]) + (int16_t)(aData2[i]);
         //s = (int16_t)filter(s);
         //printf("%d\n", s);
