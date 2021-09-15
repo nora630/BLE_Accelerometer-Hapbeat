@@ -137,8 +137,8 @@ APP_TIMER_DEF(m_accel_timer_id);                                                
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
 static uint8_t aData[20];
-static int16_t aData1[40];
-static int16_t aData2[40];
+static int32_t aData1[40];
+static int32_t aData2[40];
 static uint16_t alen = 40;
 static uint16_t asendlen = 20;
 
@@ -482,20 +482,26 @@ static void timer2_handler(nrf_timer_event_t event_type, void * p_context)
 
     for(int16_t i=0; i<alen; i++)
     {
-        x = ((int8_t)p_rx_buffer1[i].buffer[1] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer1[i].buffer[0]); // change 0 to i
-        x |= ((int8_t)p_rx_buffer1[i].buffer[0] >> 4) & 0x0f;
-        y = ((int8_t)p_rx_buffer1[i].buffer[3] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer1[i].buffer[2]);
-        y |= ((int8_t)p_rx_buffer1[i].buffer[2] >> 4) & 0x0f;
-        z = ((int8_t)p_rx_buffer1[i].buffer[5] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer1[i].buffer[4]);
-        z |= ((int8_t)p_rx_buffer1[i].buffer[4] >> 4) & 0x0f;
+        //x = ((int8_t)p_rx_buffer1[i].buffer[1] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer1[i].buffer[0]); // change 0 to i
+        //x |= ((int8_t)p_rx_buffer1[i].buffer[0] >> 4) & 0x0f;
+        //y = ((int8_t)p_rx_buffer1[i].buffer[3] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer1[i].buffer[2]);
+        //y |= ((int8_t)p_rx_buffer1[i].buffer[2] >> 4) & 0x0f;
+        //z = ((int8_t)p_rx_buffer1[i].buffer[5] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer1[i].buffer[4]);
+        //z |= ((int8_t)p_rx_buffer1[i].buffer[4] >> 4) & 0x0f;
         //x = (int16_t)p_rx_buffer1[i].buffer[1] << 4;
         //y = (int16_t)p_rx_buffer1[i].buffer[3] << 4;
         //z = (int16_t)p_rx_buffer1[i].buffer[5] << 4;
         //sum = x * x + y * y + z * z;
+        x = ((int8_t)p_rx_buffer1[i].buffer[1] << 8) & 0xff00;//+ ((int8_t)p_rx_buffer1[i].buffer[0]); // change 0 to i
+        x |= ((uint8_t)p_rx_buffer1[i].buffer[0]) & 0xf0;
+        y = ((int8_t)p_rx_buffer1[i].buffer[3] << 8) & 0xff00;//+ ((int8_t)p_rx_buffer1[i].buffer[2]);
+        y |= ((uint8_t)p_rx_buffer1[i].buffer[2]) & 0xf0;
+        z = ((int8_t)p_rx_buffer1[i].buffer[5] << 8) & 0xff00;//+ ((int8_t)p_rx_buffer1[i].buffer[4]);
+        z |= ((uint8_t)p_rx_buffer1[i].buffer[4]) & 0xf0;
         sum = x + y + z;
         //sum = isqrt(sum);
         //sum *= 3;
-        aData1[i] = (int16_t)sum;
+        aData1[i] = sum;//(int16_t)sum;
         //aData[i] = sum & 0x0f;
         //printf("%d\n", aData1[i]);
         //aData[2*i+1] = (sum >> 8) & 0x0f;
@@ -530,16 +536,23 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
         //x = (int16_t)p_rx_buffer2[i].buffer[1] << 4; // change 0 to i
         //y = (int16_t)p_rx_buffer2[i].buffer[3] << 4;
         //z = (int16_t)p_rx_buffer2[i].buffer[5] << 4;
-        x = ((int8_t)p_rx_buffer2[i].buffer[1] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer2[i].buffer[0] >> 4); // change 0 to i
-        x |= ((int8_t)p_rx_buffer2[i].buffer[0] >> 4) & 0x0f;
-        y = ((int8_t)p_rx_buffer2[i].buffer[3] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer2[i].buffer[2] >> 4);
-        y |= ((int8_t)p_rx_buffer2[i].buffer[2] >> 4) & 0x0f;
-        z = ((int8_t)p_rx_buffer2[i].buffer[5] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer2[i].buffer[4] >> 4);
-        z |= ((int8_t)p_rx_buffer2[i].buffer[4] >> 4) & 0x0f;
+        
+        //x = ((int8_t)p_rx_buffer2[i].buffer[1] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer2[i].buffer[0] >> 4); // change 0 to i
+        //x |= ((int8_t)p_rx_buffer2[i].buffer[0] >> 4) & 0x0f;
+        //y = ((int8_t)p_rx_buffer2[i].buffer[3] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer2[i].buffer[2] >> 4);
+        //y |= ((int8_t)p_rx_buffer2[i].buffer[2] >> 4) & 0x0f;
+        //z = ((int8_t)p_rx_buffer2[i].buffer[5] << 4) & 0x0ff0;//+ ((int8_t)p_rx_buffer2[i].buffer[4] >> 4);
+        //z |= ((int8_t)p_rx_buffer2[i].buffer[4] >> 4) & 0x0f;
+        x = ((int8_t)p_rx_buffer2[i].buffer[1] << 8) & 0xff00;//+ ((int8_t)p_rx_buffer1[i].buffer[0]); // change 0 to i
+        x |= ((uint8_t)p_rx_buffer2[i].buffer[0]) & 0xf0;
+        y = ((int8_t)p_rx_buffer2[i].buffer[3] << 8) & 0xff00;//+ ((int8_t)p_rx_buffer1[i].buffer[2]);
+        y |= ((uint8_t)p_rx_buffer2[i].buffer[2]) & 0xf0;
+        z = ((int8_t)p_rx_buffer2[i].buffer[5] << 8) & 0xff00;//+ ((int8_t)p_rx_buffer1[i].buffer[4]);
+        z |= ((uint8_t)p_rx_buffer2[i].buffer[4]) & 0xf0;
         //sum = x * x + y * y + z * z;
         //sum = isqrt(sum);
         sum = x + y + z;
-        aData2[i] = (int16_t)sum;
+        aData2[i] = sum;//(int16_t)sum;
         //aData[i] = sum & 0x0f;
         //printf("%d\n", aData[i]);
         //aData[2*i+1] = (sum >> 8) & 0x0f;
@@ -786,11 +799,13 @@ void adpcm_state_init(void)
 
 void adpcm_encoder(void)
 {
-    int16_t s;
+    int32_t s;
     for(int16_t i=0; i<alen; i++)
     {
         //s = (int16_t)filter1(aData1[i]) + (int16_t)filter2(aData2[i]);
-        s = (int16_t)(aData1[i]) + (int16_t)(aData2[i]);
+        //s = (int16_t)(aData1[i]) + (int16_t)(aData2[i]);
+        s = aData1[i] + aData2[i];
+        if(i==0) printf("%d\n", s);
         //s = (int16_t)filter(s);
         //printf("%d\n", s);
         if(i%2){
@@ -800,7 +815,7 @@ void adpcm_encoder(void)
             aData[i/2] = (aData[i/2] << 4) & 0xf0;
         }
     }
-    printf("%d\n", s);
+    //printf("%d\n", s);
 }
 
 /* Function for performing accel measurement and updating the tx accel characteristic in Accelerometer Service */
