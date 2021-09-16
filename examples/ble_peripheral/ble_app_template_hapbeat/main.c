@@ -790,7 +790,7 @@ static void pwm_update(void)
     else if(value < 0) value = 0;
     p_channels[0] = value;
 
-    (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 40, NRF_DRV_PWM_FLAG_LOOP);
+    (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 1, NRF_DRV_PWM_FLAG_LOOP);
        
 }
 
