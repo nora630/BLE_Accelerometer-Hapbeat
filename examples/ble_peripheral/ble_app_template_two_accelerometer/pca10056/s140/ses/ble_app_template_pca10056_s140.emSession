@@ -58,7 +58,7 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1307" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="491" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1389" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="829" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1" useTextEdit="1" useBinaryEdit="0" left="0" path="ble_acs.c" debugPath="ble_acs.c" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="64" useTextEdit="1" useBinaryEdit="0" left="0" path="ble_acs.h" debugPath="ble_acs.h" selected="0" top="52" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="179" useTextEdit="1" useBinaryEdit="0" left="0" path="adpcm.c" debugPath="adpcm.c" selected="0" top="156" codecName="Default"/>
@@ -76,5 +76,5 @@
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="71" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/mdk/ses_startup_nrf52840.s" debugPath="../../../../../../modules/nrfx/mdk/ses_startup_nrf52840.s" selected="0" top="56" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="116" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/hal/nrf_twi.h" debugPath="../../../../../../modules/nrfx/hal/nrf_twi.h" selected="0" top="99" codecName="Default"/>
  </Files>
- <ARMCrossStudioWindow activeProject="ble_app_template_pca10056_s140" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Debug" debugSearchFileMap="" fileDialogInitialDirectory="C:/Users/sho_o/labo/Nordic52SDK/nRF5SDK1702/nRF5_SDK_17.0.2/components/drivers_ext/lis2dh12" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="ble_app_template_pca10056_s140" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="" fileDialogInitialDirectory="C:/Users/sho_o/labo/Nordic52SDK/nRF5SDK1702/nRF5_SDK_17.0.2/components/drivers_ext/lis2dh12" debugSearchPath="" autoConnectCapabilities="3711"/>
 </session>
