@@ -108,7 +108,6 @@
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
 
 #define PWM_INTERVAL                    APP_TIMER_TICKS(1)
-#define NOISE_CUT_INTERVAL              APP_TIMER_TICKS(128)
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
@@ -143,23 +142,14 @@ BLE_ADVERTISING_DEF(m_advertising);                                             
 #define IN1_PIN  (20)
 #define IN2_PIN  (28)
 
-
-#define PPI_TIMER3_INTERVAL   (1) // Timer interval in milliseconds, this is PWM Play interval. 
-
-
 /* buffer size */
 #define BLE_BUF_WIDTH    20
 #define BLE_BUF_LENGTH   5
-
-#define NOISE_CUT_LENGTH    128
 
 static struct ADPCMstate state;
 
 // pwm variable
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
-static const nrf_drv_timer_t m_timer3 = NRF_DRV_TIMER_INSTANCE(3);
-static nrf_ppi_channel_t     m_ppi_channel3;
-
 
 static uint16_t const           m_motor_top  = 400;
 static uint16_t                 m_motor_step1 = 400;
@@ -185,177 +175,12 @@ static bool decode_flag = false;
 
 BLE_HPBS_DEF(m_hpbs);                                                             // Hapbeat Service instance
 APP_TIMER_DEF(m_pwm_timer_id);                                                    /**< PWM timer. */
-APP_TIMER_DEF(m_noise_cut_id);                                                    // noise cut timer
-
 
 static uint16_t m_conn_handle = BLE_CONN_HANDLE_INVALID;                        /**< Handle of the current connection. */
 
 /* filter setting */
 static  float in1, in2, out1, out2;
 static  float a0, a1, a2, b0, b1, b2;
-
-static   float bandpass[] = {
-             0.0000000000000000 ,
-            -0.0000248598847283 ,
-            0.0001516523246382 ,
-            -0.0001834267075605 ,
-            0.0019997002466150 ,
-            0.0085820310275102 ,
-            -0.0018208819783212 ,
-            0.0228852711768900 ,
-            -0.0180580186076670 ,
-            -0.0542808170366290 ,
-            -0.0099299349850613 ,
-            -0.2702649781457600 ,
-            0.0286165165403290 ,
-            0.5959259259259300 ,
-            0.0286165165403290 ,
-            -0.2702649781457600 ,
-            -0.0099299349850613 ,
-            -0.0542808170366290 ,
-            -0.0180580186076670 ,
-            0.0228852711768900 ,
-            -0.0018208819783212 ,
-            0.0085820310275102 ,
-            0.0019997002466150 ,
-            -0.0001834267075605 ,
-            0.0001516523246382 ,
-            -0.0000248598847283 ,
-            0.0000000000000000 ,
-
-          };
-
-static float32_t maxH[] = {
-350.724976,
-276.459717,
-261.41864,
-233.233215,
-234.194702,
-270.225037,
-226.98143,
-269.698853,
-268.461151,
-262.180939,
-267.006134,
-233.544617,
-278.873047,
-176.518646,
-233.387527,
-232.008636,
-257.125549,
-188.226166,
-222.72966,
-276.903442,
-182.567688,
-175.039169,
-225.598541,
-171.719086,
-147.93544,
-158.23204,
-146.057648,
-163.926163,
-126.691414,
-146.816483,
-131.059311,
-126.536362,
-149.482437,
-98.119461,
-104.944954,
-107.108101,
-111.009338,
-101.710991,
-89.290054,
-83.71656,
-73.245529,
-74.694931,
-86.293861,
-64.300171,
-61.497021,
-46.326847,
-53.369846,
-66.486992,
-79.633041,
-55.820625,
-77.234825,
-55.628502,
-72.608147,
-71.01947,
-72.920654,
-67.440834,
-58.589024,
-69.17672,
-77.956528,
-73.891441,
-85.439651,
-76.184097,
-75.869949,
-78.797493,
-150,
-78.797485,
-75.869949,
-76.184097,
-85.439651,
-73.891441,
-77.956528,
-69.176712,
-58.589024,
-67.440849,
-72.920654,
-71.019478,
-72.608147,
-55.628498,
-77.234825,
-55.820633,
-79.633041,
-66.486992,
-53.369835,
-46.326847,
-61.497021,
-64.300171,
-86.293861,
-74.694946,
-73.245529,
-83.71656,
-89.290054,
-101.710991,
-111.009338,
-107.108101,
-104.944954,
-98.119461,
-149.482437,
-126.536362,
-131.059311,
-146.816498,
-126.691422,
-163.926163,
-146.057648,
-158.23204,
-147.93544,
-171.71907,
-225.598495,
-175.039169,
-182.567688,
-276.903442,
-222.72966,
-188.226166,
-257.125549,
-232.008636,
-233.387558,
-176.518646,
-278.873047,
-233.544617,
-267.006134,
-262.180939,
-268.461151,
-269.698853,
-226.98143,
-270.225037,
-234.194702,
-233.233231,
-261.41864,
-276.459717,
-          
-          };
 
 const   int16_t bandsize = 27;
 
@@ -367,7 +192,7 @@ const  uint8_t alen = 20;
 //uint16_t dat = 0;
 
 NRF_QUEUE_DEF(uint8_t, m_byte_queue, 4096, NRF_QUEUE_MODE_NO_OVERFLOW);
-NRF_QUEUE_DEF(int32_t, m_play_queue, 2048, NRF_QUEUE_MODE_NO_OVERFLOW);
+//NRF_QUEUE_DEF(int32_t, m_play_queue, 2048, NRF_QUEUE_MODE_NO_OVERFLOW);
 
 /* Buufer for samples read from a smartphone */
 typedef struct ArrayList
@@ -380,8 +205,6 @@ static array_list_t ble_buffer[BLE_BUF_LENGTH];
 static uint8_t index = 0;
 
 volatile static flag = false;
-
-static arm_rfft_fast_instance_f32   fft_inst;
 
 
 //**************************************** etc functions *********************************//
@@ -420,20 +243,20 @@ void high_filter_set(void)
     // cut f = 0.001 * 500 Hz
     a0 =   1;
     a1 =   -0.9969;
-    //a2 =   1.0f - alpha;
+    
     b0 =  0.9984;
     b1 = -0.9984;
-    //b2 =  (1.0f + cos(omega)) / 2.0f;
+    
 
-    /*
+    
     // cut f = 0.01 * 500 Hz
-    a0 =   1;
-    a1 =   -0.9691;
+    //a0 =   1;
+    //a1 =   -0.9691;
     //a2 =   1.0f - alpha;
-    b0 =  0.9845;
-    b1 = -0.9845;
+    //b0 =  0.9845;
+    //b1 = -0.9845;
     //b2 =  (1.0f + cos(omega)) / 2.0f;
-    */
+    
 
     /*
     // cut f = 0.1 * 500 Hz
@@ -442,16 +265,6 @@ void high_filter_set(void)
     b0 = 0.8633;
     b1 = -0.8633;
     */
-}
-
-void band_filter_set(void)
-{
-    for(int16_t i=0; i<bandsize-1; i++) bandIn[i] = 0;
-    for(int16_t i=0; i<bandsize; i++){
-        if(i==0) bandpass[i] += 1;
-        else bandpass[i] *= 8;
-    }
-    
 }
 
 
@@ -463,32 +276,6 @@ int32_t filter(int32_t input)
     in1 = input;
     out1 = output;
   
-    return (int32_t)output;
-}
-
-
-int32_t bandFilter(int32_t input)
-{
-    float output = 0;
-    for(int16_t i=0; i<bandsize; i++){
-        if(i==0) output += bandpass[i] * input;
-        else output += bandpass[i] * bandIn[bandsize-1-i];
-    }
-
-    int32_t temp1, temp2;
-
-    for(int16_t i=0; i<bandsize-1; i++){
-        if(i==0) {
-            temp1 = bandIn[bandsize-2];
-            //bandIn[bandsize-2] = (int32_t)output;
-            bandIn[bandsize-2] = input;
-        } else {
-            temp2 = bandIn[bandsize-2-i];
-            bandIn[bandsize-2-i] = temp1;
-            temp1 = temp2;
-        }
-    }
-
     return (int32_t)output;
 }
 
@@ -545,149 +332,6 @@ static void smb_motor_pin_init(void)
     nrf_gpio_cfg_output(IN2_PIN);
 
     nrf_gpio_pin_set(STBY_PIN);
-}
-
-/* PWM play handler */
-static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
-{
-    uint16_t *p_channels = (uint16_t *)&m_seq_values;
-        //if (!flag) return;
-        /*
-        uint16_t value = p_channels[0];
-        value += 1;
-        if(value>=400) 
-        {
-            value = 0;
-        }
-        if(flag) motor_forward();
-        else motor_back();
-        flag = !flag;
-        p_channels[0] = value;
-        */
-        //x = (((int8_t)p_rx_buffer[0].buffer[1]) << 8) + p_rx_buffer[0].buffer[0];
-        //y = (((int8_t)p_rx_buffer[0].buffer[3]) << 8) + p_rx_buffer[0].buffer[2];
-        //z = (((int8_t)p_rx_buffer[0].buffer[5]) << 8) + p_rx_buffer[0].buffer[4];
-        
-
-        //sum = aData[index];
-        
-
-        //sum = isqrt(sum);
-        
-        if(!nrf_queue_is_empty(&m_byte_queue))
-        {
-            //ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
-            //APP_ERROR_CHECK(err_code);
-            //sum = dat;
-            //sum = bandFilter(sum);
-            //sum = filter(sum);
-        }
-
-        //sum = dat;
-
-
-        //printf("%d\n", sum);
-        //sum -= 64;
-        //printf("%d\n", sum);
-        //printf("%d\n", sum);
-        //sum = lfilter(sum);
-
-        
-        
-        //sum = bandFilter(sum);
-        //sum = filter(sum);
-       
-
-
-        //if(sum<0) sum *= -1;
-        //NRF_LOG_INFO("%d", sum);
-        //NRF_LOG_FLUSH();
-
-        //printf("%d\n", sum);
-
-        //tmp = sum - preSum;
-        //motor_forward();
-        //printf("%d\n", tmp);
-        
-        if(sum>=0) motor_forward();
-        else{
-            motor_back();
-            sum *= -1;
-        }
-        
-        // 8192 x+y+z  32 x  
-        uint16_t value = m_motor_top - 7.5 * sum;//8192;//32 x;
-        //uint16_t value = m_motor_top - m_motor_top * sum / 60;//8192;//32 x;
-        if(value > m_motor_top) value = m_motor_top;
-        else if(value < 0) value = 0;
-        p_channels[0] = value;
-        /*
-        index++;
-        if(index>=20) 
-        {
-            index = 0;
-            //flag = false;
-        }
-        */
-        //if(index>=12) index = 0;
-}
-
-// Function for Timer 3 initialization
-static void timer3_init(void)
-{
-    nrf_drv_timer_config_t timer3_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
-    timer3_config.frequency = NRF_TIMER_FREQ_31250Hz;
-    ret_code_t err_code = nrf_drv_timer_init(&m_timer3, &timer3_config, timer3_handler);
-    APP_ERROR_CHECK(err_code);
-
-    nrf_drv_timer_extended_compare(&m_timer3,
-                                   NRF_TIMER_CC_CHANNEL0,
-                                   nrf_drv_timer_ms_to_ticks(&m_timer3,
-                                                             PPI_TIMER3_INTERVAL),
-                                   NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
-                                   true);
-}
-
-/* initialize twi & pwm ppi channel */
-static void ppi_init(void)
-{
-    ret_code_t err_code;
-    
-    err_code = nrf_drv_ppi_init();
-    APP_ERROR_CHECK(err_code);
-
-    // setup timer3
-    timer3_init();
-
-    
-    // set up PPI to play pwm
-    uint32_t pwm_start_task_addr = nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq,100, // more than 40
-                                        NRF_DRV_PWM_FLAG_STOP | NRF_DRV_PWM_FLAG_START_VIA_TASK);
-    err_code = nrf_drv_ppi_channel_alloc(&m_ppi_channel3);
-    APP_ERROR_CHECK(err_code);
-    err_code = nrf_drv_ppi_channel_assign(m_ppi_channel3,
-                                          nrf_drv_timer_event_address_get(&m_timer3,
-                                                                          NRF_TIMER_EVENT_COMPARE0),
-                                          pwm_start_task_addr);
-    APP_ERROR_CHECK(err_code);
-
-    
-}
-
-
-static void ppi_enable(void)
-{
-    ret_code_t err_code;
-    
-    err_code = nrf_drv_ppi_channel_enable(m_ppi_channel3);
-    APP_ERROR_CHECK(err_code);
-}
-
-void ppi_start(void)
-{
-    // enable timer triggering pwm
-     nrf_drv_timer_enable(&m_timer3);
-
 }
 
 /*******************************************************************************************************/
@@ -754,7 +398,10 @@ static void pwm_update(void)
             sum = ADPCMDecoder((code >> 4) & 0x0f, &state);
             sum = filter(sum);
             decode_flag = true;
-        }
+        } /*else {
+           nrf_drv_pwm_stop(&m_pwm0, false);
+           return;
+        } */
     }
     /*
     if(!nrf_queue_is_empty(&m_byte_queue))
@@ -790,7 +437,9 @@ static void pwm_update(void)
     else if(value < 0) value = 0;
     p_channels[0] = value;
 
-    (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 1, NRF_DRV_PWM_FLAG_LOOP);
+    if(sum==0) nrf_drv_pwm_stop(&m_pwm0, false);
+    else (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 1, NRF_DRV_PWM_FLAG_LOOP);
+    return;
        
 }
 
@@ -798,72 +447,6 @@ static void pwm_timeout_handler(void * p_context)
 {
     UNUSED_PARAMETER(p_context);
     pwm_update();
-}
-
-static void noise_cut_update(void)
-{
-    float32_t fft_in[NOISE_CUT_LENGTH*2], fft_out[NOISE_CUT_LENGTH*2], fft_mag[NOISE_CUT_LENGTH], h[NOISE_CUT_LENGTH];
-    uint8_t dat;
-    int32_t d;
-    if(nrf_queue_utilization_get(&m_byte_queue)>=NOISE_CUT_LENGTH/2)
-    {
-        for(uint16_t i=0; i<NOISE_CUT_LENGTH/2; i++)
-        {
-            ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &dat);
-            d = ADPCMDecoder((dat >> 4) & 0x0f, &state);
-            //printf("%d\n", d);
-            d = filter(d);
-            //printf("%d\n", d);
-            fft_in[4*i] = d;
-            fft_in[4*i+1] = 0;
-
-            d = ADPCMDecoder(dat & 0x0f, &state);
-            //printf("%d\n", d);
-            d = filter(d);
-            //printf("%d\n", d);
-            fft_in[4*i+2] = d;
-            fft_in[4*i+3] = 0;
-            //APP_ERROR_CHECK(err_code);
-            /*
-            d = (dat << 8) & 0xff00;
-            err_code = nrf_queue_pop(&m_byte_queue, &dat);
-            d |= dat & 0xff;
-            d = filter(d);
-            fft_in[2*i] = d;
-            fft_in[2*i+1] = 0;
-            */
-        }
-        
-        
-        arm_rfft_fast_f32(&fft_inst, fft_in, fft_out, 0);
-        arm_cmplx_mag_f32(fft_out, fft_mag, NOISE_CUT_LENGTH);
-
-        for(uint16_t i=0; i<NOISE_CUT_LENGTH; i++)
-        {
-            h[i] = 1 - (maxH[i]) / fft_mag[i];
-            if(h[i]<0) h[i] = 0;
-            fft_out[2*i] = h[i] * fft_out[2*i];
-            fft_out[2*i+1] = h[i] * fft_out[2*i+1];
-        }
-        arm_rfft_fast_f32(&fft_inst, fft_out, fft_in, 1);
-        
-        for(uint16_t i=0; i<NOISE_CUT_LENGTH; i++)
-        {
-            int32_t dd;
-            if(!nrf_queue_is_full(&m_play_queue))
-            {
-                dd = fft_in[2*i];
-                ret_code_t err_code = nrf_queue_push(&m_play_queue, &dd);
-                //APP_ERROR_CHECK(err_code);
-            }
-        }
-    }    
-}
-
-static void noise_cut_timeout_handler(void * p_context)
-{
-    UNUSED_PARAMETER(p_context);
-    noise_cut_update();
 }
 
 
@@ -882,12 +465,6 @@ static void timers_init(void)
                                 pwm_timeout_handler);
     APP_ERROR_CHECK(err_code);
 
-    /*
-    err_code = app_timer_create(&m_noise_cut_id,
-                                APP_TIMER_MODE_REPEATED,
-                                noise_cut_timeout_handler);
-    APP_ERROR_CHECK(err_code);
-    */
 }
 
 
@@ -1079,10 +656,7 @@ static void application_timers_start(void)
     ret_code_t err_code;
     err_code = app_timer_start(m_pwm_timer_id, PWM_INTERVAL, NULL);
     APP_ERROR_CHECK(err_code);
-    /*
-    err_code = app_timer_start(m_noise_cut_id, NOISE_CUT_INTERVAL, NULL);
-    APP_ERROR_CHECK(err_code);
-    */
+    
 }
 
 static void application_timers_stop(void)
@@ -1090,10 +664,7 @@ static void application_timers_stop(void)
     ret_code_t err_code;
     err_code = app_timer_stop(m_pwm_timer_id);
     APP_ERROR_CHECK(err_code);
-    /*
-    err_code = app_timer_stop(m_noise_cut_id);
-    APP_ERROR_CHECK(err_code);
-    */
+
 }
 
 /**@brief Function for putting the chip into sleep mode.
@@ -1445,7 +1016,6 @@ int main(void)
     peer_manager_init();
 
     high_filter_set();
-    band_filter_set();
 
     smb_motor_pin_init();
     //pwm_init();
