@@ -805,6 +805,7 @@ void adpcm_encoder(void)
         //s = (int16_t)filter1(aData1[i]) + (int16_t)filter2(aData2[i]);
         //s = (int16_t)(aData1[i]) + (int16_t)(aData2[i]);
         s = aData1[i] + aData2[i];
+        s = filter1(s);
         //if(i==0) printf("%d\n", s);
         //s = (int16_t)filter(s);
         //printf("%d\n", s);
