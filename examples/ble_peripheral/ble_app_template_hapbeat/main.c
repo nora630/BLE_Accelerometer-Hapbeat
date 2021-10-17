@@ -191,7 +191,7 @@ const  uint8_t alen = 20;
 
 //uint16_t dat = 0;
 
-NRF_QUEUE_DEF(uint8_t, m_byte_queue, 4096, NRF_QUEUE_MODE_NO_OVERFLOW);
+NRF_QUEUE_DEF(uint8_t, m_byte_queue, 32768, NRF_QUEUE_MODE_NO_OVERFLOW);
 //NRF_QUEUE_DEF(int32_t, m_play_queue, 2048, NRF_QUEUE_MODE_NO_OVERFLOW);
 
 /* Buufer for samples read from a smartphone */
@@ -384,6 +384,12 @@ static void pm_evt_handler(pm_evt_t const * p_evt)
     }
 }
 
+void adpcm_state_init(void)
+{
+    state.prevsample = 0;
+    state.previndex = 0;
+}
+
 static void pwm_update(void)
 {
     uint16_t *p_channels = (uint16_t *)&m_seq_values;
@@ -487,7 +493,7 @@ static void gap_params_init(void)
     err_code = sd_ble_gap_addr_get(&device_addr);
     VERIFY_SUCCESS(err_code);
 
-    sprintf(nameID, "%s%x", name, device_addr.addr[5]);
+    sprintf(nameID, "%s%x", name, device_addr.addr[0]);
 
 
 
@@ -532,11 +538,6 @@ static void nrf_qwr_error_handler(uint32_t nrf_error)
     APP_ERROR_HANDLER(nrf_error);
 }
 
-void adpcm_state_init(void)
-{
-    state.prevsample = 0;
-    state.previndex = 0;
-}
 
 /* Function for receiving the data from the smartphone */
 static void accel_read_handler(ble_hpbs_evt_t * p_evt)

@@ -805,7 +805,7 @@ void adpcm_encoder(void)
         //s = (int16_t)filter1(aData1[i]) + (int16_t)filter2(aData2[i]);
         //s = (int16_t)(aData1[i]) + (int16_t)(aData2[i]);
         s = aData1[i] + aData2[i];
-        s = filter1(s);
+        //s = filter1(s);
         //if(i==0) printf("%d\n", s);
         //s = (int16_t)filter(s);
         //printf("%d\n", s);
@@ -895,7 +895,7 @@ static void gap_params_init(void)
     err_code = sd_ble_gap_addr_get(&device_addr);
     VERIFY_SUCCESS(err_code);
 
-    sprintf(nameID, "%s%x", name, device_addr.addr[5]);
+    sprintf(nameID, "%s%x", name, device_addr.addr[0]);
 
     err_code = sd_ble_gap_device_name_set(&sec_mode,
                                           (const uint8_t *)nameID,

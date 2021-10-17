@@ -12656,7 +12656,7 @@ Linker script and memory map
                 0x0000000000000001                . = ASSERT (((__tdata_run_start__ == __tdata_run_end__) || ((__tdata_run_end__ >= __RAM1_segment_start__) && (__tdata_run_end__ <= __RAM1_segment_end__))), error: .tdata_run is too large to fit in RAM1 memory segment)
                 0x000000002000243c                __bss_load_start__ = ALIGN (__tdata_run_end__, 0x4)
 
-.bss            0x000000002000243c     0x2574
+.bss            0x000000002000243c     0x9574
                 0x000000002000243c                __bss_start__ = .
  *(.bss .bss.* .gnu.linkonce.b.*)
  .bss.m_host_present
@@ -12804,156 +12804,156 @@ Linker script and memory map
  .bss.m_advertising
                 0x0000000020002e70      0x434 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
  .bss.m_byte_queue_nrf_queue_buffer
-                0x00000000200032a4     0x1001 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
- *fill*         0x00000000200042a5        0x3 
+                0x00000000200032a4     0x8001 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
+ *fill*         0x000000002000b2a5        0x3 
  .bss.m_byte_queue_nrf_queue_cb
-                0x00000000200042a8        0xc Output/ble_app_template_pca10040_s132 Release/Obj/main.o
- .bss.m_gatt    0x00000000200042b4       0x14 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
- .bss.m_hpbs    0x00000000200042c8       0x14 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
- *fill*         0x00000000200042dc        0x4 
+                0x000000002000b2a8        0xc Output/ble_app_template_pca10040_s132 Release/Obj/main.o
+ .bss.m_gatt    0x000000002000b2b4       0x14 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
+ .bss.m_hpbs    0x000000002000b2c8       0x14 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
+ *fill*         0x000000002000b2dc        0x4 
  .bss.m_pwm_timer_id_data
-                0x00000000200042e0       0x20 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
- .bss.m_qwr     0x0000000020004300        0xc Output/ble_app_template_pca10040_s132 Release/Obj/main.o
+                0x000000002000b2e0       0x20 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
+ .bss.m_qwr     0x000000002000b300        0xc Output/ble_app_template_pca10040_s132 Release/Obj/main.o
  .bss.m_seq_values
-                0x000000002000430c        0x8 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
- .bss.out1      0x0000000020004314        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
- .bss.state     0x0000000020004318        0x8 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
- .bss.sum       0x0000000020004320        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
+                0x000000002000b30c        0x8 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
+ .bss.out1      0x000000002000b314        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
+ .bss.state     0x000000002000b318        0x8 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
+ .bss.sum       0x000000002000b320        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/main.o
  .bss._SEGGER_RTT
-                0x0000000020004324       0x78 Output/ble_app_template_pca10040_s132 Release/Obj/SEGGER_RTT.o
-                0x0000000020004324                _SEGGER_RTT
+                0x000000002000b324       0x78 Output/ble_app_template_pca10040_s132 Release/Obj/SEGGER_RTT.o
+                0x000000002000b324                _SEGGER_RTT
  .bss._acDownBuffer
-                0x000000002000439c       0x10 Output/ble_app_template_pca10040_s132 Release/Obj/SEGGER_RTT.o
+                0x000000002000b39c       0x10 Output/ble_app_template_pca10040_s132 Release/Obj/SEGGER_RTT.o
  .bss._acUpBuffer
-                0x00000000200043ac      0x200 Output/ble_app_template_pca10040_s132 Release/Obj/SEGGER_RTT.o
+                0x000000002000b3ac      0x200 Output/ble_app_template_pca10040_s132 Release/Obj/SEGGER_RTT.o
  .bss.m_conn_params_config
-                0x00000000200045ac       0x1c Output/ble_app_template_pca10040_s132 Release/Obj/ble_conn_params.o
+                0x000000002000b5ac       0x1c Output/ble_app_template_pca10040_s132 Release/Obj/ble_conn_params.o
  .bss.m_conn_params_instances
-                0x00000000200045c8       0x14 Output/ble_app_template_pca10040_s132 Release/Obj/ble_conn_params.o
+                0x000000002000b5c8       0x14 Output/ble_app_template_pca10040_s132 Release/Obj/ble_conn_params.o
  .bss.m_preferred_conn_params
-                0x00000000200045dc        0x8 Output/ble_app_template_pca10040_s132 Release/Obj/ble_conn_params.o
- *fill*         0x00000000200045e4        0x4 
+                0x000000002000b5dc        0x8 Output/ble_app_template_pca10040_s132 Release/Obj/ble_conn_params.o
+ *fill*         0x000000002000b5e4        0x4 
  .bss.m_timer_data
-                0x00000000200045e8       0x20 Output/ble_app_template_pca10040_s132 Release/Obj/ble_conn_params.o
- .bss.m_bcs     0x0000000020004608       0x7c Output/ble_app_template_pca10040_s132 Release/Obj/ble_conn_state.o
+                0x000000002000b5e8       0x20 Output/ble_app_template_pca10040_s132 Release/Obj/ble_conn_params.o
+ .bss.m_bcs     0x000000002000b608       0x7c Output/ble_app_template_pca10040_s132 Release/Obj/ble_conn_state.o
  .bss.m_db_update_in_progress_mutex
-                0x0000000020004684        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
+                0x000000002000b684        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
  .bss.m_flag_car_handle_queried
-                0x0000000020004688        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
+                0x000000002000b688        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
  .bss.m_flag_car_update_pending
-                0x0000000020004689        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
+                0x000000002000b689        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
  .bss.m_flag_car_value_queried
-                0x000000002000468a        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
+                0x000000002000b68a        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
  .bss.m_flag_local_db_apply_pending
-                0x000000002000468b        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
+                0x000000002000b68b        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
  .bss.m_flag_local_db_update_pending
-                0x000000002000468c        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
+                0x000000002000b68c        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
  .bss.m_flag_service_changed_pending
-                0x000000002000468d        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
+                0x000000002000b68d        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
  .bss.m_flag_service_changed_sent
-                0x000000002000468e        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
- *fill*         0x000000002000468f        0x1 
+                0x000000002000b68e        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/gatt_cache_manager.o
+ *fill*         0x000000002000b68f        0x1 
  .bss.m_current_sc_store_peer_id
-                0x0000000020004690        0x2 Output/ble_app_template_pca10040_s132 Release/Obj/gatts_cache_manager.o
+                0x000000002000b690        0x2 Output/ble_app_template_pca10040_s132 Release/Obj/gatts_cache_manager.o
  .bss.start_handle.10115
-                0x0000000020004692        0x2 Output/ble_app_template_pca10040_s132 Release/Obj/gatts_cache_manager.o
+                0x000000002000b692        0x2 Output/ble_app_template_pca10040_s132 Release/Obj/gatts_cache_manager.o
  .bss.m_connections
-                0x0000000020004694       0xc8 Output/ble_app_template_pca10040_s132 Release/Obj/id_manager.o
+                0x000000002000b694       0xc8 Output/ble_app_template_pca10040_s132 Release/Obj/id_manager.o
  .bss.m_fds_ftok
-                0x000000002000475c        0x8 Output/ble_app_template_pca10040_s132 Release/Obj/peer_data_storage.o
+                0x000000002000b75c        0x8 Output/ble_app_template_pca10040_s132 Release/Obj/peer_data_storage.o
  .bss.m_peer_delete_deferred
-                0x0000000020004764        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_data_storage.o
- *fill*         0x0000000020004765        0x3 
+                0x000000002000b764        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_data_storage.o
+ *fill*         0x000000002000b765        0x3 
  .bss.buffer_memory.10171
-                0x0000000020004768      0x140 Output/ble_app_template_pca10040_s132 Release/Obj/peer_database.o
+                0x000000002000b768      0x140 Output/ble_app_template_pca10040_s132 Release/Obj/peer_database.o
  .bss.m_pending_store
-                0x00000000200048a8        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_database.o
- *fill*         0x00000000200048a9        0x3 
+                0x000000002000b8a8        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_database.o
+ *fill*         0x000000002000b8a9        0x3 
  .bss.m_write_buffer
-                0x00000000200048ac       0x10 Output/ble_app_template_pca10040_s132 Release/Obj/peer_database.o
+                0x000000002000b8ac       0x10 Output/ble_app_template_pca10040_s132 Release/Obj/peer_database.o
  .bss.m_write_buffer_records
-                0x00000000200048bc       0x30 Output/ble_app_template_pca10040_s132 Release/Obj/peer_database.o
+                0x000000002000b8bc       0x30 Output/ble_app_template_pca10040_s132 Release/Obj/peer_database.o
  .bss.mutex_memory.10172
-                0x00000000200048ec        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/peer_database.o
- .bss.m_pi      0x00000000200048f0       0x40 Output/ble_app_template_pca10040_s132 Release/Obj/peer_id.o
+                0x000000002000b8ec        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/peer_database.o
+ .bss.m_pi      0x000000002000b8f0       0x40 Output/ble_app_template_pca10040_s132 Release/Obj/peer_id.o
  .bss.m_current_highest_peer_rank
-                0x0000000020004930        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
+                0x000000002000b930        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
  .bss.m_deleting_all
-                0x0000000020004934        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
- *fill*         0x0000000020004935        0x3 
+                0x000000002000b934        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
+ *fill*         0x000000002000b935        0x3 
  .bss.m_evt_handlers
-                0x0000000020004938        0xc Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
+                0x000000002000b938        0xc Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
  .bss.m_highest_ranked_peer
-                0x0000000020004944        0x2 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
+                0x000000002000b944        0x2 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
  .bss.m_module_initialized
-                0x0000000020004946        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
+                0x000000002000b946        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
  .bss.m_n_registrants
-                0x0000000020004947        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
+                0x000000002000b947        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
  .bss.m_peer_rank_initialized
-                0x0000000020004948        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
- *fill*         0x0000000020004949        0x3 
+                0x000000002000b948        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
+ *fill*         0x000000002000b949        0x3 
  .bss.m_peer_rank_token
-                0x000000002000494c        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
+                0x000000002000b94c        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager.o
  .bss.flash_cleaning.10419
-                0x0000000020004950        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager_handler.o
- *fill*         0x0000000020004951        0x3 
+                0x000000002000b950        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager_handler.o
+ *fill*         0x000000002000b951        0x3 
  .bss.rank_queue_wr.10422
-                0x0000000020004954        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager_handler.o
+                0x000000002000b954        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/peer_manager_handler.o
  .bss.m_peer_pk
-                0x0000000020004958       0x40 Output/ble_app_template_pca10040_s132 Release/Obj/security_dispatcher.o
+                0x000000002000b958       0x40 Output/ble_app_template_pca10040_s132 Release/Obj/security_dispatcher.o
  .bss.m_p_public_key
-                0x0000000020004998        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/security_manager.o
+                0x000000002000b998        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/security_manager.o
  .bss.m_sec_params
-                0x000000002000499c        0x5 Output/ble_app_template_pca10040_s132 Release/Obj/security_manager.o
+                0x000000002000b99c        0x5 Output/ble_app_template_pca10040_s132 Release/Obj/security_manager.o
  .bss.m_sec_params_set
-                0x00000000200049a1        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/security_manager.o
- *fill*         0x00000000200049a2        0x2 
+                0x000000002000b9a1        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/security_manager.o
+ *fill*         0x000000002000b9a2        0x2 
  .bss.mp_sec_params
-                0x00000000200049a4        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/security_manager.o
+                0x000000002000b9a4        0x4 Output/ble_app_template_pca10040_s132 Release/Obj/security_manager.o
  .bss.m_nrf_sdh_continue
-                0x00000000200049a8        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/nrf_sdh.o
+                0x000000002000b9a8        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/nrf_sdh.o
  .bss.m_nrf_sdh_enabled
-                0x00000000200049a9        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/nrf_sdh.o
+                0x000000002000b9a9        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/nrf_sdh.o
  .bss.m_nrf_sdh_suspended
-                0x00000000200049aa        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/nrf_sdh.o
+                0x000000002000b9aa        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/nrf_sdh.o
  .bss.m_stack_is_enabled
-                0x00000000200049ab        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/nrf_sdh_ble.o
+                0x000000002000b9ab        0x1 Output/ble_app_template_pca10040_s132 Release/Obj/nrf_sdh_ble.o
  .bss.libc.__user_format_extender
-                0x00000000200049ac        0x4 C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libc_v7em_fpv4_sp_d16_hard_t_le_eabi.a(libc2.o)
-                0x00000000200049ac                __user_format_extender
+                0x000000002000b9ac        0x4 C:/Program Files/SEGGER/SEGGER Embedded Studio for ARM 3.34/lib/libc_v7em_fpv4_sp_d16_hard_t_le_eabi.a(libc2.o)
+                0x000000002000b9ac                __user_format_extender
  *(COMMON)
-                0x00000000200049b0                __bss_end__ = (__bss_start__ + SIZEOF (.bss))
-                0x0000000000002574                __bss_size__ = SIZEOF (.bss)
-                0x00000000200049b0                __bss_load_end__ = __bss_end__
+                0x000000002000b9b0                __bss_end__ = (__bss_start__ + SIZEOF (.bss))
+                0x0000000000009574                __bss_size__ = SIZEOF (.bss)
+                0x000000002000b9b0                __bss_load_end__ = __bss_end__
                 0x0000000000000001                . = ASSERT (((__bss_start__ == __bss_end__) || ((__bss_end__ >= __RAM1_segment_start__) && (__bss_end__ <= __RAM1_segment_end__))), error: .bss is too large to fit in RAM1 memory segment)
-                0x00000000200049b0                __tbss_load_start__ = ALIGN (__bss_end__, 0x4)
+                0x000000002000b9b0                __tbss_load_start__ = ALIGN (__bss_end__, 0x4)
 
-.tbss           0x00000000200049b0        0x0
-                0x00000000200049b0                __tbss_start__ = .
+.tbss           0x000000002000b9b0        0x0
+                0x000000002000b9b0                __tbss_start__ = .
  *(.tbss .tbss.*)
-                0x00000000200049b0                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
+                0x000000002000b9b0                __tbss_end__ = (__tbss_start__ + SIZEOF (.tbss))
                 0x0000000000000000                __tbss_size__ = SIZEOF (.tbss)
-                0x00000000200049b0                __tbss_load_end__ = __tbss_end__
+                0x000000002000b9b0                __tbss_load_end__ = __tbss_end__
                 0x0000000000000001                . = ASSERT (((__tbss_start__ == __tbss_end__) || ((__tbss_end__ >= __RAM1_segment_start__) && (__tbss_end__ <= __RAM1_segment_end__))), error: .tbss is too large to fit in RAM1 memory segment)
-                0x00000000200049b0                __non_init_load_start__ = ALIGN (__tbss_end__, 0x4)
+                0x000000002000b9b0                __non_init_load_start__ = ALIGN (__tbss_end__, 0x4)
 
-.non_init       0x00000000200049b0        0x0
-                0x00000000200049b0                __non_init_start__ = .
+.non_init       0x000000002000b9b0        0x0
+                0x000000002000b9b0                __non_init_start__ = .
  *(.non_init .non_init.*)
-                0x00000000200049b0                __non_init_end__ = (__non_init_start__ + SIZEOF (.non_init))
+                0x000000002000b9b0                __non_init_end__ = (__non_init_start__ + SIZEOF (.non_init))
                 0x0000000000000000                __non_init_size__ = SIZEOF (.non_init)
-                0x00000000200049b0                __non_init_load_end__ = __non_init_end__
+                0x000000002000b9b0                __non_init_load_end__ = __non_init_end__
                 0x0000000000000001                . = ASSERT (((__non_init_start__ == __non_init_end__) || ((__non_init_end__ >= __RAM1_segment_start__) && (__non_init_end__ <= __RAM1_segment_end__))), error: .non_init is too large to fit in RAM1 memory segment)
-                0x00000000200049b0                __heap_load_start__ = ALIGN (__non_init_end__, 0x4)
+                0x000000002000b9b0                __heap_load_start__ = ALIGN (__non_init_end__, 0x4)
 
-.heap           0x00000000200049b0     0x2000
-                0x00000000200049b0                __heap_start__ = .
+.heap           0x000000002000b9b0     0x2000
+                0x000000002000b9b0                __heap_start__ = .
  *(.heap .heap.*)
-                0x00000000200069b0                . = ALIGN (MAX ((__heap_start__ + __HEAPSIZE__), .), 0x4)
- *fill*         0x00000000200049b0     0x2000 
-                0x00000000200069b0                __heap_end__ = (__heap_start__ + SIZEOF (.heap))
+                0x000000002000d9b0                . = ALIGN (MAX ((__heap_start__ + __HEAPSIZE__), .), 0x4)
+ *fill*         0x000000002000b9b0     0x2000 
+                0x000000002000d9b0                __heap_end__ = (__heap_start__ + SIZEOF (.heap))
                 0x0000000000002000                __heap_size__ = SIZEOF (.heap)
-                0x00000000200069b0                __heap_load_end__ = __heap_end__
+                0x000000002000d9b0                __heap_load_end__ = __heap_end__
                 0x0000000000000001                . = ASSERT (((__heap_start__ == __heap_end__) || ((__heap_end__ >= __RAM1_segment_start__) && (__heap_end__ <= __RAM1_segment_end__))), error: .heap is too large to fit in RAM1 memory segment)
                 0x000000002000e000                __stack_load_start__ = (__RAM1_segment_end__ - 0x2000)
 
