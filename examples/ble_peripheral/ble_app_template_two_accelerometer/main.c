@@ -125,7 +125,7 @@
 
 #define DEAD_BEEF                       0xDEADBEEF                              /**< Value used as error code on stack dump, can be used to identify stack location on stack unwind. */
 
-#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(40)                   // ble accel send interval
+#define ACCEL_SEND_INTERVAL             APP_TIMER_TICKS(1)                   // ble accel send interval
 
 NRF_BLE_GATT_DEF(m_gatt);                                                       /**< GATT module instance. */
 NRF_BLE_QWR_DEF(m_qwr);                                                         /**< Context for the Queued Write module.*/
@@ -819,6 +819,8 @@ void adpcm_encoder(void)
     //printf("%d\n", s);
 }
 
+//static uint8_t count = 0;
+
 /* Function for performing accel measurement and updating the tx accel characteristic in Accelerometer Service */
 void accel_data_send(void)
 {
@@ -828,9 +830,15 @@ void accel_data_send(void)
     //for (int i=0; i<4; i++) aData[i] |= 0x11 ;
     //uint8_t aData[20];
     uint16_t s;
-    if(!(m_send_done1&&m_send_done2)) return;
+    if(!(m_send_done1&&m_send_done2)) 
+    {
+        //printf("no\n");
+        //count++;
+        return;
+    }
     m_send_done1 = false;
     m_send_done2 = false;
+    //printf("%d\n", count);
     adpcm_encoder();
     /*
     for(uint16_t i=0; i<alen; i++){
@@ -839,6 +847,10 @@ void accel_data_send(void)
         aData[2*i] = (s >> 8) & 0xff;
         aData[2*i+1] = s & 0xff;
     } */
+
+    //if(++count>120) count = 0;
+    //aData[0] = count;
+
     err_code = ble_acs_accel_data_send(&m_acs, &aData, &asendlen);
     if((err_code != NRF_SUCCESS) &&
        (err_code != NRF_ERROR_INVALID_STATE) &&
