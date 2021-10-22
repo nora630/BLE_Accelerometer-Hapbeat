@@ -414,12 +414,12 @@ static void pwm_update(void)
             sum = ADPCMDecoder((code >> 4) & 0x0f, &state);
             sum = filter(sum);
             decode_flag = true;
-        } //else {
+        } else {
             //printf("%d\n", count);
             //if(++count>500) count = 0;
-           //nrf_drv_pwm_stop(&m_pwm0, false);
-           //return;
-        //}
+           nrf_drv_pwm_stop(&m_pwm0, false);
+           return;
+        }
     }
     /*
     if(!nrf_queue_is_empty(&m_byte_queue))
@@ -455,7 +455,7 @@ static void pwm_update(void)
     else if(value < 0) value = 0;
     p_channels[0] = value;
 
-    //if(sum==0) nrf_drv_pwm_stop(&m_pwm0, false);
+    if(sum==0) nrf_drv_pwm_stop(&m_pwm0, false);
     (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 1, NRF_DRV_PWM_FLAG_LOOP);
     return;
        
