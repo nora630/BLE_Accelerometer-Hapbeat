@@ -253,13 +253,14 @@ void high_filter_set(void)
     //alpha = sin(omega) / (2.0f * q);
 
     // cut f = 0.001 * 500 Hz
-    //a0 =   1;
-    //a1 =   -0.9969;
+    a0 =   1;
+    a1 =   -0.9969;
     //a2 =   1.0f - alpha;
-    //b0 =  0.9984;
-    //b1 = -0.9984;
+    b0 =  0.9984;
+    b1 = -0.9984;
     //b2 =  (1.0f + cos(omega)) / 2.0f;
 
+  
     /*
     // cut f = 0.01 * 500 Hz
     a0 =   1;
@@ -270,11 +271,13 @@ void high_filter_set(void)
     //b2 =  (1.0f + cos(omega)) / 2.0f;
     */
 
+    /*
     // cut f = 0.005 * 500 Hz
     a0 = 1;
     a1 = -0.9844;
     b0 = 0.9922;
     b1 = -0.9922;
+    */
 
     /*
     // cut f = 0.1 * 500 Hz
