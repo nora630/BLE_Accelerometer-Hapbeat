@@ -58,7 +58,7 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="732" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="707" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="732" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="701" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="206" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/bsp/bsp.h" debugPath="../../../../../../components/libraries/bsp/bsp.h" selected="0" top="184" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="480" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/bsp/bsp.c" debugPath="../../../../../../components/libraries/bsp/bsp.c" selected="0" top="458" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="103" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/boards/boards.h" debugPath="../../../../../../components/boards/boards.h" selected="0" top="81" codecName="Default"/>
