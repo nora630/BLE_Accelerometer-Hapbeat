@@ -361,12 +361,13 @@ static void timer1_handler(nrf_timer_event_t event_type, void* p_context)
             sum = ADPCMDecoder((code >> 4) & 0x0f, &state);
             sum = filter(sum);
             decode_flag = true;
-        } /*else {
+        } /* else {
             //printf("%d\n", count);
             //if(++count>500) count = 0;
-           nrf_drv_pwm_stop(&m_pwm0, false);
-           return;
-        }*/
+           //nrf_drv_pwm_stop(&m_pwm0, false);
+           //sum = filter(sum);
+           //return;
+        } */
     }
     /*
     if(!nrf_queue_is_empty(&m_byte_queue))
