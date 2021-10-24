@@ -333,8 +333,8 @@ static void pwm_init(void)
     m_seq_values.channel_3 = 0;
 
 
-    //(void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 100,
-    //                                  NRF_DRV_PWM_FLAG_LOOP);
+    (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 1,
+                                      NRF_DRV_PWM_FLAG_LOOP);
 
 }
 
@@ -405,7 +405,8 @@ static void timer1_handler(nrf_timer_event_t event_type, void* p_context)
 
     //if(value==m_motor_top) nrf_drv_pwm_stop(&m_pwm0, false);
     //if(sum==0) nrf_drv_pwm_stop(&m_pwm0, false);
-    (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 1, NRF_DRV_PWM_FLAG_LOOP);
+    //(void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 40, NRF_DRV_PWM_FLAG_STOP);
+    nrf_drv_pwm_sequence_update(&m_pwm0, 0, &m_seq);
     return;
 
 }
@@ -836,7 +837,8 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             // LED indication will be changed when advertising starts.
             ////application_timers_stop();
             nrf_drv_timer_disable(&m_timer1);
-            nrf_drv_pwm_stop(&m_pwm0, false);
+            //nrf_drv_pwm_stop(&m_pwm0, false);
+            nrf_drv_pwm_uninit(&m_pwm0);
             /*
             adpcm_state_init();
             nrf_queue_reset(&m_byte_queue);
@@ -861,6 +863,7 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             in1 = 0;
             out1 = 0;
             //application_timers_start();
+            pwm_init();
             nrf_drv_timer_enable(&m_timer1);
             break;
 
@@ -1122,7 +1125,7 @@ int main(void)
     //nrf_power_dcdcen_set(true);
     // Initialize.
     log_init();
-    pwm_init();
+    //pwm_init();
     smb_motor_pin_init();
     ///timers_init();
     timer1_init();
