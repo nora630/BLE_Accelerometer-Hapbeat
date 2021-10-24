@@ -108,6 +108,7 @@
 #define APP_BLE_CONN_CFG_TAG            1                                       /**< A tag identifying the SoftDevice BLE configuration. */
 
 #define PWM_INTERVAL                    APP_TIMER_TICKS(1)
+#define PWM_TIMER1_INTERVAL             (1)
 
 #define MIN_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)        /**< Minimum acceptable connection interval (10 milliseconds). */
 #define MAX_CONN_INTERVAL               MSEC_TO_UNITS(40, UNIT_1_25_MS)        /**< Maximum acceptable connection interval (10 millisecond). */
@@ -150,6 +151,8 @@ static struct ADPCMstate state;
 
 // pwm variable
 static nrf_drv_pwm_t m_pwm0 = NRF_DRV_PWM_INSTANCE(0);
+
+const nrf_drv_timer_t m_timer1 = NRF_DRV_TIMER_INSTANCE(1);
 
 static uint16_t const           m_motor_top  = 400;
 static uint16_t                 m_motor_step1 = 400;
@@ -343,6 +346,87 @@ static void smb_motor_pin_init(void)
     nrf_gpio_pin_set(STBY_PIN);
 }
 
+static void timer1_handler(nrf_timer_event_t event_type, void* p_context)
+{
+    uint16_t *p_channels = (uint16_t *)&m_seq_values;
+
+    if(decode_flag){
+        sum = ADPCMDecoder(code & 0x0f, &state);
+        sum = filter(sum);
+        decode_flag = false;
+    } else {
+        if(!nrf_queue_is_empty(&m_byte_queue)){
+            ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &code);
+            sum = ADPCMDecoder((code >> 4) & 0x0f, &state);
+            sum = filter(sum);
+            decode_flag = true;
+        } /*else {
+            //printf("%d\n", count);
+            //if(++count>500) count = 0;
+           nrf_drv_pwm_stop(&m_pwm0, false);
+           return;
+        }*/
+    }
+    /*
+    if(!nrf_queue_is_empty(&m_byte_queue))
+    {
+        ret_code_t err_code = nrf_queue_pop(&m_byte_queue, &code);
+        //APP_ERROR_CHECK(err_code);
+        sum = dat;
+        //sum = bandFilter(sum);
+        sum = filter(sum);
+    }*/
+    
+    /*
+    if(!nrf_queue_is_empty(&m_play_queue))
+    {
+        ret_code_t err_code = nrf_queue_pop(&m_play_queue, &sum);
+        //APP_ERROR_CHECK(err_code);
+        sum = bandFilter(sum);
+        //sum = filter(sum);
+    } */
+
+    //printf("%d\n", sum);
+    
+    if(sum>=0) motor_forward();
+    else{
+        motor_back();
+        //sum *= -1;
+    }
+    
+    // 8192 x+y+z  32 x  
+    uint16_t value = m_motor_top - abs(sum);//8192;//32 x;
+    //uint16_t value = m_motor_top - m_motor_top * sum / 60;//8192;//32 x;
+    if(value > m_motor_top) value = m_motor_top;
+    else if(value < 0) value = 0;
+    p_channels[0] = value;
+
+    //if(value==m_motor_top) nrf_drv_pwm_stop(&m_pwm0, false);
+    //if(sum==0) nrf_drv_pwm_stop(&m_pwm0, false);
+    (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 1, NRF_DRV_PWM_FLAG_LOOP);
+    return;
+
+}
+
+static void timer1_init(void)
+{
+    ret_code_t err_code = app_timer_init();
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_timer_config_t timer1_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
+    timer1_config.frequency = NRF_TIMER_FREQ_16MHz;
+    err_code = nrf_drv_timer_init(&m_timer1, &timer1_config, timer1_handler);
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_timer_extended_compare(&m_timer1,
+                                   NRF_TIMER_CC_CHANNEL0,
+                                   nrf_drv_timer_ms_to_ticks(&m_timer1,
+                                                             PWM_TIMER1_INTERVAL),
+                                   NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
+                                   true);
+
+}
+
 /*******************************************************************************************************/
 
 static ble_uuid_t m_adv_uuids[] =                                               /**< Universally unique service identifiers. */
@@ -480,10 +564,12 @@ static void timers_init(void)
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
 
+    /*
     err_code = app_timer_create(&m_pwm_timer_id,
                                 APP_TIMER_MODE_REPEATED,
                                 pwm_timeout_handler);
     APP_ERROR_CHECK(err_code);
+    */
 
 }
 
@@ -746,7 +832,9 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
         case BLE_GAP_EVT_DISCONNECTED:
             NRF_LOG_INFO("Disconnected.");
             // LED indication will be changed when advertising starts.
-            application_timers_stop();
+            ////application_timers_stop();
+            nrf_drv_timer_disable(&m_timer1);
+            nrf_drv_pwm_stop(&m_pwm0, false);
             /*
             adpcm_state_init();
             nrf_queue_reset(&m_byte_queue);
@@ -770,7 +858,8 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             flag = false;
             in1 = 0;
             out1 = 0;
-            application_timers_start();
+            //application_timers_start();
+            nrf_drv_timer_enable(&m_timer1);
             break;
 
         case BLE_GAP_EVT_PHY_UPDATE_REQUEST:
@@ -1028,12 +1117,13 @@ int main(void)
 {
     bool erase_bonds;
 
-    NRF_POWER->DCDCEN = 1;
+    //nrf_power_dcdcen_set(true);
     // Initialize.
     log_init();
     pwm_init();
-    //arm_rfft_fast_init_f32(&fft_inst, NOISE_CUT_LENGTH*2);
-    timers_init();
+    smb_motor_pin_init();
+    ///timers_init();
+    timer1_init();
     buttons_leds_init(&erase_bonds);
     power_management_init();
     ble_stack_init();
@@ -1050,7 +1140,8 @@ int main(void)
 
     high_filter_set();
 
-    smb_motor_pin_init();
+    //smb_motor_pin_init();
+    
     //pwm_init();
 
     //ppi_init();
