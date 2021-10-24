@@ -1177,6 +1177,9 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             err_code = nrf_ble_qwr_conn_handle_assign(&m_qwr, m_conn_handle);
             APP_ERROR_CHECK(err_code);
+            m_send_done1 = false;
+            m_send_done2 = false;
+            adpcm_state_init();
             twi_start();
             application_timers_start();
             break;

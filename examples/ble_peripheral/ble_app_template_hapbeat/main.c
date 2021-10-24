@@ -456,7 +456,8 @@ static void pwm_update(void)
     else if(value < 0) value = 0;
     p_channels[0] = value;
 
-    if(sum==0) nrf_drv_pwm_stop(&m_pwm0, false);
+    //if(value==m_motor_top) nrf_drv_pwm_stop(&m_pwm0, false);
+    //if(sum==0) nrf_drv_pwm_stop(&m_pwm0, false);
     (void)nrf_drv_pwm_simple_playback(&m_pwm0, &m_seq, 1, NRF_DRV_PWM_FLAG_LOOP);
     return;
        
@@ -693,7 +694,7 @@ static void sleep_mode_enter(void)
     APP_ERROR_CHECK(err_code);
 
     // Prepare wakeup buttons.
-    sum = 0;
+    //sum = 0;
     err_code = bsp_btn_ble_sleep_mode_prepare();
     APP_ERROR_CHECK(err_code);
 
@@ -746,6 +747,14 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             NRF_LOG_INFO("Disconnected.");
             // LED indication will be changed when advertising starts.
             application_timers_stop();
+            /*
+            adpcm_state_init();
+            nrf_queue_reset(&m_byte_queue);
+            sum = 0;
+            flag = false;
+            in1 = 0;
+            out1 = 0;
+            */
             break;
 
         case BLE_GAP_EVT_CONNECTED:
@@ -755,6 +764,12 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             m_conn_handle = p_ble_evt->evt.gap_evt.conn_handle;
             err_code = nrf_ble_qwr_conn_handle_assign(&m_qwr, m_conn_handle);
             APP_ERROR_CHECK(err_code);
+            adpcm_state_init();
+            nrf_queue_reset(&m_byte_queue);
+            sum = 0;
+            flag = false;
+            in1 = 0;
+            out1 = 0;
             application_timers_start();
             break;
 
@@ -1028,6 +1043,9 @@ int main(void)
     advertising_init();
     conn_params_init();
     peer_manager_init();
+
+    sum = 0;
+    flag = false;
 
     high_filter_set();
 
