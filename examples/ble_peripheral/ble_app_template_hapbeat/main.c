@@ -77,6 +77,7 @@
 #include "nrf_ble_gatt.h"
 #include "nrf_ble_qwr.h"
 #include "nrf_pwr_mgmt.h"
+#include "nrf_power.h"
 
 #include "ble_hpbs.h"
 
@@ -412,7 +413,7 @@ static void timer1_init(void)
 {
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
-
+  
     nrf_drv_timer_config_t timer1_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
     timer1_config.frequency = NRF_TIMER_FREQ_16MHz;
     err_code = nrf_drv_timer_init(&m_timer1, &timer1_config, timer1_handler);
@@ -1127,6 +1128,8 @@ int main(void)
     buttons_leds_init(&erase_bonds);
     power_management_init();
     ble_stack_init();
+    //sd_power_dcdc_mode_set( NRF_POWER_DCDC_ENABLE );
+    //APP_ERROR_CHECK(err_code);
     gap_params_init();
     gatt_init();
     //advertising_init();

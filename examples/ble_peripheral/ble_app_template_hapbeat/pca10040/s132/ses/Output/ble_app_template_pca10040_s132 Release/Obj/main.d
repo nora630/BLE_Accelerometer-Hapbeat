@@ -108,7 +108,8 @@ Output/ble_app_template_pca10040_s132\ Release/Obj/main.o: \
  ../../../../../../components/ble/nrf_ble_gatt/nrf_ble_gatt.h \
  ../../../../../../components/ble/nrf_ble_qwr/nrf_ble_qwr.h \
  ../../../../../../components/libraries/pwr_mgmt/nrf_pwr_mgmt.h \
- ble_hpbs.h ../../../../../../integration/nrfx/legacy/nrf_drv_ppi.h \
+ ../../../../../../modules/nrfx/hal/nrf_power.h ble_hpbs.h \
+ ../../../../../../integration/nrfx/legacy/nrf_drv_ppi.h \
  ../../../../../../modules/nrfx/drivers/include/nrfx_ppi.h \
  ../../../../../../modules/nrfx/hal/nrf_ppi.h \
  ../../../../../../integration/nrfx/legacy/nrf_drv_pwm.h \
