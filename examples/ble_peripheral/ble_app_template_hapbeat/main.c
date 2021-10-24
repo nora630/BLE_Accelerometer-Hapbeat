@@ -1028,6 +1028,7 @@ int main(void)
 {
     bool erase_bonds;
 
+    NRF_POWER->DCDCEN = 1;
     // Initialize.
     log_init();
     pwm_init();
