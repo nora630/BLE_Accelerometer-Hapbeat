@@ -229,6 +229,8 @@ static uint8_t m_dataReg[1] = {LIS2DH_DATA_REG};
 static const nrf_drv_timer_t m_timer1 = NRF_DRV_TIMER_INSTANCE(1);
 static const nrf_drv_timer_t m_timer2 = NRF_DRV_TIMER_INSTANCE(2);
 static const nrf_drv_timer_t m_timer3 = NRF_DRV_TIMER_INSTANCE(3);
+static const nrf_drv_timer_t m_timer4 = NRF_DRV_TIMER_INSTANCE(4);
+
 
 static nrf_ppi_channel_t     m_ppi_channel1;
 static nrf_ppi_channel_t     m_ppi_channel2;
@@ -600,6 +602,45 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
 
 }
 
+static void timer4_handler(nrf_timer_event_t event_type, void * p_context)
+{
+    ret_code_t err_code;
+    //uint8_t aData[2] = {0x4d, 0x3a};
+    //uint16_t alen = 2;
+    //for (int i=0; i<4; i++) aData[i] |= 0x11 ;
+    //uint8_t aData[20];
+    uint16_t s;
+    if(!(m_send_done1&&m_send_done2)) 
+    {
+        //printf("no\n");
+        //count++;
+        return;
+    }
+    m_send_done1 = false;
+    m_send_done2 = false;
+    //printf("%d\n", count);
+    adpcm_encoder();
+    /*
+    for(uint16_t i=0; i<alen; i++){
+        s = aData1[i] + aData2[i];
+        //printf("%d\n", s);
+        aData[2*i] = (s >> 8) & 0xff;
+        aData[2*i+1] = s & 0xff;
+    } */
+
+    //if(++count>120) count = 0;
+    //aData[0] = count;
+
+    err_code = ble_acs_accel_data_send(&m_acs, &aData, &asendlen);
+    if((err_code != NRF_SUCCESS) &&
+       (err_code != NRF_ERROR_INVALID_STATE) &&
+       (err_code != NRF_ERROR_RESOURCES) &&
+       (err_code != BLE_ERROR_GATTS_SYS_ATTR_MISSING)
+      )
+    {
+        APP_ERROR_HANDLER(err_code);
+    }
+}
 
 
 
@@ -607,7 +648,7 @@ static void timer3_handler(nrf_timer_event_t event_type, void * p_context)
 static void timer1_init(void)
 {
     nrf_drv_timer_config_t timer1_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
-    timer1_config.frequency = NRF_TIMER_FREQ_31250Hz;
+    timer1_config.frequency = NRF_TIMER_FREQ_16MHz;
     ret_code_t err_code = nrf_drv_timer_init(&m_timer1, &timer1_config, timer1_handler);
     APP_ERROR_CHECK(err_code);
 
@@ -647,6 +688,22 @@ static void timer3_init(void)
                                     TWIM_RX_BUF_LENGTH,
                                     NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
                                     true);
+}
+
+static void timer4_init(void)
+{
+    nrf_drv_timer_config_t timer4_config = NRF_DRV_TIMER_DEFAULT_CONFIG;
+    timer4_config.frequency = NRF_TIMER_FREQ_16MHz;
+    ret_code_t err_code = nrf_drv_timer_init(&m_timer4, &timer4_config, timer4_handler);
+    APP_ERROR_CHECK(err_code);
+
+    nrf_drv_timer_extended_compare(&m_timer4,
+                                   NRF_TIMER_CC_CHANNEL0,
+                                   nrf_drv_timer_ms_to_ticks(&m_timer4,
+                                                             PPI_TIMER1_INTERVAL),
+                                   NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK,
+                                   true);
+
 }
 
 /* initialize ppi channel */
@@ -905,11 +962,16 @@ static void timers_init(void)
     ret_code_t err_code = app_timer_init();
     APP_ERROR_CHECK(err_code);
 
+
+    timer4_init();
+
+    /*
     // Create timers.
      err_code = app_timer_create(&m_accel_timer_id,
                                  APP_TIMER_MODE_REPEATED,
                                  accel_meas_timeout_handler);
      APP_ERROR_CHECK(err_code);
+     */
 }
 
 
@@ -1166,7 +1228,8 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             NRF_LOG_INFO("Disconnected.");
             // LED indication will be changed when advertising starts.
             twi_stop();
-            application_timers_stop();
+            nrf_drv_timer_disable(&m_timer4);
+            //application_timers_stop();
             //NRF_LOG_INFO("Disconnected.");
             break;
 
@@ -1181,7 +1244,8 @@ static void ble_evt_handler(ble_evt_t const * p_ble_evt, void * p_context)
             m_send_done2 = false;
             adpcm_state_init();
             twi_start();
-            application_timers_start();
+            //application_timers_start();
+            nrf_drv_timer_enable(&m_timer4);
             break;
 
         case BLE_GAP_EVT_PHY_UPDATE_REQUEST:
