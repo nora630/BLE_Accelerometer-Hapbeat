@@ -147,10 +147,10 @@ static uint16_t asendlen = 20;
 // twi communication
 //*****************************************************//
 /* SCL SDA PIN */
-#define SCL1_PIN    29 //9
-#define SDA1_PIN    10 //2
-#define SCL2_PIN    9 //29
-#define SDA2_PIN    2 //10
+#define SCL1_PIN    9
+#define SDA1_PIN    2
+#define SCL2_PIN    29
+#define SDA2_PIN    10
 
 
 /* TWI instance ID. */
@@ -451,7 +451,7 @@ void twi_init (void)
     const nrf_drv_twi_config_t twi_lis2dh_config1 = {
        .scl                = SCL1_PIN,
        .sda                = SDA1_PIN,
-       .frequency          = NRF_TWI_FREQ_250K,
+       .frequency          = NRF_TWI_FREQ_400K,
        .interrupt_priority = APP_IRQ_PRIORITY_LOW,
        .clear_bus_init     = true
     };
@@ -462,7 +462,7 @@ void twi_init (void)
     const nrf_drv_twi_config_t twi_lis2dh_config2 = {
        .scl                = SCL2_PIN,
        .sda                = SDA2_PIN,
-       .frequency          = NRF_TWI_FREQ_250K,
+       .frequency          = NRF_TWI_FREQ_400K,
        .interrupt_priority = APP_IRQ_PRIORITY_LOW,
        .clear_bus_init     = true
     };
