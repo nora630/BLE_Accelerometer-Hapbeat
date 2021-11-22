@@ -58,10 +58,10 @@
   <Watches active="0" update="Never"/>
  </Watch4>
  <Files>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1502" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="1479" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1502" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../main.c" debugPath="../../../main.c" selected="1" top="1494" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="1" useTextEdit="1" useBinaryEdit="0" left="0" path="ble_acs.c" debugPath="ble_acs.c" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="64" useTextEdit="1" useBinaryEdit="0" left="0" path="ble_acs.h" debugPath="ble_acs.h" selected="0" top="52" codecName="Default"/>
-  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="179" useTextEdit="1" useBinaryEdit="0" left="0" path="adpcm.c" debugPath="adpcm.c" selected="0" top="156" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="38" useTextEdit="1" useBinaryEdit="0" left="0" path="adpcm.c" debugPath="adpcm.c" selected="0" top="13" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="16" useTextEdit="1" useBinaryEdit="0" left="0" path="adpcm.h" debugPath="adpcm.h" selected="0" top="0" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="119" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../integration/nrfx/legacy/nrf_drv_twi.h" debugPath="../../../../../../integration/nrfx/legacy/nrf_drv_twi.h" selected="0" top="102" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="5755" useTextEdit="1" useBinaryEdit="0" left="0" path="../config/sdk_config.h" debugPath="../config/sdk_config.h" selected="0" top="5735" codecName="Default"/>
@@ -77,6 +77,7 @@
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="118" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/hal/nrf_twi.h" debugPath="../../../../../../modules/nrfx/hal/nrf_twi.h" selected="0" top="99" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="213" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/hal/nrf_timer.h" debugPath="../../../../../../modules/nrfx/hal/nrf_timer.h" selected="0" top="199" codecName="Default"/>
   <SessionOpenFile windowGroup="DockEditLeft" x="0" y="99" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../components/libraries/util/app_util_platform.h" debugPath="../../../../../../components/libraries/util/app_util_platform.h" selected="0" top="82" codecName="Default"/>
+  <SessionOpenFile windowGroup="DockEditLeft" x="0" y="284" useTextEdit="1" useBinaryEdit="0" left="0" path="../../../../../../modules/nrfx/drivers/src/nrfx_timer.c" debugPath="../../../../../../modules/nrfx/drivers/src/nrfx_timer.c" selected="0" top="261" codecName=""/>
  </Files>
- <ARMCrossStudioWindow activeProject="ble_app_template_pca10056_s140" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="" fileDialogInitialDirectory="C:/Users/sho_o/labo/Nordic52SDK/nRF5SDK1702/nRF5_SDK_17.0.2/components/drivers_ext/lis2dh12" debugSearchPath="" autoConnectCapabilities="3199"/>
+ <ARMCrossStudioWindow activeProject="ble_app_template_pca10056_s140" fileDialogDefaultFilter="*.c" autoConnectTarget="J-Link" buildConfiguration="Release" debugSearchFileMap="" fileDialogInitialDirectory="C:/Users/sho_o/labo/Nordic52SDK/nRF5SDK1702/nRF5_SDK_17.0.2/components/drivers_ext/lis2dh12" debugSearchPath="" autoConnectCapabilities="3711"/>
 </session>
